@@ -11,6 +11,7 @@ async function main() {
 		where: { email: 'alice@mail.com' },
 		update: {},
 		create: {
+			name: 'Alice',
 			username: 'Alice',
 			email: 'alice@mail.com',
 			password: 'alice',
@@ -21,6 +22,7 @@ async function main() {
 		where: { email: 'bob@mail.com' },
 		update: {},
 		create: {
+			name: 'bob',
 			username: 'Bob',
 			email: 'bob@mail.com',
 			password: 'bob',
