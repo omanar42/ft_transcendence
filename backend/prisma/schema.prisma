@@ -11,23 +11,26 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String?
-  email     String   @unique
-  username  String
+  id        Int       @id @default(autoincrement())
+  oauthId   String    @unique
+  username  String    @unique
   password  String
-  level     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
+  avatar    String?
+  twoFactor Boolean   @default(false)
+  status    String    @default("offline")
+  wins      Int       @default(0)
+  losses    Int       @default(0)
+  // friends   User[]    @relation("Friends")
+  // friendOf  User[]    @relation("Friends")
+  // matches   Match[]   @relation("Matches")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
-model Post {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
+model Match {
+  id        Int       @id @default(autoincrement())
+  result    String
+  // players   User[]    @relation("Matches")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }

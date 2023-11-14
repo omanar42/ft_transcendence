@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,6 +16,18 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  // @Post('register')
+  // @ApiCreatedResponse({ type: UserEntity })
+  // register(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
+
+  @Post('login')
+  @ApiCreatedResponse({ type: UserEntity })
+  login(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.signIn(createUserDto.username, createUserDto.password);
+  }
+
   @Get()
   @ApiOkResponse({ type: [UserEntity] })
   findAll() {
@@ -24,7 +36,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseIntPipe) id: number) {
     const user = await this.usersService.findOne(id);
 
     if (!user) {
@@ -36,13 +48,13 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOkResponse({ type: UserEntity })
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(id);
   }
 }

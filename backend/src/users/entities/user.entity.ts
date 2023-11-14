@@ -3,13 +3,10 @@ import { ApiProperty } from "@nestjs/swagger";
 
 export class UserEntity implements User {
 	@ApiProperty()
-	id: string;
+	id: number;
 
 	@ApiProperty()
-	name: string;
-
-	@ApiProperty()
-	email: string;
+	oauthId: string;
 
 	@ApiProperty()
 	username: string;
@@ -18,7 +15,28 @@ export class UserEntity implements User {
 	password: string;
 
 	@ApiProperty()
-	level: number;
+	avatar: string;
+
+	@ApiProperty()
+	twoFactor: boolean;
+
+	@ApiProperty()
+	status: string;
+
+	@ApiProperty()
+	wins: number;
+
+	@ApiProperty()
+	losses: number;
+
+	@ApiProperty()
+	friends: string[];
+
+	@ApiProperty()
+	friendOf: string[];
+
+	@ApiProperty()
+	matches: string[];
 
 	@ApiProperty()
 	createdAt: Date;

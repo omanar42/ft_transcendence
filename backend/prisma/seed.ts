@@ -8,24 +8,40 @@ const prisma = new PrismaClient();
 async function main() {
 
 	const user1 = await prisma.user.upsert({
-		where: { email: 'alice@mail.com' },
+		where: { username: 'omanar' },
 		update: {},
 		create: {
-			name: 'Alice',
-			username: 'Alice',
-			email: 'alice@mail.com',
-			password: 'alice',
+			// id: faker.datatype.uuid(),
+			oauthId: 'hj4gjh123g5hgk2315jg',
+			username: 'omanar',
+			password: '123456',
+			// avatar: faker.image.avatar(),
+			twoFactor: false,
+			status: 'ACTIVE',
+			wins: 0,
+			losses: 0,
+			// friends: [],
+			// friendOf: [],
+			// matches: [],
 		}
 	});
 
 	const user2 = await prisma.user.upsert({
-		where: { email: 'bob@mail.com' },
+		where: { username: 'omanar2' },
 		update: {},
 		create: {
-			name: 'bob',
-			username: 'Bob',
-			email: 'bob@mail.com',
-			password: 'bob',
+			// id: faker.datatype.uuid(),
+			oauthId: 'jk5g1jh2g35jhg1kj5g115hkg',
+			username: 'omanar2',
+			password: '123456',
+			// avatar: faker.image.avatar(),
+			twoFactor: false,
+			status: 'ACTIVE',
+			wins: 0,
+			losses: 0,
+			// friends: [],
+			// friendOf: [],
+			// matches: [],
 		}
 	});
 
