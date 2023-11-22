@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -34,27 +34,27 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
+  @Get(':username')
   @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('id', ParseIntPipe) id: number) {
-    const user = await this.usersService.findOne(id);
+  async findOne(@Param('username') username: string) {
+    const user = await this.usersService.findOne(username);
 
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException(`User #${username} not found`);
     }
 
     return user;
   }
 
-  @Patch(':id')
+  @Patch(':username')
   @ApiOkResponse({ type: UserEntity })
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
+  update(@Param('username') username: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(username, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete(':username')
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.remove(id);
+  remove(@Param('username') username: string) {
+    return this.usersService.remove(username);
   }
 }
