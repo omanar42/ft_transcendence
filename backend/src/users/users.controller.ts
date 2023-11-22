@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
 
@@ -12,20 +10,8 @@ export class UsersController {
 
   @Post()
   @ApiCreatedResponse({ type: UserEntity })
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
-
-  // @Post('register')
-  // @ApiCreatedResponse({ type: UserEntity })
-  // register(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
-
-  @Post('login')
-  @ApiCreatedResponse({ type: UserEntity })
-  login(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.signIn(createUserDto.username, createUserDto.password);
+  create(@Body() user: UserEntity) {
+    return this.usersService.create(user);
   }
 
   @Get()
@@ -34,27 +20,33 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':username')
+  @Get(':id')
   @ApiOkResponse({ type: UserEntity })
-  async findOne(@Param('username') username: string) {
-    const user = await this.usersService.findOne(username);
-
+  async findOneById(@Param('id') id: string) {
+    const user = await this.usersService.findOneById(id);
     if (!user) {
-      throw new NotFoundException(`User #${username} not found`);
+      throw new NotFoundException(`User '${id}' not found`);
     }
-
     return user;
   }
 
-  @Patch(':username')
+  @Patch(':id')
   @ApiOkResponse({ type: UserEntity })
-  update(@Param('username') username: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(username, updateUserDto);
+  async update(@Param('id') id: string, @Body() updateUser: UserEntity) {
+    const user = await this.usersService.findOneById(id);
+    if (!user) {
+      throw new NotFoundException(`User '${id}' not found`);
+    }
+    return this.usersService.update(id, updateUser);
   }
 
-  @Delete(':username')
+  @Delete(':id')
   @ApiOkResponse({ type: UserEntity })
-  remove(@Param('username') username: string) {
-    return this.usersService.remove(username);
+  async remove(@Param('id') id: string) {
+    const user = await this.usersService.findOneById(id);
+    if (!user) {
+      throw new NotFoundException(`User '${id}' not found`);
+    }
+    return this.usersService.remove(id);
   }
 }

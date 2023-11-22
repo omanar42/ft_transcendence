@@ -14,10 +14,12 @@ model User {
   id        Int       @id @default(autoincrement())
   oauthId   String    @unique
   username  String    @unique
-  password  String
+  fullname  String
+  email     String    @unique
   avatar    String?
+  provider  String
   twoFactor Boolean   @default(false)
-  status    String    @default("offline")
+  status    String    @default("Offline")
   wins      Int       @default(0)
   losses    Int       @default(0)
   // friends   User[]    @relation("Friends")

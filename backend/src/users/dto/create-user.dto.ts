@@ -1,52 +1,43 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class CreateUserDto {
-	@ApiProperty()
 	readonly id: number;
 
-	@ApiProperty()
 	readonly oauthId: string;
 
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(3)
-	@ApiProperty()
 	readonly username: string;
 
 	@IsString()
 	@IsNotEmpty()
-	@MinLength(3)
-	@ApiProperty()
-	readonly password: string;
+	readonly fullname: string;
 
-	@ApiProperty()
+	@IsString()
+	@IsNotEmpty()
+	@IsEmail()
+	readonly email: string;
+
 	readonly avatar: string;
 
-	@ApiProperty()
+	readonly provider: string;
+
 	readonly twoFactor: boolean;
 
-	@ApiProperty()
 	readonly status: string;
 
-	@ApiProperty()
 	readonly wins: number;
 
-	@ApiProperty()
 	readonly losses: number;
 
-	@ApiProperty()
-	readonly friends: string[];
+	// readonly friends: string[];
 
-	@ApiProperty()
-	readonly friendOf: string[];
+	// readonly friendOf: string[];
 
-	@ApiProperty()
-	readonly matches: string[];
+	// readonly matches: string[];
 
-	@ApiProperty()
 	readonly createdAt: Date;
 
-	@ApiProperty()
 	readonly updatedAt: Date;
 }
