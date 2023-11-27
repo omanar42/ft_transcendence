@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, UseGuards, Req, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Response } from 'express';
 
 @Controller('users')
 @ApiTags('users')
@@ -14,12 +16,14 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiOkResponse({ type: [UserEntity] })
+  @ApiOkResponse({ type: UserEntity, isArray: true })
   findAll() {
     return this.usersService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOkResponse({ type: UserEntity })
   async findOneById(@Param('id') id: string) {
@@ -30,6 +34,7 @@ export class UsersController {
     return user;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOkResponse({ type: UserEntity })
   async update(@Param('id') id: string, @Body() updateUser: UserEntity) {
@@ -40,8 +45,9 @@ export class UsersController {
     return this.usersService.update(id, updateUser);
   }
 
-  @Delete(':id')
   @ApiOkResponse({ type: UserEntity })
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
   async remove(@Param('id') id: string) {
     const user = await this.usersService.findOneById(id);
     if (!user) {
@@ -49,4 +55,15 @@ export class UsersController {
     }
     return this.usersService.remove(id);
   }
+
+  @ApiOperation({
+		summary: 'Logs out the user.',
+	})
+	@UseGuards(JwtAuthGuard)
+	@Delete('logout')
+	async logout(@Req() req, @Res() res: Response) {
+    const user = req.user;
+		res.clearCookie('access_token');
+    return this.usersService.logout(user) 
+	}
 }

@@ -4,9 +4,6 @@ import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class UserEntity implements User {
 	@ApiProperty()
-	readonly id: number;
-
-	@ApiProperty()
 	readonly oauthId: string;
 
 	@IsString()
@@ -44,14 +41,14 @@ export class UserEntity implements User {
 	@ApiProperty()
 	readonly losses: number;
 
-	// @ApiProperty()
-	// readonly friends: string[];
+	// @ApiProperty({ required: false, nullable: true })
+	// readonly friends: string[] | null;
 
-	// @ApiProperty()
-	// readonly friendOf: string[];
+	// @ApiProperty({ required: false, nullable: true })
+	// readonly friendOf: string[] | null;
 
-	// @ApiProperty()
-	// readonly matches: string[];
+	// @ApiProperty({ required: false, nullable: true })
+	// readonly matches: string[] | null;
 
 	@ApiProperty()
 	readonly createdAt: Date;

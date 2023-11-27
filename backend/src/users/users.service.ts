@@ -1,28 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from '@prisma/client';
-import { UserEntity } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(user: UserEntity) {
+  async create(user: CreateUserDto) {
     return await this.prisma.user.create({ data: user });
   }
 
   async findAll() {
     return await this.prisma.user.findMany();
-  }
-
-  async findOne(user : User) {
-    const found = await this.prisma.user.findUnique({
-      where: { oauthId: user.oauthId },
-    });
-    if (!found) {
-      return false;
-    }
-    return true;
   }
 
   async findOneById(id: string) {
@@ -31,7 +22,13 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUser: UserEntity) {
+  async findOneByEmail(email: string) {
+    return await this.prisma.user.findUnique({
+      where: { email: email },
+    });
+  }
+
+  async update(id: string, updateUser: UpdateUserDto) {
     return await this.prisma.user.update({
       where: { oauthId: id },
       data: updateUser,
@@ -43,4 +40,28 @@ export class UsersService {
       where: { oauthId: id },
     });
   }
+
+  async logout(user: User) {
+		const userFound = await this.findOneById(user.oauthId);
+		userFound.status = 'Offline';
+		try {
+			this.update(userFound.oauthId, userFound);
+		} catch (e) {
+			console.log(e)
+			throw new InternalServerErrorException()
+		}
+	}
+
+  // async addFriend(id: string, friendId: string) {
+  //   return await this.prisma.user.update({
+  //     where: { oauthId: id },
+  //     data: {
+  //       friends: {
+  //         connect: {
+  //           oauthId: friendId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
 }
