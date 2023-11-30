@@ -17,6 +17,7 @@ model User {
   email     String    @unique
   avatar    String?
   provider  String
+  hashedRt  String?
   twoFactor Boolean   @default(false)
   status    String    @default("Offline")
   wins      Int       @default(0)

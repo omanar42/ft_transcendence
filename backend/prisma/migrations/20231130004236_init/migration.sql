@@ -1,20 +1,18 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
     "oauthId" TEXT NOT NULL,
     "username" TEXT NOT NULL,
     "fullname" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "avatar" TEXT,
     "provider" TEXT NOT NULL,
+    "hashedRt" TEXT,
     "twoFactor" BOOLEAN NOT NULL DEFAULT false,
     "status" TEXT NOT NULL DEFAULT 'Offline',
     "wins" INTEGER NOT NULL DEFAULT 0,
     "losses" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    "updatedAt" TIMESTAMP(3) NOT NULL
 );
 
 -- CreateTable

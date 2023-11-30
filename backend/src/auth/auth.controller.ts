@@ -1,8 +1,7 @@
 import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { FortyTwoGuard } from './guards/FortyTwo.guard';
-import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { FortyTwoGuard, GoogleGuard, RtGuard } from './guards';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -22,18 +21,24 @@ export class AuthController {
 	@Get('42/callback')
 	@UseGuards(FortyTwoGuard)
 	async fortyTwoAuthCallback(@Req() req, @Res() res: Response) {
-		return this.authService.fortyTwoLogin(req, res);
+		return this.authService.login(req, res);
 	}
 
 	@Get('google')
-	@UseGuards(GoogleOauthGuard)
+	@UseGuards(GoogleGuard)
 	async googleAuth() {
 		return;
 	}
 
 	@Get('google/callback')
-  @UseGuards(GoogleOauthGuard)
+  @UseGuards(GoogleGuard)
   async googleAuthCallback(@Req() req, @Res() res: Response) {
-		return this.authService.googleLogin(req, res);
+		return this.authService.login(req, res);
   }
+
+	@UseGuards(RtGuard)
+	@Get('refresh')
+	async refresh(@Req() req, @Res() res: Response) {
+		return this.authService.refresh(req, res);
+	}
 }
