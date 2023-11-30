@@ -20,12 +20,12 @@ export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: process.env.AT_SECRET,
     });
   }
-  
+
 
   async validate(payload: JwtPayload) {
     const user = await this.usersService.findOneById(payload.sub);
 
-    if (!user) throw new UnauthorizedException('Please log in to continue');
+    if (!user) throw new UnauthorizedException();
 
     return payload;
   }

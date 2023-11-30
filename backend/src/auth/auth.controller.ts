@@ -1,17 +1,14 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, ForbiddenException, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FortyTwoGuard, GoogleGuard, RtGuard } from './guards';
+import { Response } from 'express';
+import { AtGuard, FortyTwoGuard, GoogleGuard, RtGuard } from './guards';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@ApiOperation({
-    summary:
-      "Redirects to the 42 OAuth2 provider's login page.",
-  })
 	@Get('42')
 	@UseGuards(FortyTwoGuard)
 	async fortyTwoAuth() {
@@ -35,6 +32,18 @@ export class AuthController {
   async googleAuthCallback(@Req() req, @Res() res: Response) {
 		return this.authService.login(req, res);
   }
+
+	@UseGuards(AtGuard)
+	@UseGuards(RtGuard)
+	@Get('logout')
+	async logout(@Req() req, @Res() res: Response) {
+    const user = req.user;
+    res.clearCookie('access_token');
+    res.clearCookie('refresh_token');
+    const ret = this.authService.logout(user.sub);
+    if (!ret) throw new ForbiddenException();
+    return res.json({message: "logout success"});
+	}
 
 	@UseGuards(RtGuard)
 	@Get('refresh')

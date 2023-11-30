@@ -8,7 +8,7 @@ CREATE TABLE "User" (
     "provider" TEXT NOT NULL,
     "hashedRt" TEXT,
     "twoFactor" BOOLEAN NOT NULL DEFAULT false,
-    "status" TEXT NOT NULL DEFAULT 'Offline',
+    "status" TEXT NOT NULL DEFAULT 'offline',
     "wins" INTEGER NOT NULL DEFAULT 0,
     "losses" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

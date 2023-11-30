@@ -19,7 +19,7 @@ model User {
   provider  String
   hashedRt  String?
   twoFactor Boolean   @default(false)
-  status    String    @default("Offline")
+  status    String    @default("offline")
   level     Int       @default(0)
   wins      Int       @default(0)
   losses    Int       @default(0)

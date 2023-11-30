@@ -12,10 +12,6 @@ export class UsersService {
     return await this.prisma.user.create({ data: user });
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany();
-  }
-
   async findOneById(id: string) {
     return await this.prisma.user.findUnique({
       where: { oauthId: id },
@@ -28,60 +24,20 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUser: UpdateUserDto) {
-    return await this.prisma.user.update({
-      where: { oauthId: id },
-      data: updateUser,
-    });
-  }
-
-  async updateRtHash(oauthId: string, rt: string) {
-    const saltOrRounds = 10;
-    const hash = await bcrypt.hash(rt, saltOrRounds);
-    await this.prisma.user.update({
-      where: {
-        oauthId: oauthId,
-      },
-      data: {
-        hashedRt: hash,
-      },
-    });
-  }
-
   async remove(id: string) {
     return await this.prisma.user.delete({
       where: { oauthId: id },
     });
   }
 
-  async logout(oauthId: string) {
-		await this.prisma.user.updateMany({
-      where: {
-        oauthId: oauthId,
-        hashedRt: {
-          not: null,
-        },
-      },
+  async setStatus(id: string, status: string) {
+    return await this.prisma.user.update({
+      where: { oauthId: id },
       data: {
-        hashedRt: null,
-        status: 'Offline',
+        status: status,
       },
     });
-    return true;
-	}
-
-  // async addFriend(id: string, friendId: string) {
-  //   return await this.prisma.user.update({
-  //     where: { oauthId: id },
-  //     data: {
-  //       friends: {
-  //         connect: {
-  //           oauthId: friendId,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
+  }
 
   async getInfo(user: any) {
 		const infos = await this.prisma.user.findUnique({
@@ -135,5 +91,17 @@ export class UsersService {
     return stats;
   }
 
-  
+  // async addFriend(id: string, friendId: string) {
+  //   return await this.prisma.user.update({
+  //     where: { oauthId: id },
+  //     data: {
+  //       friends: {
+  //         connect: {
+  //           oauthId: friendId,
+  //         },
+  //       },
+  //     },
+  //   });
+  // }
+
 }

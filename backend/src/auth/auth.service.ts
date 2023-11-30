@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, HttpStatus, Injectable, Intern
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { generateFromEmail } from 'unique-username-generator';
 import { JwtPayload } from './types';
 import * as bcrypt from 'bcrypt';
@@ -9,9 +10,23 @@ import * as bcrypt from 'bcrypt';
 @Injectable()
 export class AuthService {
 	constructor (
+    private prisma: PrismaService,
 		private readonly usersService: UsersService,
 		private readonly jwtService: JwtService
 	) {}
+
+  async updateRtHash(oauthId: string, rt: string) {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(rt, saltOrRounds);
+    await this.prisma.user.update({
+      where: {
+        oauthId: oauthId,
+      },
+      data: {
+        hashedRt: hash,
+      },
+    });
+  }
 
   async getTokens(oauthId: string, email: string) {
     const jwtPayload: JwtPayload = {
@@ -37,14 +52,16 @@ export class AuthService {
   }
 
   async refresh(req, res) {
-    const user = await this.usersService.findOneById(req.user.oauthId);
-    if (!user || !user.hashedRt) throw new ForbiddenException();
+    const user = req.user;
+    if (!user) throw new ForbiddenException();
+    const found = await this.usersService.findOneById(user.sub);
+    if (!found || !found.hashedRt) throw new ForbiddenException();
 
-    const isMatch = await bcrypt.compare(req.cookies.refresh_token, user.hashedRt);
+    const isMatch = await bcrypt.compare(req.cookies.refresh_token, found.hashedRt)
     if (!isMatch) throw new ForbiddenException();
 
-    const tokens = await this.getTokens(user.oauthId, user.email);
-    await this.usersService.updateRtHash(user.oauthId, tokens.refresh_token);
+    const tokens = await this.getTokens(found.oauthId, found.email);
+    await this.updateRtHash(found.oauthId, tokens.refresh_token);
 
     res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
     res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
@@ -75,11 +92,29 @@ export class AuthService {
       found = await this.registerUser(user);
 
     const tokens = await this.getTokens(found.oauthId, found.email);
-    await this.usersService.updateRtHash(found.oauthId, tokens.refresh_token);
+    await this.updateRtHash(found.oauthId, tokens.refresh_token);
 
     res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
     res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
 
-		return res.redirect('/');
+    this.usersService.setStatus(found.oauthId, 'online');
+		
+    return res.status(HttpStatus.OK).json(tokens);
+	}
+
+  async logout(oauthId: string) {
+		await this.prisma.user.updateMany({
+      where: {
+        oauthId: oauthId,
+        hashedRt: {
+          not: null,
+        },
+      },
+      data: {
+        hashedRt: null,
+        status: 'offline',
+      },
+    });
+    return true;
 	}
 }
