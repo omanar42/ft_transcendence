@@ -30,6 +30,9 @@ export class UserEntity implements User {
 	readonly provider: string;
 
 	@ApiProperty()
+	readonly hashedRt: string;
+
+	@ApiProperty()
 	readonly twoFactor: boolean;
 
 	@ApiProperty()

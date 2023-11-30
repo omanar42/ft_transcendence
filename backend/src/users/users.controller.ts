@@ -2,8 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, U
 import { UsersService } from './users.service';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserEntity } from './entities/user.entity';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Response } from 'express';
+import { AtGuard } from 'src/auth/guards';
 
 @Controller('users')
 @ApiTags('users')
@@ -16,14 +16,14 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AtGuard)
   @Get()
   @ApiOkResponse({ type: UserEntity, isArray: true })
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AtGuard)
   @Get(':id')
   @ApiOkResponse({ type: UserEntity })
   async findOneById(@Param('id') id: string) {
@@ -34,7 +34,7 @@ export class UsersController {
     return user;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AtGuard)
   @Patch(':id')
   @ApiOkResponse({ type: UserEntity })
   async update(@Param('id') id: string, @Body() updateUser: UserEntity) {
@@ -46,7 +46,7 @@ export class UsersController {
   }
 
   @ApiOkResponse({ type: UserEntity })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AtGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const user = await this.usersService.findOneById(id);
@@ -59,11 +59,12 @@ export class UsersController {
   @ApiOperation({
 		summary: 'Logs out the user.',
 	})
-	@UseGuards(JwtAuthGuard)
-	@Delete('logout')
+	@UseGuards(AtGuard)
+	@Post('logout')
 	async logout(@Req() req, @Res() res: Response) {
     const user = req.user;
 		res.clearCookie('access_token');
-    return this.usersService.logout(user) 
+    res.clearCookie('refresh_token');
+    return this.usersService.logout(user.oauthId) 
 	}
 }

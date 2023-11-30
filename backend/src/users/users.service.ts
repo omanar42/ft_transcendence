@@ -1,8 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -35,21 +35,39 @@ export class UsersService {
     });
   }
 
+  async updateRtHash(oauthId: string, rt: string) {
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(rt, saltOrRounds);
+    await this.prisma.user.update({
+      where: {
+        oauthId: oauthId,
+      },
+      data: {
+        hashedRt: hash,
+      },
+    });
+  }
+
   async remove(id: string) {
     return await this.prisma.user.delete({
       where: { oauthId: id },
     });
   }
 
-  async logout(user: User) {
-		const userFound = await this.findOneById(user.oauthId);
-		userFound.status = 'Offline';
-		try {
-			this.update(userFound.oauthId, userFound);
-		} catch (e) {
-			console.log(e)
-			throw new InternalServerErrorException()
-		}
+  async logout(oauthId: string) {
+		await this.prisma.user.updateMany({
+      where: {
+        oauthId: oauthId,
+        hashedRt: {
+          not: null,
+        },
+      },
+      data: {
+        hashedRt: null,
+        status: 'Offline',
+      },
+    });
+    return true;
 	}
 
   // async addFriend(id: string, friendId: string) {
