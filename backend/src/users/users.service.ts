@@ -82,4 +82,58 @@ export class UsersService {
   //     },
   //   });
   // }
+
+  async getInfo(user: any) {
+		const infos = await this.prisma.user.findUnique({
+			where: {
+				oauthId: user.sub,
+			},
+			select: {
+				avatar: true,
+				username: true,
+				email: true,
+        fullname: true,
+			},
+		});
+		return infos;
+	}
+
+  async getStatus(user: any) {
+		const status = await this.prisma.user.findUnique({
+			where: {
+				oauthId: user.sub,
+			},
+			select: {
+				status: true,
+			},
+		});
+		return status;
+	}
+
+  async getLevel(user: any) {
+    const level = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.sub,
+      },
+      select: {
+        level: true,
+      },
+    });
+    return level;
+  }
+
+  async getStats(user: any) {
+    const stats = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.sub,
+      },
+      select: {
+        wins: true,
+        losses: true,
+      },
+    });
+    return stats;
+  }
+
+  
 }

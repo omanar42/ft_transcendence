@@ -39,6 +39,9 @@ export class UserEntity implements User {
 	readonly status: string;
 
 	@ApiProperty()
+	readonly level: number;
+
+	@ApiProperty()
 	readonly wins: number;
 
 	@ApiProperty()

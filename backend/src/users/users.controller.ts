@@ -7,6 +7,7 @@ import { AtGuard } from 'src/auth/guards';
 
 @Controller('users')
 @ApiTags('users')
+@UseGuards(AtGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -16,25 +17,22 @@ export class UsersController {
     return this.usersService.create(user);
   }
 
-  @UseGuards(AtGuard)
   @Get()
   @ApiOkResponse({ type: UserEntity, isArray: true })
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseGuards(AtGuard)
-  @Get(':id')
-  @ApiOkResponse({ type: UserEntity })
-  async findOneById(@Param('id') id: string) {
-    const user = await this.usersService.findOneById(id);
-    if (!user) {
-      throw new NotFoundException(`User '${id}' not found`);
-    }
-    return user;
-  }
+  // @Get(':id')
+  // @ApiOkResponse({ type: UserEntity })
+  // async findOneById(@Param('id') id: string) {
+  //   const user = await this.usersService.findOneById(id);
+  //   if (!user) {
+  //     throw new NotFoundException(`User '${id}' not found`);
+  //   }
+  //   return user;
+  // }
 
-  @UseGuards(AtGuard)
   @Patch(':id')
   @ApiOkResponse({ type: UserEntity })
   async update(@Param('id') id: string, @Body() updateUser: UserEntity) {
@@ -46,7 +44,6 @@ export class UsersController {
   }
 
   @ApiOkResponse({ type: UserEntity })
-  @UseGuards(AtGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const user = await this.usersService.findOneById(id);
@@ -56,10 +53,7 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  @ApiOperation({
-		summary: 'Logs out the user.',
-	})
-	@UseGuards(AtGuard)
+	
 	@Post('logout')
 	async logout(@Req() req, @Res() res: Response) {
     const user = req.user;
@@ -67,4 +61,28 @@ export class UsersController {
     res.clearCookie('refresh_token');
     return this.usersService.logout(user.oauthId) 
 	}
+
+  @Get("info")
+  async getInfo(@Req() req, @Res() res) {
+    const infos = await this.usersService.getInfo(req.user);
+    res.json(infos);
+  }
+
+  @Get("status")
+  async getStatus(@Req() req)
+  {
+      return await this.usersService.getStatus(req.user);
+  }
+
+  @Get("level")
+  async getLevel(@Req() req)
+  {
+      return await this.usersService.getLevel(req.user);
+  }
+
+  @Get("stats")
+  async getStats(@Req() req)
+  {
+      return await this.usersService.getStats(req.user);
+  }
 }
