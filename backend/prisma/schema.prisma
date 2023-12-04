@@ -19,15 +19,39 @@ model User {
   provider  String
   hashedRt  String?
   twoFactor Boolean   @default(false)
+  twoFaSec  String?
   status    String    @default("offline")
   level     Int       @default(0)
   wins      Int       @default(0)
   losses    Int       @default(0)
-  // friends   User[]    @relation("Friends")
-  // friendOf  User[]    @relation("Friends")
+  friends   Friend[]  @relation("Friends")
   // matches   Match[]   @relation("Matches")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Friend {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation("Friends", fields: [userId], references: [oauthId])
+  userId    String
+  friendId  String
+  status    FriendStatus
+  actions   FriendActions[]
+}
+
+enum FriendStatus {
+  FRIENDS
+  PENDING
+  BLOCKED
+}
+
+enum FriendActions {
+  ADD
+  REMOVE
+  ACCEPT
+  REJECT
+  REVOKE
+  BLOCK
 }
 
 model Match {

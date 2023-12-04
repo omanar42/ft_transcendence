@@ -29,10 +29,21 @@ export class CreateUserDto {
 	readonly provider: string;
 
 	@ApiProperty()
+	readonly hashedRt: string;
+
+	@ApiProperty()
 	readonly twoFactor: boolean;
+
+	@IsString()
+	@IsNotEmpty()
+	@ApiProperty()
+	readonly twoFaSec: string;
 
 	@ApiProperty()
 	readonly status: string;
+
+	@ApiProperty()
+	readonly level: number;
 
 	@ApiProperty()
 	readonly wins: number;
@@ -40,14 +51,11 @@ export class CreateUserDto {
 	@ApiProperty()
 	readonly losses: number;
 
-	// @ApiProperty()
-	// readonly friends: string[];
+	// @ApiProperty({ required: false, nullable: true })
+	// readonly friends: string[] | null;
 
-	// @ApiProperty()
-	// readonly friendOf: string[];
-
-	// @ApiProperty()
-	// readonly matches: string[];
+	// @ApiProperty({ required: false, nullable: true })
+	// readonly matches: string[] | null;
 
 	@ApiProperty()
 	readonly createdAt: Date;

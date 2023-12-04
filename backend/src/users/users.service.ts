@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { FriendActions, FriendStatus } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,12 @@ export class UsersService {
   async findOneById(id: string) {
     return await this.prisma.user.findUnique({
       where: { oauthId: id },
+    });
+  }
+
+  async findOneByUsername(username: string) {
+    return await this.prisma.user.findUnique({
+      where: { username: username },
     });
   }
 
@@ -91,17 +98,83 @@ export class UsersService {
     return stats;
   }
 
-  // async addFriend(id: string, friendId: string) {
-  //   return await this.prisma.user.update({
-  //     where: { oauthId: id },
-  //     data: {
-  //       friends: {
-  //         connect: {
-  //           oauthId: friendId,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
+  async updateFriends(userId: string, friendId: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneById(friendId);
+    if (!user || !friend) {
+      return false;
+    }
 
+    const friends = await this.prisma.friend.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: userId,
+          },
+        },
+        friendId: friendId,
+        status: FriendStatus["PENDING"],
+        actions: [FriendActions['REVOKE']],
+      },
+    });
+
+    await this.prisma.user.update({
+      where: {
+        oauthId: userId,
+      },
+      data: {
+        friends: {
+          connect: {
+            id: friends.id,
+          },
+        },
+      },
+    });
+    return true;
+  }
+
+  async addFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return false;
+    }
+
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (existingFriend) {
+      return false;
+    }
+
+    await this.updateFriends(user.oauthId, friend.oauthId);
+    return true;
+  }
+
+  async removeFriend(userId: string, friendUser: string) {
+
+  }
+
+  async acceptFriend(userId: string, friendUser: string) {
+
+  }
+
+  async rejectFriend(userId: string, friendUser: string) {
+
+  }
+
+  async revokeFriend(userId: string, friendUser: string) {
+
+  }
+
+  async blockFriend(userId: string, friendUser: string) {
+
+  }
 }

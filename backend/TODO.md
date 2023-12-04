@@ -6,12 +6,19 @@ Project Description
 
 ### Todo
 
-- [ ] Endpoints  
+- [ ] Uploading files  
+- [ ] Two-Factor Auth  
+- [ ] Block Friend  
+- [ ] Remove Friend  
+- [ ] Add Friend  
 
 ### In Progress
 
-- [ ] JWT  
+- [ ] Friends Database  
+- [ ] Endpoints  
 
 ### Done ✓
 
+- [x] refresh tokens  
+- [x] JWT  
 

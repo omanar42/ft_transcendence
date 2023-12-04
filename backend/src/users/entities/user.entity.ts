@@ -35,6 +35,11 @@ export class UserEntity implements User {
 	@ApiProperty()
 	readonly twoFactor: boolean;
 
+	@IsString()
+	@IsNotEmpty()
+	@ApiProperty()
+	readonly twoFaSec: string;
+
 	@ApiProperty()
 	readonly status: string;
 
@@ -49,9 +54,6 @@ export class UserEntity implements User {
 
 	// @ApiProperty({ required: false, nullable: true })
 	// readonly friends: string[] | null;
-
-	// @ApiProperty({ required: false, nullable: true })
-	// readonly friendOf: string[] | null;
 
 	// @ApiProperty({ required: false, nullable: true })
 	// readonly matches: string[] | null;

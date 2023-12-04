@@ -1,6 +1,6 @@
-import { Controller, Get, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Res, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AtGuard } from 'src/auth/guards';
 
@@ -33,4 +33,101 @@ export class UsersController {
     const stats = await this.usersService.getStats(req.user);
     return res.json(stats);
   }
+
+  @Post("add")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async addFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.addFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("remove")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async removeFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.removeFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("accept")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async acceptFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.acceptFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("reject")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async rejectFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.rejectFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("revoke")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async revokeFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.revokeFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("block")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async blockFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.blockFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
 }
