@@ -98,46 +98,23 @@ export class UsersService {
     return stats;
   }
 
-  async updateFriends(userId: string, friendId: string) {
-    const user = await this.findOneById(userId);
-    const friend = await this.findOneById(friendId);
-    if (!user || !friend) {
-      return false;
-    }
-
-    const friends = await this.prisma.friend.create({
-      data: {
-        user: {
-          connect: {
-            oauthId: userId,
-          },
-        },
-        friendId: friendId,
-        status: FriendStatus["PENDING"],
-        actions: [FriendActions['REVOKE']],
-      },
-    });
-
-    await this.prisma.user.update({
+  async getFriends(user: any) {
+    const friends = await this.prisma.user.findUnique({
       where: {
-        oauthId: userId,
+        oauthId: user.oauthId,
       },
-      data: {
-        friends: {
-          connect: {
-            id: friends.id,
-          },
-        },
+      select: {
+        friends: true,
       },
     });
-    return true;
+    return friends;
   }
 
   async addFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return false;
+      return "User not found";
     }
 
     const friends = await this.prisma.user.findUnique({
@@ -151,30 +128,258 @@ export class UsersService {
 
     const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
     if (existingFriend) {
-      return false;
+      return "Already friends";
     }
 
-    await this.updateFriends(user.oauthId, friend.oauthId);
-    return true;
+    await this.prisma.friend.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: user.oauthId
+          },
+        },
+        friendId: friend.oauthId,
+        status: FriendStatus["PENDING"],
+        actions: [FriendActions['REVOKE']],
+      },
+    });
+
+    await this.prisma.friend.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: friend.oauthId
+          },
+        },
+        friendId: user.oauthId,
+        status: FriendStatus["PENDING"],
+        actions: [FriendActions['ACCEPT'], FriendActions['REJECT']],
+      },
+    });
+    return "Friend request sent";
   }
 
   async removeFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return "User not found";
+    }
 
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (!existingFriend) {
+      return "Not friends";
+    }
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: user.oauthId
+        },
+        friendId: friend.oauthId,
+      },
+    });
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: friend.oauthId
+        },
+        friendId: user.oauthId,
+      },
+    });
+
+    return "Friend removed";
   }
 
   async acceptFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return "User not found";
+    }
 
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (!existingFriend) {
+      return "No friend request to accept";
+    }
+
+    await this.prisma.friend.updateMany({
+      where: {
+        user: {
+          oauthId: user.oauthId
+        },
+        friendId: friend.oauthId,
+      },
+      data: {
+        status: FriendStatus["FRIENDS"],
+        actions: [FriendActions['REMOVE'], FriendActions['BLOCK']],
+      },
+    });
+
+    await this.prisma.friend.updateMany({
+      where: {
+        user: {
+          oauthId: friend.oauthId
+        },
+        friendId: user.oauthId,
+      },
+      data: {
+        status: FriendStatus["FRIENDS"],
+        actions: [FriendActions['REMOVE'], FriendActions['BLOCK']],
+      },
+    });
+
+    return "Friend accepted";
   }
 
   async rejectFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return "User not found";
+    }
 
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (!existingFriend) {
+      return "No friend request to reject";
+    }
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: user.oauthId
+        },
+        friendId: friend.oauthId,
+      },
+    });
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: friend.oauthId
+        },
+        friendId: user.oauthId,
+      },
+    });
+
+    return "Friend rejected";
   }
 
   async revokeFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return "User not found";
+    }
 
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (!existingFriend) {
+      return "No friend request to revoke";
+    }
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: user.oauthId
+        },
+        friendId: friend.oauthId,
+      },
+    });
+
+    await this.prisma.friend.deleteMany({
+      where: {
+        user: {
+          oauthId: friend.oauthId
+        },
+        friendId: user.oauthId,
+      },
+    });
+
+    return "Friend request revoked";
   }
 
   async blockFriend(userId: string, friendUser: string) {
+    const user = await this.findOneById(userId);
+    const friend = await this.findOneByUsername(friendUser);
+    if (!user || !friend) {
+      return "User not found";
+    }
 
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: user.oauthId
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const existingFriend = friends.friends.find(f => f.friendId === friend.oauthId);
+    if (!existingFriend) {
+      return "Not friends";
+    }
+
+    await this.prisma.friend.updateMany({
+      where: {
+        user: {
+          oauthId: user.oauthId
+        },
+        friendId: friend.oauthId,
+      },
+      data: {
+        status: FriendStatus["BLOCKED"],
+      },
+    });
+
+    await this.prisma.friend.updateMany({
+      where: {
+        user: {
+          oauthId: friend.oauthId
+        },
+        friendId: user.oauthId,
+      },
+      data: {
+        status: FriendStatus["BLOCKED"],
+      },
+    });
+
+    return "Friend blocked";
   }
 }

@@ -24,7 +24,7 @@ model User {
   level     Int       @default(0)
   wins      Int       @default(0)
   losses    Int       @default(0)
-  friends   Friend[]  @relation("Friends")
+  friends   Friend[]
   // matches   Match[]   @relation("Matches")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -32,7 +32,7 @@ model User {
 
 model Friend {
   id        Int       @id @default(autoincrement())
-  user      User      @relation("Friends", fields: [userId], references: [oauthId])
+  user      User      @relation(fields: [userId], references: [oauthId])
   userId    String
   friendId  String
   status    FriendStatus
