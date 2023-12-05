@@ -20,11 +20,9 @@ model User {
   hashedRt  String?
   twoFactor Boolean   @default(false)
   twoFaSec  String?
-  status    String    @default("offline")
-  level     Int       @default(0)
-  wins      Int       @default(0)
-  losses    Int       @default(0)
+  status    Status    @default(OFFLINE)
   friends   Friend[]
+  stats     Stats?
   // matches   Match[]   @relation("Matches")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -37,6 +35,53 @@ model Friend {
   friendId  String
   status    FriendStatus
   actions   FriendActions[]
+}
+
+model Stats {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [userId], references: [oauthId])
+  userId        String    @unique
+  wins          Int       @default(0)
+  losses        Int       @default(0)
+  level         Int       @default(0)
+  achievements  Achievement[]
+}
+
+model Achievement {
+  id          Int       @id @default(autoincrement())
+  name        AchievementName
+  description String
+  icon        String
+  stats       Stats     @relation(fields: [statsId], references: [id])
+  statsId     Int
+}
+
+enum AchievementName {
+  LEVEL_10
+  LEVEL_20
+  LEVEL_30
+  LEVEL_40
+  LEVEL_50
+  LEVEL_60
+  LEVEL_70
+  LEVEL_80
+  LEVEL_90
+  LEVEL_100
+  WIN_5_GAMES
+  WIN_10_GAMES
+  WIN_20_GAMES
+  WIN_50_GAMES
+  WIN_100_GAMES
+  FIRST_WIN
+  FIRST_LOSS
+  FIRST_FRIEND
+  Perfect
+}
+
+enum Status {
+  ONLINE
+  OFFLINE
+  INGAME
 }
 
 enum FriendStatus {
