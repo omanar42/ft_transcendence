@@ -101,7 +101,7 @@ export class UsersService {
   async getFriends(user: any) {
     const friends = await this.prisma.user.findUnique({
       where: {
-        oauthId: user.oauthId,
+        oauthId: user.sub,
       },
       select: {
         friends: true,

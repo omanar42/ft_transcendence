@@ -34,6 +34,12 @@ export class UsersController {
     return res.json(stats);
   }
 
+  @Get("friends")
+  async getFriends(@Req() req, @Res() res: Response) {
+    const friends = await this.usersService.getFriends(req.user);
+    return res.json(friends);
+  }
+
   @Post("add")
   @ApiBody({
     schema: {
