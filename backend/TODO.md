@@ -8,8 +8,8 @@ Project Description
 
 - [ ] Match History  
 - [ ] Update Username  
-- [ ] server-side validation for forms and any user
-input  
+- [ ] server-side validation for forms and any user  
+- input  
 - [ ] SQL injections  
 - [ ] Update profile  
 - [ ] Settings  
@@ -18,6 +18,7 @@ input
 
 ### In Progress
 
+- [ ] Profile Endpoints  
 - [ ] status (online, offline, in a game, and so forth)  
 - [ ] Stats (such as: wins and losses, ladder level, achievements, and so forth)  
 

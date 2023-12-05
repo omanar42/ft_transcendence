@@ -23,9 +23,18 @@ model User {
   status    Status    @default(OFFLINE)
   friends   Friend[]
   stats     Stats?
-  // matches   Match[]   @relation("Matches")
+  matches   Match[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Match {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [oauthId])
+  userId    String
+  win       Boolean
+  enemyId   String
+  createdAt DateTime  @default(now())
 }
 
 model Friend {
@@ -99,10 +108,3 @@ enum FriendActions {
   BLOCK
 }
 
-model Match {
-  id        Int       @id @default(autoincrement())
-  result    String
-  // players   User[]    @relation("Matches")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
