@@ -46,10 +46,10 @@ export class UsersService {
     });
   }
 
-  async getInfo(user: any) {
+  async getInfo(id: string) {
 		const infos = await this.prisma.user.findUnique({
 			where: {
-				oauthId: user.sub,
+				oauthId: id,
 			},
 			select: {
 				avatar: true,
@@ -61,10 +61,10 @@ export class UsersService {
 		return infos;
 	}
 
-  async getStatus(user: any) {
+  async getStatus(id: string) {
 		const status = await this.prisma.user.findUnique({
 			where: {
-				oauthId: user.sub,
+				oauthId: id,
 			},
 			select: {
 				status: true,
@@ -73,10 +73,10 @@ export class UsersService {
 		return status;
 	}
 
-  async getLevel(user: any) {
+  async getLevel(id: string) {
     const level = await this.prisma.user.findUnique({
       where: {
-        oauthId: user.sub,
+        oauthId: id,
       },
       select: {
         level: true,
@@ -85,10 +85,10 @@ export class UsersService {
     return level;
   }
 
-  async getStats(user: any) {
+  async getStats(id: string) {
     const stats = await this.prisma.user.findUnique({
       where: {
-        oauthId: user.sub,
+        oauthId: id,
       },
       select: {
         wins: true,
@@ -98,16 +98,30 @@ export class UsersService {
     return stats;
   }
 
-  async getFriends(user: any) {
+  async getFriends(id: string) {
     const friends = await this.prisma.user.findUnique({
       where: {
-        oauthId: user.sub,
+        oauthId: id,
       },
       select: {
         friends: true,
       },
     });
     return friends;
+  }
+
+  async getOneFriend(id: string, friendId: string) {
+    const friends = await this.prisma.user.findUnique({
+      where: {
+        oauthId: id,
+      },
+      select: {
+        friends: true,
+      },
+    });
+
+    const friend = friends.friends.find(f => f.friendId === friendId);
+    return friend;
   }
 
   async addFriend(userId: string, friendUser: string) {

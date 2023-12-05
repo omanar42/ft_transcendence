@@ -12,31 +12,31 @@ export class UsersController {
 
   @Get("info")
   async getInfo(@Req() req, @Res() res: Response) {
-    const infos = await this.usersService.getInfo(req.user);
+    const infos = await this.usersService.getInfo(req.user.sub);
     return res.json(infos);
   }
 
   @Get("status")
   async getStatus(@Req() req, @Res() res: Response) {
-    const status = await this.usersService.getStatus(req.user);
+    const status = await this.usersService.getStatus(req.user.sub);
     return res.json(status);
   }
 
   @Get("level")
   async getLevel(@Req() req, @Res() res: Response) {
-    const level = await this.usersService.getLevel(req.user);
+    const level = await this.usersService.getLevel(req.user.sub);
     return res.json(level);
   }
 
   @Get("stats")
   async getStats(@Req() req, @Res() res: Response) {
-    const stats = await this.usersService.getStats(req.user);
+    const stats = await this.usersService.getStats(req.user.sub);
     return res.json(stats);
   }
 
   @Get("friends")
   async getFriends(@Req() req, @Res() res: Response) {
-    const friends = await this.usersService.getFriends(req.user);
+    const friends = await this.usersService.getFriends(req.user.sub);
     return res.json(friends);
   }
 

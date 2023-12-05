@@ -2,15 +2,17 @@ import { Controller, Get, Param, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { ProfileService } from './profile.service';
 import { AtGuard } from 'src/auth/guards';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-@UseGuards(AtGuard)
 @Controller('profile')
+@ApiTags('profile')
+@UseGuards(AtGuard)
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get(':username')
-  async getStatuses(@Req() req, @Res() res: Response, @Param('username') username : string){
-    const statuses = await this.profileService.getStatuses(req.user, username);
+  async getStatuses(@Req() req, @Res() res: Response, @Param('username') profile : string){
+    const statuses = await this.profileService.getStatuses(req.user, profile);
     if (!statuses)
       res.status(404).json({message: 'User profile not found'});
     else
