@@ -1,6 +1,6 @@
 import { Friend, Match, Stats, Status, User } from "@prisma/client";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
 export class UserEntity implements User {
 	@ApiProperty()
@@ -9,6 +9,7 @@ export class UserEntity implements User {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(3)
+	@MaxLength(20)
 	@ApiProperty()
 	readonly username: string;
 

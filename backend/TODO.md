@@ -6,15 +6,13 @@ Project Description
 
 ### Todo
 
-- [ ] Match History  
-- [ ] Update Username  
-- [ ] server-side validation for forms and any user  
-- input  
-- [ ] SQL injections  
+- [ ] upload an avatar  
 - [ ] Update profile  
 - [ ] Settings  
-- [ ] upload an avatar  
 - [ ] Two-Factor Auth  
+- [ ] Match History  
+- [ ] server-side validation for forms and any user  
+- [ ] SQL injections  
 
 ### In Progress
 
@@ -24,6 +22,7 @@ Project Description
 
 ### Done ✓
 
+- [x] Update Username  
 - [x] Remove Friend  
 - [x] Add Friend  
 - [x] Block Friend  

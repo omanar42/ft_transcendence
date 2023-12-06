@@ -5,22 +5,26 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class SettingService {
 	constructor(private prisma: PrismaService) {}
 
-	async updateUsername(newUsername: string, user: any) {
+	async updateUsername(id: string, username: string) {
+		if (!username)
+			return	"Username cannot be empty";
+		console.log(id, username);
 		const exist = await this.prisma.user.findUnique({
 			where: {
-				username: newUsername,
+				username: username,
 			},
 		});
-		if (exist) throw new ConflictException('Username already exist');
+		if (exist) return "Username already taken";
+	
 		await this.prisma.user.update({
 			where: {
-				oauthId: user.oauthId,
+				oauthId: id,
 			},
 			data: {
-				username: newUsername,
+				username: username,
 			},
 		});
-		return true;
+		return "Username updated";
 	}
 
 	async updateAvatar(file: any, user: any) {
