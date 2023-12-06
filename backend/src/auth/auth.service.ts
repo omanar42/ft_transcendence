@@ -1,11 +1,12 @@
 import { BadRequestException, ForbiddenException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
+import { Status, User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateFromEmail } from 'unique-username-generator';
 import { JwtPayload } from './types';
 import * as bcrypt from 'bcrypt';
+import { stat } from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -69,11 +70,25 @@ export class AuthService {
     return res.status(HttpStatus.OK).json(tokens);
   }
 
+  async createDefaultStats(user: User) {
+    const defaultStats = await this.prisma.stats.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: user.oauthId
+          },
+        },
+      },
+    });
+    return defaultStats;
+  }
+
   async registerUser(user: User) {
     try {
 			const username = generateFromEmail(user.email, 5);
 			user.username = username;
       const newUser = await this.usersService.create(user);
+      await this.createDefaultStats(newUser);
       return newUser;
     } catch {
       throw new InternalServerErrorException();
@@ -97,7 +112,7 @@ export class AuthService {
     res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
     res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
 
-    this.usersService.setStatus(found.oauthId, 'online');
+    this.usersService.setStatus(found.oauthId, Status["ONLINE"]);
 		
     return res.status(HttpStatus.OK).json(tokens);
 	}
@@ -112,7 +127,7 @@ export class AuthService {
       },
       data: {
         hashedRt: null,
-        status: 'offline',
+        status: Status["OFFLINE"],
       },
     });
     return true;

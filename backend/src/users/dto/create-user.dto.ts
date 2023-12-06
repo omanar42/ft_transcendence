@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Friend, Match, Stats, Status } from "@prisma/client";
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class CreateUserDto {
@@ -40,22 +41,16 @@ export class CreateUserDto {
 	readonly twoFaSec: string;
 
 	@ApiProperty()
-	readonly status: string;
+	readonly status: Status;
 
 	@ApiProperty()
-	readonly level: number;
-
+	readonly friends: Friend[];
+	
 	@ApiProperty()
-	readonly wins: number;
-
+	readonly stats: Stats[];
+	
 	@ApiProperty()
-	readonly losses: number;
-
-	// @ApiProperty({ required: false, nullable: true })
-	// readonly friends: string[] | null;
-
-	// @ApiProperty({ required: false, nullable: true })
-	// readonly matches: string[] | null;
+	readonly matches: Match[];
 
 	@ApiProperty()
 	readonly createdAt: Date;

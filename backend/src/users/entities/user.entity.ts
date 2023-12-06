@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Friend, Match, Stats, Status, User } from "@prisma/client";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
 
@@ -41,22 +41,16 @@ export class UserEntity implements User {
 	readonly twoFaSec: string;
 
 	@ApiProperty()
-	readonly status: string;
+	readonly status: Status;
 
 	@ApiProperty()
-	readonly level: number;
-
+	readonly friends: Friend[];
+	
 	@ApiProperty()
-	readonly wins: number;
-
+	readonly stats: Stats[];
+	
 	@ApiProperty()
-	readonly losses: number;
-
-	// @ApiProperty({ required: false, nullable: true })
-	// readonly friends: string[] | null;
-
-	// @ApiProperty({ required: false, nullable: true })
-	// readonly matches: string[] | null;
+	readonly matches: Match[];
 
 	@ApiProperty()
 	readonly createdAt: Date;

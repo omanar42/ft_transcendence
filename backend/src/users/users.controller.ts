@@ -16,28 +16,40 @@ export class UsersController {
     return res.json(infos);
   }
 
-  @Get("status")
-  async getStatus(@Req() req, @Res() res: Response) {
-    const status = await this.usersService.getStatus(req.user.sub);
-    return res.json(status);
-  }
-
-  @Get("level")
-  async getLevel(@Req() req, @Res() res: Response) {
-    const level = await this.usersService.getLevel(req.user.sub);
-    return res.json(level);
-  }
-
   @Get("stats")
   async getStats(@Req() req, @Res() res: Response) {
     const stats = await this.usersService.getStats(req.user.sub);
     return res.json(stats);
   }
 
+  @Get("allFriends")
+  async getAllFriends(@Req() req, @Res() res: Response) {
+    const friends = await this.usersService.getAllFriends(req.user.sub);
+    return res.json(friends);
+  }
+
   @Get("friends")
   async getFriends(@Req() req, @Res() res: Response) {
     const friends = await this.usersService.getFriends(req.user.sub);
     return res.json(friends);
+  }
+
+  @Get("requests")
+  async getRequests(@Req() req, @Res() res: Response) {
+    const requests = await this.usersService.getRequests(req.user.sub);
+    return res.json(requests);
+  }
+
+  @Get("invitations")
+  async getInvitations(@Req() req, @Res() res: Response) {
+    const invitations = await this.usersService.getInvitations(req.user.sub);
+    return res.json(invitations);
+  }
+
+  @Get("blocked")
+  async getBlocked(@Req() req, @Res() res: Response) {
+    const blocks = await this.usersService.getBlocked(req.user.sub);
+    return res.json(blocks);
   }
 
   @Post("add")
@@ -133,6 +145,22 @@ export class UsersController {
   })
   async blockFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
     const message = await this.usersService.blockFriend(req.user.sub, friendUser);
+    return res.json(message);
+  }
+
+  @Post("unblock")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        friendUser: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async unblockFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+    const message = await this.usersService.unblockFriend(req.user.sub, friendUser);
     return res.json(message);
   }
 

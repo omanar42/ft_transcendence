@@ -106,5 +106,6 @@ enum FriendActions {
   REJECT
   REVOKE
   BLOCK
+  UNBLOCK
 }
 

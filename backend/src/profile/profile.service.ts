@@ -5,15 +5,7 @@ import { UsersService } from 'src/users/users.service';
 export class ProfileService {
 	constructor(private readonly usersService: UsersService) {}
 
-	async getProfile(user: any, username: string) {
-		const requester = await this.usersService.findOneById(user.sub);
-		const requested = await this.usersService.findOneByUsername(username);
-		if (!requester || !requested) return null;
-
-		return await this.usersService.getInfo(requested.oauthId);
-	}
-
-	async getStatuses(user: any, username: string) {
+	async getRelations(user: any, username: string) {
 		const requester = await this.usersService.findOneById(user.sub);
 		const requested = await this.usersService.findOneByUsername(username);
 		if (!requester || !requested) return null;
@@ -40,5 +32,26 @@ export class ProfileService {
 			"status": friend.status,
 			"actions": friend.actions,
 		};
+	}
+
+	async getProfile(username: string) {
+		const requested = await this.usersService.findOneByUsername(username);
+		if (!requested) return null;
+
+		return await this.usersService.getInfo(requested.oauthId);
+	}
+
+	async getStats(username: string) {
+		const requested = await this.usersService.findOneByUsername(username);
+		if (!requested) return null;
+
+		return await this.usersService.getStats(requested.oauthId);
+	}
+
+	async getFriends(username: string) {
+		const requested = await this.usersService.findOneByUsername(username);
+		if (!requested) return null;
+
+		return await this.usersService.getFriends(requested.oauthId);
 	}
 }
