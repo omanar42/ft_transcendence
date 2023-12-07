@@ -40,6 +40,9 @@ export class SettingController {
         return callback(null, fileName);
       },
     }),
+    limits: {
+      fileSize: 1024 * 1024 * 10,
+    },
     fileFilter: (req, file, callback) => {
       if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
         return callback(null, false);
