@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Req, Res, Post, Body } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Res, Post, Body, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -50,6 +50,11 @@ export class UsersController {
   async getBlocked(@Req() req, @Res() res: Response) {
     const blocks = await this.usersService.getBlocked(req.user.sub);
     return res.json(blocks);
+  }
+
+  @Get("avatar/:filename")
+  async getPicture(@Req() req, @Res() res: Response, @Param('filename') filename: string) {
+    return res.sendFile(filename, { root: './uploads' });
   }
 
   @Post("add")

@@ -27,15 +27,14 @@ export class SettingService {
 		return "Username updated";
 	}
 
-	async updateAvatar(file: any, user: any) {
+	async updateAvatar(id: string, filePath: string) {
 		await this.prisma.user.update({
 			where: {
-				oauthId: user.sub,
+				oauthId: id,
 			},
 			data: {
-				avatar: file.filename,
+				avatar: filePath,
 			},
 		});
-		return true;
 	}
 }
