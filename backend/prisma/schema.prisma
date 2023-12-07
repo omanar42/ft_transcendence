@@ -10,6 +10,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoomType {
+  PUBLIC
+  PRIVATE
+  PROTECTED
+}
+
+enum Status {
+  ONLINE
+  OFFLINE
+  INGAME
+}
+
+enum FriendStatus {
+  FRIENDS
+  PENDING
+  BLOCKED
+}
+
+enum FriendActions {
+  ADD
+  REMOVE
+  ACCEPT
+  REJECT
+  REVOKE
+  BLOCK
+  UNBLOCK
+}
+
 model User {
   oauthId   String    @unique
   username  String    @unique
@@ -24,8 +52,29 @@ model User {
   friends   Friend[]
   stats     Stats?
   matches   Match[]
+  rooms     Room[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Room {
+  id          Int       @id @default(autoincrement())
+  name        String
+  owner       User      @relation(fields: [ownerId], references: [oauthId])
+  ownerId     String
+  type        RoomType  @default(PUBLIC)
+  hashedPass  String?
+  messages    Message[]
+  createdAt   DateTime  @default(now())
+}
+
+model Message {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  room      Room      @relation(fields: [roomId], references: [id])
+  roomId    Int
+  content   String
+  createdAt DateTime  @default(now())
 }
 
 model Match {
@@ -86,26 +135,3 @@ enum AchievementName {
   FIRST_FRIEND
   Perfect
 }
-
-enum Status {
-  ONLINE
-  OFFLINE
-  INGAME
-}
-
-enum FriendStatus {
-  FRIENDS
-  PENDING
-  BLOCKED
-}
-
-enum FriendActions {
-  ADD
-  REMOVE
-  ACCEPT
-  REJECT
-  REVOKE
-  BLOCK
-  UNBLOCK
-}
-

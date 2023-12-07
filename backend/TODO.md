@@ -6,6 +6,7 @@ Project Description
 
 ### Todo
 
+- [ ] Check friends setting after update username  
 - [ ] upload an avatar  
 - [ ] Update profile  
 - [ ] Settings  
@@ -16,12 +17,12 @@ Project Description
 
 ### In Progress
 
-- [ ] Profile Endpoints  
 - [ ] status (online, offline, in a game, and so forth)  
-- [ ] Stats (such as: wins and losses, ladder level, achievements, and so forth)  
 
 ### Done ✓
 
+- [x] Stats (such as: wins and losses, ladder level, achievements, and so forth)  
+- [x] Profile Endpoints  
 - [x] Update Username  
 - [x] Remove Friend  
 - [x] Add Friend  
