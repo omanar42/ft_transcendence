@@ -7,7 +7,6 @@ Project Description
 ### Todo
 
 - [ ] Check friends setting after update username  
-- [ ] upload an avatar  
 - [ ] Update profile  
 - [ ] Settings  
 - [ ] Two-Factor Auth  
@@ -17,6 +16,7 @@ Project Description
 
 ### In Progress
 
+- [ ] upload an avatar  
 - [ ] status (online, offline, in a game, and so forth)  
 
 ### Done ✓
