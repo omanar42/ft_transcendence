@@ -60,4 +60,35 @@ export class SettingController {
       return res.json(filePath);
     }
   }
+
+  @Post('updateProfile')
+  @ApiBody({
+      schema: {
+        type: 'object',
+        properties: {
+          username: {
+            type: 'string',
+          },
+          fullname: {
+            type: 'string',
+          },
+        },
+      },
+    })
+  async updateProfile(@Req() req, @Res() res: Response, @Body() body: any) {
+    const message = await this.settingService.updateProfile(req.user.sub, body);
+    return res.json(message);
+  }
+
+  @Post('enable2FA')
+  async enable2FA(@Req() req, @Res() res: Response) {
+    const message = await this.settingService.enable2FA(req.user.sub);
+    return res.json(message);
+  }
+
+  @Post('disable2FA')
+  async disable2FA(@Req() req, @Res() res: Response) {
+    const message = await this.settingService.disable2FA(req.user.sub);
+    return res.json(message);
+  }
 }

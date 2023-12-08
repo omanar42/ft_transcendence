@@ -6,9 +6,6 @@ Project Description
 
 ### Todo
 
-- [ ] Check friends setting after update username  
-- [ ] Update profile  
-- [ ] Settings  
 - [ ] Two-Factor Auth  
 - [ ] Match History  
 - [ ] server-side validation for forms and any user  
@@ -16,11 +13,13 @@ Project Description
 
 ### In Progress
 
-- [ ] upload an avatar  
 - [ ] status (online, offline, in a game, and so forth)  
 
 ### Done ✓
 
+- [x] Settings  
+- [x] Update profile  
+- [x] upload an avatar  
 - [x] Stats (such as: wins and losses, ladder level, achievements, and so forth)  
 - [x] Profile Endpoints  
 - [x] Update Username  

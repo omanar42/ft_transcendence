@@ -37,4 +37,44 @@ export class SettingService {
 			},
 		});
 	}
+
+	async updateProfile(id: string, profile: any) {
+		await this.prisma.user.update({
+			where: {
+				oauthId: id,
+			},
+			data: {
+				username: profile.username,
+				fullname: profile.fullname,
+			},
+		});
+		return "Profile updated";
+	}
+
+	async enable2FA(id: string) {
+		const twoFaSec = null;
+		await this.prisma.user.update({
+			where: {
+				oauthId: id,
+			},
+			data: {
+				twoFactor: true,
+				twoFaSec: twoFaSec,
+			},
+		});
+		return "2FA enabled";
+	}
+
+	async disable2FA(id: string) {
+		await this.prisma.user.update({
+			where: {
+				oauthId: id,
+			},
+			data: {
+				twoFactor: false,
+				twoFaSec: null,
+			},
+		});
+		return "2FA disabled";
+	}
 }
