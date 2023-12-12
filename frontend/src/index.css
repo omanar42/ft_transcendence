@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body{
+    background-image: url('./assets/background.png');
+    background-size: cover;
+}
+
+html{
+    font-size: 65.2%;
+}
