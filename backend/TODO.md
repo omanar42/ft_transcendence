@@ -6,6 +6,7 @@ Project Description
 
 ### Todo
 
+- [ ] Matching players  
 - [ ] Two-Factor Auth  
 - [ ] Match History  
 - [ ] server-side validation for forms and any user  
