@@ -1,15 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UsersService } from 'src/users/users.service';
 import * as otplib from 'otplib';
 import * as qrcode from 'qrcode';
 
 @Injectable()
 export class SettingService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async updateUsername(id: string, username: string) {
     if (!username) return 'Username cannot be empty';
@@ -57,7 +53,7 @@ export class SettingService {
   }
 
   async enable2FA(id: string) {
-    const user = await this.usersService.findOneById(id);
+    const user = await this.prisma.user.findUnique({ where: { oauthId: id } });
     if (!user) return 'User not found';
     if (user.twoFactor) return '2FA already enabled';
 
@@ -69,12 +65,19 @@ export class SettingService {
         twoFaSec: secret,
       },
     });
-		const otpauthUrl = otplib.authenticator.keyuri(`user:${id}`, process.env.TWO_FACTOR_AUTHENTICATION_APP_NAME, secret);
-		const qrCodeUrl = await qrcode.toDataURL(otpauthUrl);
-		return qrCodeUrl;
-	}
+    const otpauth = otplib.authenticator.keyuri(
+      user.username,
+      process.env.TWOFA_APP_NAME,
+      secret,
+    );
+    const qrCodeUrl = await qrcode.toDataURL(otpauth);
+    return qrCodeUrl;
+  }
 
   async disable2FA(id: string) {
+    const user = await this.prisma.user.findUnique({ where: { oauthId: id } });
+    if (!user) return 'User not found';
+    if (!user.twoFactor) return '2FA already disabled';
     await this.prisma.user.update({
       where: { oauthId: id },
       data: {
