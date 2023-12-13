@@ -1,7 +1,6 @@
-import { Logo, intra, google, login } from "../Login";
+import { Logo,  login } from "../Login";
 import { FaCamera } from "react-icons/fa";
 import "./Welcome.css";
-import { useState } from "react";
 
 
 
@@ -36,13 +35,7 @@ function UploeadForm() {
   );
 }
 function Welcome() {
-  const [username, setUsername] = useState('');
-  const [image, setImage] = useState(null);
 
-
-  const userNamedata = (event) =>{
-    
-  }
 
   return (
     <div className="h-screen flex justify-center items-center pl-10 pr-10">
@@ -52,8 +45,8 @@ function Welcome() {
         </div>
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
-          <div className="text-white wlc-form flex flex-col gap-10 justify-center items-center border-2  p-10">
-            <h1 className="text-white text-3xl font-bold">
+          <div className="text-white  wlc-form flex flex-col gap-10 justify-center items-center border-2  p-10">
+            <h1 className="text-white  text-3xl font-bold">
               Welcome! Let's create your profile
             </h1>
             <ImageUploader />

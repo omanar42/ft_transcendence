@@ -3,22 +3,17 @@ import "./App.css";
 import Login from "./Components/Pages/Login/Login";
 import NavBar from "./Components/NavBar";
 import Welcome from "./Components/Pages/Welcome/Welcome";
-
-
-function Test(){
-  return(<div className="h-40 p-20 bg-dark text-white font-bold text-3xl flex justify-between items-center">
-      <Link to="/login" >Log in</Link>
-      <Link to="/welcom" >Create profile</Link>
-      <Link to="/test" >Log in</Link>
-  </div>)
-}
+import Chat from "./Components/Pages/Chat/Chat";
+import Home from "./Components/Pages/Home/Home";
 
 function App() {
   return (
     <Router>
+      <NavBar />
       <Routes>
-      <Route path="/" element={<Test />} />
+        <Route path="/home" element={<Home />} />
 
+        <Route path="/" element={<Chat />} />
         <Route path="/login" element={<Login />} />
         <Route path="/Welcom" element={<Welcome />} />
       </Routes>
