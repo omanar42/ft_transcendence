@@ -82,8 +82,8 @@ export class SettingController {
 
   @Post('enable2FA')
   async enable2FA(@Req() req, @Res() res: Response) {
-    const message = await this.settingService.enable2FA(req.user.sub);
-    return res.json(message);
+    const qrCodeUrl = await this.settingService.enable2FA(req.user.sub);
+    return res.json(qrCodeUrl);
   }
 
   @Post('disable2FA')

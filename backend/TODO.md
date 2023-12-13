@@ -7,7 +7,6 @@ Project Description
 ### Todo
 
 - [ ] Matching players  
-- [ ] Two-Factor Auth  
 - [ ] Match History  
 - [ ] server-side validation for forms and any user  
 - [ ] SQL injections  
@@ -18,6 +17,7 @@ Project Description
 
 ### Done ✓
 
+- [x] Two-Factor Auth  
 - [x] Settings  
 - [x] Update profile  
 - [x] upload an avatar  
