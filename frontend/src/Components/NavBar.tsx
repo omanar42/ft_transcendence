@@ -1,9 +1,26 @@
-import React from 'react'
+import React from "react";
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import Chat from "./Pages/Chat/Chat";
+import { Logo } from "./Pages/Login";
+import Welcome from "./Pages/Welcome/Welcome";
 
 function NavBar() {
   return (
-    <div className='h-32 bg-gradient-to-r from-dark to-dark-300'></div>
-  )
+    <div className="">
+      <div className="max-w-140 fix   ml-auto mr-auto p-10 text-3xl text-white h-40 flex justify-between items-center">
+        <img className="h-10" src={Logo} />
+
+        <nav>
+          <ul className="flex gap-40">
+           <li><Link to="/login">Log in </Link></li> 
+           <li><Link to="/home">Home</Link></li> 
+           <li><Link to="/welcom">Chat</Link></li> 
+
+          </ul>
+        </nav>
+      </div>
+    </div>
+  );
 }
 
-export default NavBar
+export default NavBar;
