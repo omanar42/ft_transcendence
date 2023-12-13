@@ -11,20 +11,31 @@ export default {
         130: '130rem',
         140: '140rem',
         150: '150rem',
+        160: '160rem',
+        170: '170rem',
       },
       width:{
         '5rem': '5rem',
         '10rem': '10rem',
         '20rem': '20rem',
         '30rem': '30rem',
+        140: '140rem',
+        150: '150rem',
         '40rem': '40rem',
+      },
+      height: {
+        50: '50rem',
+        60: '60rem',
+        70: '70rem',
+        100: '100rem',
+        120: '120rem',
       },
       colors:{
         dark: '#13140e',
         'dark-100': '#2b2c26',
         'dark-200': '#2b2c26',
         'dark-300': '#42433e',
-        'pink-100': '#F400CD80',
+        'pink-100': '#953e91',
         'blue-100': '#1C00CBB2'
       },
       letterSpacing: {
