@@ -1,16 +1,17 @@
-import React from "react";
-import { login } from "../Login";
-import './Chat.css'
+import ChatList from "./ChatList";
+import Header from "./Header";
+import MessageInput from "./MessageInput";
+import UserInfo from "./UserInfo";
+import Avatar from "./assets/avatar.jpeg";
 
 const Chat = () => {
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="overflow-hidden chat max-w-140 h-60 ml-auto mr-auto -2  grid grid-cols-4">
-        <div className="  col-span-1">
-            <img className="w-full" src={login} />
-        </div>
-        <div className="   col-span-2"></div>
-        <div className="  "></div>
+    <div className="w-[140rem]  max-w-140 -dark rounded-3xl text-white ml-auto mr-auto">
+      <Header />
+      <div className="bg-dark-100 h-[62rem] grid grid-cols-5 gap-x-2 mt-4">
+        <ChatList />
+        <MessageInput />
+        <UserInfo />
       </div>
     </div>
   );
