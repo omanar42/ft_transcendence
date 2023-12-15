@@ -121,7 +121,7 @@ export class AuthService {
       if (found.twoFactor)
         redirectUrl = process.env.FRONTEND_URL + '/two-factor';
 
-      return res.status(HttpStatus.OK).json(redirectUrl);
+      return res.redirect(redirectUrl);
     }
 
   async logout(oauthId: string) {
