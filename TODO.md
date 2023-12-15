@@ -9,15 +9,15 @@ Project Description
 - [ ] Matching players  
 - [ ] Match History  
 - [ ] server-side validation for forms and any user  
-- [ ] SQL injections  
 
 ### In Progress
 
-- [ ] Protectec 2fa in cookies  
 - [ ] status (online, offline, in a game, and so forth)  
 
 ### Done ✓
 
+- [x] Protectec 2fa in cookies  
+- [x] SQL injections  
 - [x] Docker  
 - [x] node:lts-ailpine  
 - [x] prisma command before run docker  
