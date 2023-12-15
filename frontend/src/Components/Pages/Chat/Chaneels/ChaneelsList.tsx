@@ -1,5 +1,7 @@
-import Avatar from "./assets/avatar.jpeg";
-import './Chatlist.css';
+import Avatar from "../assets/avatar.jpeg";
+import "./ChaneelsList.css";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import CreateChannel from "./CreateChannel";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 const chats = [
@@ -88,14 +90,19 @@ function ListAvatars({ avatar }: ListAvatars) {
   );
 }
 
-interface ListConversations {
-    avatar: string,
-    username: string,
-    message: string,
-    time: string, 
+interface ListChaneels {
+  avatar: string;
+  username: string;
+  message: string;
+  time: string;
 }
 
-function ListConversations({ avatar, username, message, time }:ListConversations) {
+function ListChaneels({
+  avatar,
+  username,
+  message,
+  time,
+}: ListChaneels) {
   return (
     <li className="flex items-center gap-5 mb-6">
       <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />
@@ -107,7 +114,7 @@ function ListConversations({ avatar, username, message, time }:ListConversations
     </li>
   );
 }
-function ChatList() {
+function ChaneelsList({CreateChaneel}) {
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
@@ -122,9 +129,14 @@ function ChatList() {
           ))}
         </ul>
       </div>
+      <button onClick={CreateChaneel} className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[8rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]">
+        Create Chaneel
+        <IoIosAddCircleOutline className="text-4xl" />
+      </button>
+
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
         {chats.map((conv) => (
-          <ListConversations
+          <ListChaneels
             avatar={conv.avatar}
             message={conv.message}
             time={conv.time}
@@ -136,4 +148,4 @@ function ChatList() {
   );
 }
 
-export default ChatList;
+export default ChaneelsList;

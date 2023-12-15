@@ -17,9 +17,12 @@ function Header() {
       </ul>
       <div className="flex items-center gap-[5rem] relative">
         <VscBellDot className="text-5xl" />
-        <img className="h-[6rem] cursor-pointer rounded-full" src={Avatar} alt="avatar"
-              onClick={()=>setIsOpen(!isOPen)}  
-                />
+        <img
+          className="h-[6rem] cursor-pointer rounded-full"
+          src={Avatar}
+          alt="avatar"
+          onClick={() => setIsOpen(!isOPen)}
+        />
         {isOPen && (
           <div className="absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[10rem]">
             <ul className="flex flex-col items-center justify-center gap-4 font-bold text-2xl">

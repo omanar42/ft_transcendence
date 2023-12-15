@@ -1,4 +1,4 @@
-import Avatar from "./assets/avatar.jpeg";
+import Avatar from "../assets/avatar.jpeg";
 import { MdOutlineBlock } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
 
