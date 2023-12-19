@@ -43,6 +43,9 @@ export default {
         '2': '0.025em',
         '3': '0.05em',
         '4': '0.1em',
+      },
+      fontFamily: {
+        Orbitron: ['Orbitron']
       }
     },
   },

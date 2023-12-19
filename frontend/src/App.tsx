@@ -5,6 +5,7 @@ import NavBar from "./Components/NavBar";
 import Welcome from "./Components/Pages/Welcome/Welcome";
 import Chat from "./Components/Pages/Chat/Chat";
 import Home from "./Components/Pages/Home/Home";
+import Settings from "./Components/Pages/Settings/Settings";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Chat />} />
         <Route path="/login" element={<Login />} />
         <Route path="/Welcom" element={<Welcome />} />
+        <Route path="/Settings" element={<Settings />} />
       </Routes>
     </Router>
   );

@@ -15,6 +15,7 @@ function NavBar() {
            <li><Link to="/login">Log in </Link></li> 
            <li><Link to="/home">Home</Link></li> 
            <li><Link to="/welcom">Chat</Link></li> 
+           <li><Link to="/Settings">settings</Link></li> 
 
           </ul>
         </nav>
