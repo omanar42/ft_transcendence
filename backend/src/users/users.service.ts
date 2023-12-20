@@ -6,6 +6,9 @@ import { FriendActions, FriendStatus, Status, User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
+  findUnique(arg0: { where: { id: any; }; include: { rooms: boolean; }; }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService) {}
 
   async create(user: User) {

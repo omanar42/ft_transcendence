@@ -14,6 +14,7 @@ enum RoomType {
   PUBLIC
   PRIVATE
   PROTECTED
+  DIRECT_MESSAGE
 }
 
 enum Status {
@@ -41,6 +42,7 @@ enum FriendActions {
 model User {
   oauthId   String    @unique
   username  String    @unique
+  socketId  String?
   fullname  String
   email     String    @unique
   avatar    String?
@@ -53,19 +55,40 @@ model User {
   stats     Stats?
   matches   Match[]
   rooms     Room[]
+  roomsuser RoomUser[]
+  blocks    Block[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
 
 model Room {
-  id          Int       @id @default(autoincrement())
+  id          Int       @unique @id @default(autoincrement())
   name        String
   owner       User      @relation(fields: [ownerId], references: [oauthId])
   ownerId     String
   type        RoomType  @default(PUBLIC)
   hashedPass  String?
   messages    Message[]
+  roomuser    RoomUser[]
   createdAt   DateTime  @default(now())
+}
+
+model Block {
+  blockedUserName String @id
+  
+  blocked User @relation(fields: [blockedUserName], references: [username])
+}
+
+model RoomUser {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  roomId    Int
+
+
+  user      User     @relation(fields: [userId], references: [oauthId])
+  room      Room     @relation(fields: [roomId], references: [id])
+
+  // @@unique([userId, roomId])
 }
 
 model Message {

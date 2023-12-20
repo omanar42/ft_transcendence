@@ -1,0 +1,11 @@
+{
+    "content" : "l9laawi",
+    "roomId" : 1,
+    "username" : "omeslall34243"
+}
+
+{
+    "userName": "omeslall45566",
+    "roomName": "lala",
+    "roomType": "public"
+}
