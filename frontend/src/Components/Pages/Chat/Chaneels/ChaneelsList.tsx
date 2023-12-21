@@ -2,82 +2,10 @@ import Avatar from "../assets/avatar.jpeg";
 import "./ChaneelsList.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import CreateChannel from "./CreateChannel";
+import { useState } from "react";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
-const chats = [
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "omanar",
-    message: "Andoz eandk lyoum",
-    time: "10.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "yessad",
-    message: "Match nadi a sat",
-    time: "6.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "yassin",
-    message: "galo liya khsarto ?",
-    time: "12.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "ilyas",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-  },
-];
+
 interface ListAvatars {
   avatar: string;
 }
@@ -114,7 +42,9 @@ function ListChaneels({
     </li>
   );
 }
-function ChaneelsList({CreateChaneel}) {
+function ChaneelsList({handeltoggelModal, List}) {
+
+
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
@@ -129,20 +59,19 @@ function ChaneelsList({CreateChaneel}) {
           ))}
         </ul>
       </div>
-      <button onClick={CreateChaneel} className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[8rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]">
+      <button onClick={handeltoggelModal} className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]">
         Create Chaneel
         <IoIosAddCircleOutline className="text-4xl" />
       </button>
 
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {chats.map((conv) => (
-          <ListChaneels
+          {List.map((conv)=>
+          <ListChaneels 
             avatar={conv.avatar}
             message={conv.message}
             time={conv.time}
             username={conv.username}
-          />
-        ))}
+          />)}
       </ul>
     </div>
   );

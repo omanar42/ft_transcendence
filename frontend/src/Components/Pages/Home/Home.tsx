@@ -3,9 +3,9 @@ function Home() {
   return (
     <div className="h-screen flex justify-center relative items-center text-white">
       <div className="w-140 flex gap-[10rem] ">
-        <div className="w-1/2">
+        <div className="w-3/5">
           <h1 className="text-9xl pb-16">RoboPong Story</h1>
-          <p className="text-4xl font-bold pb-16">
+          <p className="text-4xl font-bold pb-16 font-sans leading-[3.4rem]">
             In a cyberpunk dystopia ruled by oppressive corporations, "RoboPong"
             emerges as a rebellion, casting players into neon-lit virtual arenas
             against robotic foes known as RoboPong. The ping pong ball becomes a
@@ -22,7 +22,7 @@ function Home() {
             </button>
           </div>
         </div>
-          <img className="h-[50rem] absolute top-[18rem] right-[8rem]" src={Robot} />
+          <img className="h-[50rem] absolute top-[14rem] right-[1rem]" src={Robot} />
       </div>
     </div>
   );

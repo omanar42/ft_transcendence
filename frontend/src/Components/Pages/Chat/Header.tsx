@@ -11,9 +11,9 @@ function Header() {
     <header className="bg-dark h-[8rem] rounded-3xl flex justify-between items-center p-10">
       <img className="h-[3rem]" src={Logo} alt="Logo" />
       <ul className="flex gap-[10rem] font-bold text-2xl">
-        <Link to="/friends">Friends</Link>
-        <Link to="/channels">Channels</Link>
-        <Link to="/friends">Home</Link>
+        <Link to="friends">Friends</Link>
+        <Link to="channels">Channels</Link>
+        <Link to="home">Home</Link>
       </ul>
       <div className="flex items-center gap-[5rem] relative">
         <VscBellDot className="text-5xl" />
