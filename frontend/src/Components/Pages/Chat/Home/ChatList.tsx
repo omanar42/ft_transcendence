@@ -107,9 +107,9 @@ function ListConversations({ avatar, username, message, time }:ListConversations
     </li>
   );
 }
-function ChatList() {
+function ChatList({chatUser}) {
   return (
-    <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
+    <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden font-sans">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
         <input
           className="w-11/12 h-[2.5rem] rounded-full pl-10 text-black outline-none"
@@ -118,7 +118,7 @@ function ChatList() {
         />
         <ul className="flex gap-5 w-11/12">
           {avatars.map((avatar) => (
-            <ListAvatars avatar={avatar} />
+            <ListAvatars  avatar={avatar} />
           ))}
         </ul>
       </div>

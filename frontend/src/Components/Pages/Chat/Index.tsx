@@ -4,7 +4,7 @@ import Chaneels from "./Chaneels/Chaneels";
 
 const Index = () => {
   return (
-    <div className="w-[140rem]  max-w-140 -dark rounded-3xl text-white ml-auto mr-auto">
+    <div >
       <Header />
       <Chaneels />
       {/* <Chat /> */}

@@ -16,3 +16,14 @@ Project Description
 
 - [x] node:lts-ailpine  
 
+
+___________________________________________
+
+
+Getting data from channels form
+
+Nested routes in chat root
+
+USe reusable components 
+
+Link all components togther
