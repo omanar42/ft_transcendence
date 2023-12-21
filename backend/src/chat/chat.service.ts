@@ -46,9 +46,14 @@ export class ChatService {
     if (!(await this.identifyUser(createMessageDto))) {
       throw new Error('User does not have access to this room');
     }
-    const user = await this.usersService.findOneByUsername(
-      createMessageDto.username,
-    );
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: createMessageDto.username,
+      },
+      include: {
+        blocks: true,
+      },
+    });
     if (!user) {
       throw new Error('User not found');
     }
@@ -67,8 +72,26 @@ export class ChatService {
         user: { include: { blocks: true } },
       },
     });
-    // for each one of the users in the room check if the sender is blocked or not and emit to non blocked users
-    roomUsers.forEach((user) => {
+    // filter the room users to get only the non blocked users
+    const blockedlist_sender = user.blocks;
+    const new_roomUsers = roomUsers.filter((roomuser) => {
+      if (
+        blockedlist_sender.some(
+          (blocked) => blocked.blockedUserName === roomuser.userId,
+        )
+      ) {
+        return false;
+      }
+      return true;
+    });
+    new_roomUsers.forEach((user) => {
+      if (
+        user.user.blocks.some(
+          (blocked) => blocked.blockedUserName === createMessageDto.username,
+        )
+      ) {
+        return;
+      }
       client.to(user.user.socketId).emit('message', message);
     });
     // client.on('message', async (message, roomId) => {
