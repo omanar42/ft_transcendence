@@ -3,7 +3,6 @@ import login from "./assets/login.png";
 import intra from "./assets/42.png";
 import google from "./assets/Google.png";
 import Logo from "../../../assets/logo.png";
-import { Link } from "react-router-dom";
 interface ButtonType {
   icon: string;
   text: string;
@@ -35,18 +34,13 @@ function Login() {
             bgColor="bg-black"
             textColor="text-white"
           />
-          <a
-            href="http://localhost:3000/auth/google
 
-"
-          >
             <Button
               icon={google}
               text="Sing in with Google"
               bgColor="bg-white"
               textColor="text-black"
             />
-          </a>
         </div>
         <div className="col-span-2">
           <img className="w-full h-full" src={login} />
