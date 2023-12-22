@@ -41,12 +41,38 @@ export class ChatService {
     //   });
     // }
   }
-  // async get_blocked_users(username: string) {}
+  async filter_blocked_users(sender: { oauthId: string }, roomUsers: any[]) {
+    const blockedlist_sender = await this.usersService.getBlocked(
+      sender.oauthId,
+    );
+    const new_roomUsers = roomUsers.filter((roomuser: { userId: string }) => {
+      if (
+        blockedlist_sender.some((blocked) => blocked.userId === roomuser.userId)
+      ) {
+        return false;
+      }
+      return true;
+    });
+    const uses_list_not_blocked = new_roomUsers.filter(
+      async (roomuser: { userId: string }) => {
+        const temp_list_blocked = await this.usersService.getBlocked(
+          roomuser.userId,
+        );
+        if (
+          temp_list_blocked.some((blocked) => blocked.userId === sender.oauthId)
+        ) {
+          return false;
+        }
+        return true;
+      },
+    );
+    return uses_list_not_blocked;
+  }
   async createMessage(client: Socket, createMessageDto: CreateMessageDto) {
     if (!(await this.identifyUser(createMessageDto))) {
       throw new Error('User does not have access to this room');
     }
-    const user = await this.prisma.user.findUnique({
+    const sender = await this.prisma.user.findUnique({
       where: {
         username: createMessageDto.username,
       },
@@ -54,14 +80,14 @@ export class ChatService {
         blocks: true,
       },
     });
-    if (!user) {
+    if (!sender) {
       throw new Error('User not found');
     }
     const message = await this.prisma.message.create({
       data: {
         content: createMessageDto.content,
         roomId: createMessageDto.roomId,
-        userId: user.oauthId,
+        userId: sender.oauthId,
       },
     });
     const roomUsers = await this.prisma.roomUser.findMany({
@@ -72,45 +98,11 @@ export class ChatService {
         user: { include: { blocks: true } },
       },
     });
-    // filter the room users to get only the non blocked users
-    const blockedlist_sender = user.blocks;
-    const new_roomUsers = roomUsers.filter((roomuser) => {
-      if (
-        blockedlist_sender.some(
-          (blocked) => blocked.blockedUserName === roomuser.userId,
-        )
-      ) {
-        return false;
-      }
-      return true;
-    });
+
+    const new_roomUsers = await this.filter_blocked_users(sender, roomUsers);
     new_roomUsers.forEach((user) => {
-      if (
-        user.user.blocks.some(
-          (blocked) => blocked.blockedUserName === createMessageDto.username,
-        )
-      ) {
-        return;
-      }
       client.to(user.user.socketId).emit('message', message);
     });
-    // client.on('message', async (message, roomId) => {
-    //   const room = await this.prisma.room.findUnique({
-    //     where: {
-    //       id: roomId,
-    //     },
-    //     include: {
-    //       roomuser: true,
-    //     },
-    //   });
-    //   if (!room) {
-    //     throw new Error('Room not found');
-    //   }
-    //   const roomUsers = room.roomuser;
-    //   roomUsers.forEach((user) => {
-    //     client.to(user.userId.toString()).emit('message', message);
-    //   });
-    // });
   }
 
   async identifyUser(createMessageDto: CreateMessageDto): Promise<boolean> {

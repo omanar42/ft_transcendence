@@ -108,7 +108,6 @@ export class UsersService {
 
   async getFriends(id: string) {
     const friends = await this.getAllFriends(id);
-
     const friendsList = friends.filter(f => f.status === FriendStatus["FRIENDS"]);
     return friendsList;
   }

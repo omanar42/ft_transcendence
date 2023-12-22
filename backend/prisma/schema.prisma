@@ -73,12 +73,6 @@ model Room {
   createdAt   DateTime  @default(now())
 }
 
-model Block {
-  blockedUserName String @id
-  
-  blocked User @relation(fields: [blockedUserName], references: [username])
-}
-
 model RoomUser {
   id        Int      @id @default(autoincrement())
   userId    String

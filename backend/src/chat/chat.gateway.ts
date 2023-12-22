@@ -67,6 +67,21 @@ export class ChatGateway
       this.logger.log(error);
     }
   }
+  @SubscribeMessage('blocke_user')
+  async handleBlockUser(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() createMessageDto: CreateMessageDto,
+  ) {
+    try {
+      await this.prisma.block.create({
+        data: {
+          blockedUserName: createMessageDto.username,
+        },
+      });
+    } catch (error) {
+      this.logger.log(error);
+    }
+  } //demo
   @SubscribeMessage('createRoom')
   async handleCreateRoom(
     @ConnectedSocket() client: Socket,
