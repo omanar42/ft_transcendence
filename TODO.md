@@ -35,3 +35,14 @@ Project Description
 - [x] refresh tokens  
 - [x] JWT  
 
+
+___________________________________________
+
+
+Getting data from channels form
+
+Nested routes in chat root
+
+USe reusable components 
+
+Link all components togther
