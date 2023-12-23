@@ -138,7 +138,7 @@ export class ChatService {
     if (!(await this.identifyUser(createMessageDto))) {
       throw new Error('User does not have access to this room');
     }
-    const sender = this.GetUserByUsername(createMessageDto.username);
+    const sender = await this.GetUserByUsername(createMessageDto.username);
     const message = await this.prisma.message.create({
       data: {
         content: createMessageDto.content,
@@ -161,7 +161,7 @@ export class ChatService {
   }
 
   async identifyUser(createMessageDto: CreateMessageDto): Promise<boolean> {
-    const user = this.GetUserByUsername(createMessageDto.username);
+    const user = await this.GetUserByUsername(createMessageDto.username);
     const isUserInRoom = await this.prisma.roomUser.findMany({
       where: {
         roomId: createMessageDto.roomId,
@@ -175,8 +175,8 @@ export class ChatService {
     @MessageBody() direct: CreateDirectMessageDto,
   ) {
     // use this function directly after accept friend request
-    const user_1 = this.GetUserByUsername(direct.username);
-    const user_2 = this.GetUserByUsername(direct.username_target);
+    const user_1 = await this.GetUserByUsername(direct.username);
+    const user_2 = await this.GetUserByUsername(direct.username_target);
     const existingRoom = await this.prisma.room.findFirst({
       where: {
         AND: [
@@ -206,7 +206,7 @@ export class ChatService {
     @ConnectedSocket() client: Socket,
     @MessageBody() createRoomDto: CreateRoomDto,
   ) {
-    const user = this.GetUserByUsername(createRoomDto.username);
+    const user = await this.GetUserByUsername(createRoomDto.userName);
     const types = ['public', 'private', 'protected'];
     if (!types.includes(createRoomDto.roomType)) {
       if (
@@ -248,8 +248,8 @@ export class ChatService {
     @ConnectedSocket() client: Socket,
     @MessageBody() createRoomDto: JoinRoomDto,
   ) {
-    const user = this.GetUserByUsername(createRoomDto.username);
-    const room_ = this.GetRoomById(createRoomDto.roomId);
+    const user = await this.GetUserByUsername(createRoomDto.username);
+    const room_ = await this.GetRoomById(createRoomDto.roomId);
     if (room_.type === RoomType['DIRECT_MESSAGE']) {
       throw new Error(
         'you dont have access to this direct message , ghayrha ya 7abibi',
