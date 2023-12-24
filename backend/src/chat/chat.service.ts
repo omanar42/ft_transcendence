@@ -8,7 +8,6 @@ import {
   CreateDirectMessageDto,
   CreateMessageDto,
   CreateRoomDto,
-  Data,
   JoinRoomDto,
 } from './dto/create-message.dto';
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
@@ -22,27 +21,24 @@ export class ChatService {
     private readonly usersService: UsersService,
     private cacheService: CacheService,
   ) {}
-  async handleConnection(client: Socket, data: Data) {
-    console.log('connected');
-    console.log(data);
-    console.log(client.id);
-    // const user = await this.prisma.user.findUnique({
-    //   where: {
-    //     username : data.username,
-    //   },
-    //   include: {
-    //     rooms: true,
-    //   },
-    // });
-    // if (!user) {
-    //   throw new Error('User not found');
-    // }
-    // if(user.rooms.length !== 0){
-    //   user.rooms.forEach((room) => {
-    //     client.join(room.id.toString());
-    //   });
-    // }
-  }
+  // async handleConnection(client: Socket, data: Data) {
+  // const user = await this.prisma.user.findUnique({
+  //   where: {
+  //     username : data.username,
+  //   },
+  //   include: {
+  //     rooms: true,
+  //   },
+  // });
+  // if (!user) {
+  //   throw new Error('User not found');
+  // }
+  // if(user.rooms.length !== 0){
+  //   user.rooms.forEach((room) => {
+  //     client.join(room.id.toString());
+  //   });
+  // }
+  // }
   async GetRoomById(roomId: number) {
     const cacheKey = `room:${roomId}`;
     const cachedRoom = this.cacheService.get(cacheKey);
@@ -61,6 +57,7 @@ export class ChatService {
       throw new Error('Room not found');
     }
     this.cacheService.set(cacheKey, room);
+    return room;
   }
 
   async GetUserByUsername(username: string) {
@@ -78,6 +75,21 @@ export class ChatService {
       throw new Error('User not found');
     }
     this.cacheService.set(cacheKey, user);
+    return user;
+  }
+
+  async GetBlockedUsers(oauthId: string) {
+    const cacheKey = `blocked:${oauthId}`;
+    const cachedBlocked = this.cacheService.get(cacheKey);
+    if (cachedBlocked) {
+      return cachedBlocked;
+    }
+    const blocked = await this.usersService.getBlocked(oauthId);
+    if (!blocked) {
+      throw new Error('User not found');
+    }
+    this.cacheService.set(cacheKey, blocked);
+    return blocked;
   }
 
   async setAdminForRoom(roomId: number, seter: string, target: string) {
@@ -108,31 +120,23 @@ export class ChatService {
     this.cacheService.delete(`room:${roomId}`);
   }
   async filter_blocked_users(sender: { oauthId: string }, roomUsers: any[]) {
-    const blockedlist_sender = await this.usersService.getBlocked(
-      sender.oauthId,
-    );
-    const new_roomUsers = roomUsers.filter((roomuser: { userId: string }) => {
-      if (
-        blockedlist_sender.some((blocked) => blocked.userId === roomuser.userId)
-      ) {
-        return false;
+    const blockedlist_sender = await this.GetBlockedUsers(sender.oauthId);
+    // eslint-disable-next-line prefer-const
+    let users_list_not_blocked = [];
+    for (const roomuser of roomUsers) {
+      const temp_list_blocked = await this.GetBlockedUsers(roomuser.userId);
+      const isBlockedBySender = blockedlist_sender.some(
+        (blocked) => blocked.userId === roomuser.userId,
+      );
+      const hasBlockedSender = temp_list_blocked.some(
+        (blocked) => blocked.userId === sender.oauthId,
+      );
+
+      if (!isBlockedBySender && !hasBlockedSender) {
+        users_list_not_blocked.push(roomuser);
       }
-      return true;
-    });
-    const uses_list_not_blocked = new_roomUsers.filter(
-      async (roomuser: { userId: string }) => {
-        const temp_list_blocked = await this.usersService.getBlocked(
-          roomuser.userId,
-        );
-        if (
-          temp_list_blocked.some((blocked) => blocked.userId === sender.oauthId)
-        ) {
-          return false;
-        }
-        return true;
-      },
-    );
-    return uses_list_not_blocked;
+    }
+    return users_list_not_blocked;
   }
   async createMessage(client: Socket, createMessageDto: CreateMessageDto) {
     if (!(await this.identifyUser(createMessageDto))) {
@@ -256,8 +260,6 @@ export class ChatService {
       );
     }
     if (room_.roomuser.some((roomuser) => roomuser.userId === user.oauthId)) {
-      console.log(user);
-      // console.log('User already in room');
       throw new Error('User already in room');
     }
 
