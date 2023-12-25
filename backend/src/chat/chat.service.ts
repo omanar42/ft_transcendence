@@ -13,6 +13,7 @@ import {
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { RoomType, UserStatusInRoom } from '@prisma/client';
 import { CacheService } from './cache.service';
+import { send } from 'process';
 
 @Injectable()
 export class ChatService {
@@ -138,11 +139,59 @@ export class ChatService {
     }
     return users_list_not_blocked;
   }
+
+  async BanUserFromRoom(
+    roomId: number,
+    seter_oauthId: string,
+    target_oauthId: string,
+  ) {
+    const room = await this.GetRoomById(roomId);
+    const seter_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === seter_oauthId,
+    );
+    const target_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === target_oauthId,
+    );
+    if (!room || !seter_user || !target_user) {
+      throw new Error('User or Room not found');
+    }
+    if (
+      seter_user.status !== UserStatusInRoom['OWNER'] ||
+      seter_user.status !== UserStatusInRoom['ADMIN']
+    ) {
+      throw new Error('You are not allowed to ban users');
+    }
+    if (target_user.status === UserStatusInRoom['BANNED']) {
+      throw new Error('User is already banned');
+    }
+    if (
+      target_user.status !== UserStatusInRoom['OWNER'] ||
+      (seter_user.status === UserStatusInRoom['ADMIN'] &&
+        target_user.status === UserStatusInRoom['MEMBER'])
+    ) {
+      await this.prisma.roomUser.update({
+        where: {
+          id: target_user.id,
+        },
+        data: {
+          status: UserStatusInRoom['BANNED'],
+        },
+      });
+    }
+    this.cacheService.delete(`room:${roomId}`);
+  }
   async createMessage(client: Socket, createMessageDto: CreateMessageDto) {
-    if (!(await this.identifyUser(createMessageDto))) {
+    const room = await this.GetRoomById(createMessageDto.roomId);
+    const sender = await this.GetUserByUsername(createMessageDto.username);
+    const sender_rommuser = room.roomuser.find(
+      (roomuser) => roomuser.userId === sender.oauthId,
+    );
+    if (
+      !(await this.identifyUser(createMessageDto)) ||
+      sender_rommuser.status === UserStatusInRoom['BANNED']
+    ) {
       throw new Error('User does not have access to this room');
     }
-    const sender = await this.GetUserByUsername(createMessageDto.username);
     const message = await this.prisma.message.create({
       data: {
         content: createMessageDto.content,
@@ -166,13 +215,11 @@ export class ChatService {
 
   async identifyUser(createMessageDto: CreateMessageDto): Promise<boolean> {
     const user = await this.GetUserByUsername(createMessageDto.username);
-    const isUserInRoom = await this.prisma.roomUser.findMany({
-      where: {
-        roomId: createMessageDto.roomId,
-        userId: user.oauthId,
-      },
-    });
-    return !!isUserInRoom;
+    const room = await this.GetRoomById(createMessageDto.roomId);
+    const isUserInRoom = room.roomuser.some(
+      (roomuser) => roomuser.userId === user.oauthId,
+    );
+    return isUserInRoom;
   }
   async directMessage(
     @ConnectedSocket() client: Socket,
@@ -191,7 +238,6 @@ export class ChatService {
       },
     });
     if (existingRoom) {
-      client.join(existingRoom.id.toString());
       return existingRoom;
     }
     const room = await this.prisma.room.create({
