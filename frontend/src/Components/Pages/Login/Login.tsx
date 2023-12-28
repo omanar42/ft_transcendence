@@ -45,7 +45,7 @@ function Login() {
             />
           </a>
         </div>
-        <div className="col-span-2">
+       <div className="col-span-2">
           <img className="w-full h-full" src={login} />
         </div>
       </div>
