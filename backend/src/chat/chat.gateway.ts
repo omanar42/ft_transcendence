@@ -18,10 +18,12 @@ import {
 } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 // import { log } from 'console';
+// const port = process.env.PORT || 3000;
 
 @WebSocketGateway({
+  port: 3000,
   cors: {
-    origin: '*',
+    origin: 'hhp://localhost:5173',
   },
   namespace: 'chat',
 })

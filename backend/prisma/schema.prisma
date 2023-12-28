@@ -84,7 +84,7 @@ model RoomUser {
   userId    String
   roomId    Int
   status    UserStatusInRoom @default(MEMBER)
-  Muted     Boolean  @default(false)
+  // Muted     Boolean  @default(false)
   user      User     @relation(fields: [userId], references: [oauthId])
   room      Room     @relation(fields: [roomId], references: [id])
 

@@ -13,8 +13,7 @@ import {
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { RoomType, UserStatusInRoom } from '@prisma/client';
 import { CacheService } from './cache.service';
-import { send } from 'process';
-
+// import { send } from 'process';
 @Injectable()
 export class ChatService {
   constructor(
@@ -92,7 +91,35 @@ export class ChatService {
     this.cacheService.set(cacheKey, blocked);
     return blocked;
   }
-
+  // the seter is oauthId of the user
+  async KickUserFromRoom(roomId: number, seter: string, target: string) {
+    const room = await this.GetRoomById(roomId);
+    const seter_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === seter,
+    );
+    const target_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === target,
+    );
+    if (!room || !seter_user || !target_user) {
+      throw new Error('User or Room not found');
+    }
+    if (target_user.status === UserStatusInRoom['OWNER']) {
+      throw new Error('You cant kick the owner');
+    }
+    if (
+      seter_user.status !== UserStatusInRoom['OWNER'] ||
+      seter_user.status !== UserStatusInRoom['ADMIN']
+    ) {
+      throw new Error('You are not allowed to kick users');
+    }
+    await this.prisma.roomUser.delete({
+      where: {
+        id: target_user.id,
+      },
+    });
+    this.cacheService.delete(`room:${roomId}`);
+  }
+  // the seter is oauthId of the user
   async setAdminForRoom(roomId: number, seter: string, target: string) {
     const room = await this.GetRoomById(roomId);
     const seter_user = room.roomuser.find(
