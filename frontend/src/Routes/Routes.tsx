@@ -24,7 +24,7 @@ export const routermin = createBrowserRouter(
 
       </Route>
       <Route path="/login" element={<Login />} />
-      <Route path="/Welcom" element={<Welcome />} />
+      <Route path="/Welcome" element={<Welcome />} />
     </Route>
   )
 );

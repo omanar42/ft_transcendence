@@ -1,5 +1,22 @@
+import { useEffect } from 'react';
 import Robot from './assets/Robot.png'
+import axios from 'axios';
 function Home() {
+
+
+  useEffect(()=>{
+    const fetchData = async ()=>{
+      try{
+        const response = await axios.get("http://localhost:3000/users/info");
+        console.log(response);
+      }
+      catch(error){
+        console.error(error);
+      }
+    }
+    fetchData();
+
+  },[])
   return (
     <div className="h-screen flex justify-center relative items-center text-white">
       <div className="w-140 flex gap-[10rem] ">
