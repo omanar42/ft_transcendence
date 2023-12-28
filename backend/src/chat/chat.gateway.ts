@@ -45,14 +45,18 @@ export class ChatGateway
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
-    await this.prisma.user.update({
-      where: {
-        username: client.handshake.headers.username.toString(),
-      },
-      data: {
-        socketId: client.id,
-      },
-    });
+    try {
+      await this.prisma.user.update({
+        where: {
+          username: client.handshake.headers.username.toString(),
+        },
+        data: {
+          socketId: client.id,
+        },
+      });
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
   afterInit() {
     this.logger.log('Initialized!');
