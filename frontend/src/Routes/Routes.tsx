@@ -14,7 +14,9 @@ import Chat from "../Components/Pages/Chat/Home/Chat";
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<MainLayout />}>
+      <Route path="home" element={<Home />} />
       <Route index element={<Home />} />
+
       <Route path="/chat" element={<ChatLayout />}>
         <Route index element={<Chat />} />
         <Route path="rooms" element={<Chaneels />} />
