@@ -1,0 +1,17 @@
+//message
+{
+    "content" : "l9laawi",
+    "roomId" : 1,
+    "username" : "omeslall34243"
+}
+//create roome
+{
+    "userName": "omeslall45566",
+    "roomName": "lala",
+    "roomType": "public"
+}
+//join room 
+{
+    "username" : "omeslall14178"
+    "roomId" : 1
+}
