@@ -2,9 +2,11 @@ import ChaneelsList from "./ChaneelsList";
 import MessageInput from "./MessageInput";
 import UserInfo from "./UserInfo";
 import CreateChannel from "./CreateChannel";
-import { useState } from "react";
-import Avatar from '../assets/avatar.jpeg';
+import { useEffect, useState } from "react";
+import io from "socket.io-client";
 
+
+export const socket = io("http://localhost:3000/chat");
 
 interface Channel {
   avatar: string; // assuming avatar is a string URL or similar
@@ -27,6 +29,8 @@ export default function Chaneels() {
 
     setChannelsList((list)=>[...list, chaneel]);
   }
+
+
   return (
     <div>
      
