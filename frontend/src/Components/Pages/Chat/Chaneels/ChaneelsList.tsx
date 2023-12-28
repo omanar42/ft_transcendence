@@ -60,7 +60,7 @@ function ChaneelsList({handeltoggelModal, List}) {
         </ul>
       </div>
       <button onClick={handeltoggelModal} className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]">
-        Create Chaneel
+        Create Room
         <IoIosAddCircleOutline className="text-4xl" />
       </button>
 

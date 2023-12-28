@@ -26,23 +26,35 @@ function InputBox({value, children, placeholder, type, custom, onChange }: Input
   );
 }
 
+function SelectType({setType, type}){
+
+  return(<select value={type} className="text-black outline-none" onChange={(event)=>setType(event.target.value)}>
+    <option value={"public"}>Public</option>
+    <option value={"Protected"}>Protected</option>
+    <option value={"Private"}>Private</option>
+  </select>)
+}
+
 function CreateChannel({ sendChannelComp, CloseModal }) {
   const [channelName, setChannelName] = useState("");
-  const [isProtected, setIsProtected] = useState(false);
+  const [Roomtype, setRoomtype] = useState("");
 
   const handlSubmit = (event) => {
 
     event.preventDefault();
-
-    const channel = {
-      avatar: Avatar,
-      message: "",
-      time: "",
-      username: channelName,
-    };
-    sendChannelComp(channel);
-    CloseModal();
+    if (channelName !== ""){
+      const channel = {
+        avatar: Avatar,
+        message: "",
+        time: "",
+        username: channelName,
+      };
+      sendChannelComp(channel);
+      CloseModal();
+    }
+  
   };
+
 
   return (
     <div className="modal flex justify-center items-center">
@@ -50,19 +62,19 @@ function CreateChannel({ sendChannelComp, CloseModal }) {
         onSubmit={handlSubmit}
         className="w-3/6 h-3/6  flex relative flex-col items-center border-2 bg-dark-100 rounded-3xl justify-around border-white border-opacity-20"
       >
-        {/* <button
+        <button
           onClick={CloseModal}
           className=" absolute top-[-3.5rem] left-[0.3rem] text-[7rem] text-pink-100"
         >
           &times;
-        </button> */}
+        </button>
         <h1 className="text-6xl uppercase font-bold pt-5 pb-10 ">
-          Create new channel
+          Create new Room
         </h1>
         <InputBox
-          placeholder="Name your chaneel..."
+          placeholder="Name your Room..."
           type="text"
-          custom=""
+          custom="outline-none font-bold"
           onChange={(event) => {
             setChannelName(event.target.value)
             console.log(channelName);
@@ -70,13 +82,14 @@ function CreateChannel({ sendChannelComp, CloseModal }) {
           }
           value={channelName}
         >
-          Channel Name
+          Room Name
         </InputBox>
-        <InputBox placeholder="" type="checkbox" custom="h-[2.4rem] " onChange={()=>setIsProtected(!isProtected)}>
-          Protected
-        </InputBox>
-        {isProtected &&
-          <InputBox placeholder="Enter your password" type="password" custom="">
+        <div className="flex w-10/12  text-4xl justify-between">
+          <h1>Room Type</h1>
+        <SelectType setType={setRoomtype} type={Roomtype}/>
+        </div>
+        {Roomtype === "Protected" &&
+          <InputBox placeholder="Enter your password" type="password" custom="outline-none font-bold">
             Password
           </InputBox>
         }
