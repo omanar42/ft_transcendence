@@ -294,6 +294,15 @@ export class ChatService {
       }
       throw new Error('Room type not correct');
     }
+    this.prisma.user.update({
+      where: {
+        username: createRoomDto.userName,
+      },
+      data: {
+        socketId: client.id,
+      },
+    });
+    this.cacheService.delete(`user:${createRoomDto.userName}`);
     const room = await this.prisma.room.create({
       data: {
         name: createRoomDto.roomName,
