@@ -30,6 +30,8 @@ services:
       - transcendence
     ports:
       - 3000:3000
+      - 5555:5555
+
   client:
     image: client
     container_name: client
