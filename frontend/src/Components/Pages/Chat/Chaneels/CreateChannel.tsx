@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./CreateChannel.css";
 import Avatar from "../assets/avatar.jpeg";
+import { socket } from "./Chaneels";
 
 interface InputBox {
   value?: string;
@@ -9,6 +10,13 @@ interface InputBox {
   custom: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   children: string;
+}
+
+interface createRoom{
+  userName: string;
+  roomName: string;
+  roomType: string;
+  roomPassword?: string;
 }
 
 function InputBox({value, children, placeholder, type, custom, onChange }: InputBox) {
@@ -36,26 +44,31 @@ function SelectType({setType, type}){
 }
 
 function CreateChannel({ sendChannelComp, CloseModal }) {
-  const [channelName, setChannelName] = useState("");
+  const [RoomName, setRoomName] = useState("");
   const [Roomtype, setRoomtype] = useState("");
 
   const handlSubmit = (event) => {
 
     event.preventDefault();
-    if (channelName !== ""){
-      const channel = {
-        avatar: Avatar,
-        message: "",
-        time: "",
-        username: channelName,
+    if (RoomName !== ""){
+      const Room:createRoom = {
+        userName: "",
+        roomName: RoomName,
+        roomType: Roomtype,
       };
-      sendChannelComp(channel);
+      socket.emit('createRoom', Room);
+      // sendChannelComp(Room);
       CloseModal();
     }
   
   };
 
-
+  useEffect(()=>{
+    socket.on("roomCreated", (room)=>{
+      sendChannelComp(room);
+      console.log(room);
+    })
+  },[])
   return (
     <div className="modal flex justify-center items-center">
       <form
@@ -76,11 +89,11 @@ function CreateChannel({ sendChannelComp, CloseModal }) {
           type="text"
           custom="outline-none font-bold"
           onChange={(event) => {
-            setChannelName(event.target.value)
-            console.log(channelName);
+            setRoomName(event.target.value)
+            console.log(RoomName);
           }
           }
-          value={channelName}
+          value={RoomName}
         >
           Room Name
         </InputBox>
