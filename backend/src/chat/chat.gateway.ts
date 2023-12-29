@@ -23,7 +23,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 @WebSocketGateway({
   port: 3000,
   cors: {
-    origin: 'http://localhost:5173',
+    origin: 'http://127.0.0.1:5173',
+    method: ["GET", "POST"],
   },
   namespace: 'chat',
 })

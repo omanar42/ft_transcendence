@@ -1,14 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Robot from './assets/Robot.png'
 import axios from 'axios';
+import { useContext } from 'react';
+import LoginInfo from '../../../Contexts/LoginContext';
+
 function Home() {
-
-
+  const {userInfo, setuserInfo} = useContext(LoginInfo);
+  
   useEffect(()=>{
     const fetchData = async ()=>{
       try{
-        const response = await axios.get("http://localhost:3000/users/info");
-        console.log(response);
+        const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+        setuserInfo((prevstate)=>({
+          ...prevstate,
+          avatar:response.data.avatar,
+          fullname:response.data.fullname,
+          status:response.data.status,
+          username:response.data.username,
+        }))
+
       }
       catch(error){
         console.error(error);
@@ -16,7 +26,13 @@ function Home() {
     }
     fetchData();
 
+
   },[])
+
+  // useEffect(()=>{
+  //     console.log(userInfo);
+  // }, [userInfo])
+
   return (
     <div className="h-screen flex justify-center relative items-center text-white">
       <div className="w-140 flex gap-[10rem] ">
