@@ -24,7 +24,7 @@ export default function Chaneels() {
     const fetchRooms = async ()=>{
       try{
         const response =  await axios.get("http://127.0.0.1:3000/chat/rooms", {withCredentials: true});
-        console.log(response.data);
+        setChannelsList(response.data);
       }
       catch(error){
         console.error(error);
