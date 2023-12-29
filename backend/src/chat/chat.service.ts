@@ -9,6 +9,7 @@ import {
   CreateMessageDto,
   CreateRoomDto,
   JoinRoomDto,
+  Room_Front_Dto,
 } from './dto/create-message.dto';
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { RoomType, UserStatusInRoom } from '@prisma/client';
@@ -39,17 +40,27 @@ export class ChatService {
   //   });
   // }
   // }
-  async convertRoomToRoom_Front(room_front: any, room_back: any) {
-    const room_Front = {
-      avatar: room_front.avatar,
-      message: room_front.message,
-      time: room_front.time,
-      roomName: room_back.name,
-      roomType: room_back.type,
-      roomPassword: room_back.hashedPass,
-      userName: room_front.userName,
-      roomId: room_back.id,
-    };
+  async getRooms() {
+    // to do : test this function
+    const user = await this.GetUserByUsername('admin');
+    const rooms = user.rooms;
+    const rooms_front = [];
+    for (const room of rooms) {
+      const room_front = await this.convertRoomToRoom_Front(room);
+      rooms_front.push(room_front);
+    }
+    return rooms_front;
+  }
+
+  async convertRoomToRoom_Front(room_back: any) {
+    const room_Front = new Room_Front_Dto();
+    room_Front.Avatar = room_back.avatar;
+    // eslint-disable-next-line prettier/prettier
+    room_Front.time = room_back.createdAt.hour + ':' + room_back.createdAt.minute;
+    room_Front.roomName = room_back.name;
+    room_Front.roomType = room_back.type;
+    room_Front.roomId = room_back.id;
+
     return room_Front;
   }
   async GetRoomById(roomId: number) {
@@ -82,6 +93,9 @@ export class ChatService {
     const user = await this.prisma.user.findUnique({
       where: {
         username: username,
+      },
+      include: {
+        rooms: true,
       },
     });
     if (!user) {

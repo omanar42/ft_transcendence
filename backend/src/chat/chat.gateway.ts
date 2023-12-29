@@ -97,11 +97,12 @@ export class ChatGateway
     try {
       const room = await this.messagesService.createRoom(client, createRoomDto);
       // this.server.to(room.id.toString()).emit('roomCreated', room);
-      const room_front = this.messagesService.convertRoomToRoom_Front(
-        createRoomDto,
-        room,
-      );
-      this.server.emit('roomCreated', room_front);
+      // const room_front = await this.messagesService.convertRoomToRoom_Front(
+      //   createRoomDto,
+      //   room,
+      // );
+      // console.log(room_front);
+      this.server.emit('roomCreated', room); //todo : room_front after the function convertRoomToRoom_Front is done
     } catch (error) {
       this.logger.log(error);
     }
