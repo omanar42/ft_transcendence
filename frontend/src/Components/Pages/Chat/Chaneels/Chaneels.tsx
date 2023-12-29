@@ -4,14 +4,13 @@ import UserInfo from "./UserInfo";
 import CreateChannel from "./CreateChannel";
 import { useEffect, useState } from "react";
 import { Room } from "./ChaneelsList";
+import axios from "axios";
 
 
-
-export const List:Array<Room> = [];
 
 export default function Chaneels() {
   const [toggelModal, setToggelModal] = useState(false);
-  const [channelsList, setChannelsList] = useState(List);
+  const [channelsList, setChannelsList] = useState<Room[]>([]);
 
   const handeltoggelModal = () =>{
     setToggelModal(!toggelModal);
@@ -21,7 +20,17 @@ export default function Chaneels() {
     setChannelsList((list)=>[...list, Room]);
   }
 
-
+  useEffect(()=>{
+    const fetchRooms = async ()=>{
+      try{
+        const response =  await axios.get("127.0.0.1:3000/chat/Rooms");
+        console.log(response);
+      }
+      catch(error){
+        console.error(error);
+      }
+    }
+  },[])
   return (
     <div>
      
