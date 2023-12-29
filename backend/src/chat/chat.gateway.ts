@@ -102,7 +102,12 @@ export class ChatGateway
       //   room,
       // );
       // console.log(room_front);
-      this.server.emit('roomCreated', room); //todo : room_front after the function convertRoomToRoom_Front is done
+      console.log(`==========>${room}`);
+      
+      this.server.emit(
+        'roomCreated',
+        await this.messagesService.convertRoomToRoom_Front(room),
+      ); //todo : room_front after the function convertRoomToRoom_Front is done
     } catch (error) {
       this.logger.log(error);
     }

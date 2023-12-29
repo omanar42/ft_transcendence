@@ -32,7 +32,7 @@ function ListChaneels({ avatar, message, time, roomName, roomType }: Room) {
   return (
     <li className="flex items-center justify-between mb-6 cursor-pointer">
       <div className="overflow-hidden flex items-center gap-5">
-        <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />
+        <img className="h-[5rem] rounded-full" src={Avatar} alt="avatar" />
         <h1 className="text-2xl pb-2 font-extrabold">{roomName}</h1>
       </div>
       <div className="flex flex-col ml-10">
