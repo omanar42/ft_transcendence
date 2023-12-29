@@ -40,10 +40,14 @@ export class ChatService {
   //   });
   // }
   // }
-  async getRooms() {
+  async getRooms(oauthId: string) {
     // to do : test this function
-    const user = await this.GetUserByUsername('admin');
+    console.log(oauthId);
+    const user = await this.GetUserByOauthId(oauthId);
     const rooms = user.rooms;
+    if (!rooms) {
+      return [];
+    }
     const rooms_front = [];
     for (const room of rooms) {
       const room_front = await this.convertRoomToRoom_Front(room);
@@ -63,6 +67,28 @@ export class ChatService {
 
     return room_Front;
   }
+
+  async GetUserByOauthId(oauthId: string) {
+    const cacheKey = `user:${oauthId}`;
+    const cachedUser = this.cacheService.get(cacheKey);
+    if (cachedUser) {
+      return cachedUser;
+    }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        oauthId: oauthId,
+      },
+      include: {
+        rooms: true,
+      },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    this.cacheService.set(cacheKey, user);
+    return user;
+  }
+
   async GetRoomById(roomId: number) {
     const cacheKey = `room:${roomId}`;
     const cachedRoom = this.cacheService.get(cacheKey);

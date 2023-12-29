@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Response, Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatService } from './chat.service';
 import { AtGuard } from 'src/auth/guards';
-
 
 @Controller('chat')
 @UseGuards(AtGuard)
@@ -12,12 +12,13 @@ export class ChatController {
     private readonly chatService: ChatService,
     private prisma: PrismaService,
   ) {}
-  @Get('Rooms')
+  @Get('rooms')
   async getRooms(@Req() req) {
-    console.log(req.user.sub);
-    return await this.chatService.getRooms();
+    console.log('==========zaaaaaaaaaaaaaaaaabi===========');
+    // return '==========zaaaaaaaaaaaaaaaaabi===========';
+    // console.log(req.user.sub.toString());
+    return await this.chatService.getRooms(req.user.sub.toString());
   }
   @Post('CreateRoom')
-  async createRoom() {
-  }
+  async createRoom() {}
 }

@@ -24,7 +24,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    method: ["GET", "POST"],
+    method: ['GET', 'POST'],
   },
   namespace: 'chat',
 })
@@ -97,11 +97,11 @@ export class ChatGateway
     try {
       const room = await this.messagesService.createRoom(client, createRoomDto);
       // this.server.to(room.id.toString()).emit('roomCreated', room);
-      const room_front = await this.messagesService.convertRoomToRoom_Front(
-        createRoomDto,
-        room,
-      );
-      console.log(room_front);
+      // const room_front = await this.messagesService.convertRoomToRoom_Front(
+      //   createRoomDto,
+      //   room,
+      // );
+      // console.log(room_front);
       this.server.emit('roomCreated', room); //todo : room_front after the function convertRoomToRoom_Front is done
     } catch (error) {
       this.logger.log(error);
