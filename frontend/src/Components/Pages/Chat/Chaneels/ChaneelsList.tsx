@@ -20,15 +20,15 @@ function ListAvatars({ avatar }: ListAvatars) {
 
 export interface Room {
   avatar: string; // assuming avatar is a string URL or similar
-  message: string;
+  message?: string;
   time: string;
   roomName: string;
   roomType: string;
   roomPassword?: string;
-  userName:string;
+  userName?:string;
 }
 
-function ListChaneels({ avatar, message, time, roomName, roomType }: Room) {
+function ListChaneels({ avatar, time, roomName, roomType }: Room) {
   return (
     <li className="flex items-center justify-between mb-6 cursor-pointer">
       <div className="overflow-hidden flex items-center gap-5">
@@ -69,7 +69,6 @@ function ChaneelsList({ handeltoggelModal, List }) {
         {List.map((conv) => (
           <ListChaneels
             avatar={conv.avatar}
-            message={conv.message}
             time={conv.time}
             roomName={conv.roomName}
             roomType={conv.roomType}

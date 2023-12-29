@@ -3,7 +3,10 @@ import "./CreateChannel.css";
 import Avatar from "../assets/avatar.jpeg";
 import { Room } from "./ChaneelsList";
 import LoginInfo from "../../../../Contexts/LoginContext";
-import { socket } from "../../../../App";
+// import { socket } from "../../../../App";\
+import io from "socket.io-client"
+
+const socket = io("127.0.0.1:3000/chat");
 
 interface InputBox {
   value?: string;
