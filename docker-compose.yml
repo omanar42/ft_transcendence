@@ -31,10 +31,6 @@ services:
     ports:
       - 3000:3000
       - 5555:5555
-<<<<<<< HEAD
-
-=======
->>>>>>> 0823c2ff99af29dd2cfde1d6fe7428fbbf11cdd6
   client:
     image: client
     container_name: client

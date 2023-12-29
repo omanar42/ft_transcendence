@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./CreateChannel.css";
 import Avatar from "../assets/avatar.jpeg";
-import { socket } from "./Chaneels";
+import { Room } from "./ChaneelsList";
 
 interface InputBox {
   value?: string;
@@ -12,14 +12,14 @@ interface InputBox {
   children: string;
 }
 
-interface createRoom{
-  userName: string;
-  roomName: string;
-  roomType: string;
-  roomPassword?: string;
-}
-
-function InputBox({value, children, placeholder, type, custom, onChange }: InputBox) {
+function InputBox({
+  value,
+  children,
+  placeholder,
+  type,
+  custom,
+  onChange,
+}: InputBox) {
   return (
     <div className="flex w-10/12 justify-between items-center">
       <h2 className="text-4xl uppercase">{children}</h2>
@@ -34,41 +34,45 @@ function InputBox({value, children, placeholder, type, custom, onChange }: Input
   );
 }
 
-function SelectType({setType, type}){
-
-  return(<select value={type} className="text-black outline-none" onChange={(event)=>setType(event.target.value)}>
-    <option value={"public"}>Public</option>
-    <option value={"Protected"}>Protected</option>
-    <option value={"Private"}>Private</option>
-  </select>)
+function SelectType({ setType, type }) {
+  return (
+    <select
+      value={type}
+      className="text-black outline-none"
+      onChange={(event) => setType(event.target.value)}
+    >
+      <option value={"Public"}>Public</option>
+      <option value={"Protected"}>Protected</option>
+      <option value={"Private"}>Private</option>
+    </select>
+  );
 }
 
-function CreateChannel({ sendChannelComp, CloseModal }) {
-  const [RoomName, setRoomName] = useState("");
-  const [Roomtype, setRoomtype] = useState("");
+function CreateChannel({ AddChannelToList, CloseModal }) {
+  const [roomName, setroomName] = useState("");
+  const [Roomtype, setRoomtype] = useState("Public");
+  const [roomPassword, setroomPassword] = useState("");
 
   const handlSubmit = (event) => {
-
     event.preventDefault();
-    if (RoomName !== ""){
-      const Room:createRoom = {
-        userName: "",
-        roomName: RoomName,
+    if (roomName !== "") {
+      if (Roomtype === "Protected" && !roomPassword) return null;
+      const Room: Room = {
+        avatar: Avatar, // assuming avatar is a string URL or similar
+        message: "Hello friends",
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+        roomName: roomName,
         roomType: Roomtype,
+        password: roomPassword,
       };
-      socket.emit('createRoom', Room);
-      // sendChannelComp(Room);
+      AddChannelToList(Room);
       CloseModal();
     }
-  
   };
 
-  useEffect(()=>{
-    socket.on("roomCreated", (room)=>{
-      sendChannelComp(room);
-      console.log(room);
-    })
-  },[])
   return (
     <div className="modal flex justify-center items-center">
       <form
@@ -89,24 +93,33 @@ function CreateChannel({ sendChannelComp, CloseModal }) {
           type="text"
           custom="outline-none font-bold"
           onChange={(event) => {
-            setRoomName(event.target.value)
-            console.log(RoomName);
-          }
-          }
-          value={RoomName}
+            setroomName(event.target.value);
+          }}
+          value={roomName}
         >
           Room Name
         </InputBox>
         <div className="flex w-10/12  text-4xl justify-between">
           <h1>Room Type</h1>
-        <SelectType setType={setRoomtype} type={Roomtype}/>
+          <SelectType setType={setRoomtype} type={Roomtype} />
         </div>
-        {Roomtype === "Protected" &&
-          <InputBox placeholder="Enter your password" type="password" custom="outline-none font-bold">
+        {Roomtype === "Protected" && (
+          <InputBox
+            placeholder="Enter your password"
+            type="password"
+            custom="outline-none font-bold"
+            onChange={(event) => {
+              setroomPassword(event.target.value);
+            }}
+            value={roomPassword}
+          >
             Password
           </InputBox>
-        }
-        <button type="submit" className="text-4xl uppercase font-bold  w-[20rem] bg-dark border-[2px] p-5 rounded-xl">
+        )}
+        <button
+          type="submit"
+          className="text-4xl uppercase font-bold  w-[20rem] bg-dark border-[2px] p-5 rounded-xl"
+        >
           Create
         </button>
       </form>
