@@ -3,18 +3,8 @@ import MessageInput from "./MessageInput";
 import UserInfo from "./UserInfo";
 import CreateChannel from "./CreateChannel";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { Room } from "./ChaneelsList";
 
-
-export const socket = io("http://localhost:3000/chat");
-
-interface Room {
-  avatar: string; // assuming avatar is a string URL or similar
-  message: string;
-  time: string;
-  roomName: string;
-  roomType: string;
-}
 
 
 export const List:Array<Room> = [];

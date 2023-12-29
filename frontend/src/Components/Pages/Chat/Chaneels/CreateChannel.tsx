@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./CreateChannel.css";
 import Avatar from "../assets/avatar.jpeg";
 import { Room } from "./ChaneelsList";
+import LoginInfo from "../../../../Contexts/LoginContext";
+import { socket } from "../../../../App";
 
 interface InputBox {
   value?: string;
@@ -52,6 +54,8 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
   const [roomName, setroomName] = useState("");
   const [Roomtype, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
+  
+  const {userInfo} = useContext(LoginInfo);
 
   const handlSubmit = (event) => {
     event.preventDefault();
@@ -66,13 +70,19 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
           new Date(Date.now()).getMinutes(),
         roomName: roomName,
         roomType: Roomtype,
-        password: roomPassword,
+        roomPassword: roomPassword,
+        userName: userInfo.username,
       };
+      socket.emit('createRoom', Room);
       AddChannelToList(Room);
       CloseModal();
     }
   };
-
+  useEffect(()=>{
+    socket.on("roomCreated", (Room)=>{
+      console.log(Room);
+    })
+  }, [socket])
   return (
     <div className="modal flex justify-center items-center">
       <form

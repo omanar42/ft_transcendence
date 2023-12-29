@@ -24,7 +24,8 @@ export interface Room {
   time: string;
   roomName: string;
   roomType: string;
-  password?: string;
+  roomPassword?: string;
+  userName:string;
 }
 
 function ListChaneels({ avatar, message, time, roomName, roomType }: Room) {
