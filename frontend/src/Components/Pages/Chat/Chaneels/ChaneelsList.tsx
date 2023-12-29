@@ -18,34 +18,30 @@ function ListAvatars({ avatar }: ListAvatars) {
   );
 }
 
-interface ListChaneels {
-  avatar: string;
-  username: string;
+export interface Room {
+  avatar: string; // assuming avatar is a string URL or similar
   message: string;
   time: string;
+  roomName: string;
+  roomType: string;
+  password?: string;
 }
 
-
-function ListChaneels({
-  avatar,
-  username,
-  message,
-  time,
-}: ListChaneels) {
+function ListChaneels({ avatar, message, time, roomName, roomType }: Room) {
   return (
-    <li className="flex items-center gap-5 mb-6">
-      <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />
-      <div className="overflow-hidden">
-        <h1 className="text-2xl pb-2 font-extrabold">{username}</h1>
-        <p className="text-xl">{message}</p>
+    <li className="flex items-center justify-between mb-6 cursor-pointer">
+      <div className="overflow-hidden flex items-center gap-5">
+        <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />
+        <h1 className="text-2xl pb-2 font-extrabold">{roomName}</h1>
       </div>
-      <span className="text-xl font-semibold">{time}</span>
+      <div className="flex flex-col ml-10">
+        <span className="text-xl font-semibold">{time}</span>
+        <span className="text-xl font-semibold">{roomType}</span>
+      </div>
     </li>
   );
 }
-function ChaneelsList({handeltoggelModal, List}) {
-
-
+function ChaneelsList({ handeltoggelModal, List }) {
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
@@ -60,19 +56,24 @@ function ChaneelsList({handeltoggelModal, List}) {
           ))}
         </ul>
       </div>
-      <button onClick={handeltoggelModal} className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]">
+      <button
+        onClick={handeltoggelModal}
+        className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]"
+      >
         Create Room
         <IoIosAddCircleOutline className="text-4xl" />
       </button>
 
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-          {List.map((conv)=>
-          <ListChaneels 
+        {List.map((conv) => (
+          <ListChaneels
             avatar={conv.avatar}
             message={conv.message}
             time={conv.time}
-            username={conv.username}
-          />)}
+            roomName={conv.roomName}
+            roomType={conv.roomType}
+          />
+        ))}
       </ul>
     </div>
   );

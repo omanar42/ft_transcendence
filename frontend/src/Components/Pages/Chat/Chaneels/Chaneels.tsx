@@ -8,15 +8,16 @@ import io from "socket.io-client";
 
 export const socket = io("http://localhost:3000/chat");
 
-interface Channel {
+interface Room {
   avatar: string; // assuming avatar is a string URL or similar
   message: string;
   time: string;
-  username: string;
+  roomName: string;
+  roomType: string;
 }
 
 
-export const List:Array<Channel> = [];
+export const List:Array<Room> = [];
 
 export default function Chaneels() {
   const [toggelModal, setToggelModal] = useState(false);
@@ -25,9 +26,9 @@ export default function Chaneels() {
   const handeltoggelModal = () =>{
     setToggelModal(!toggelModal);
   }
-  const AddChannelToList = (chaneel: Channel)=> {
+  const AddChannelToList = (Room: Room)=> {
 
-    setChannelsList((list)=>[...list, chaneel]);
+    setChannelsList((list)=>[...list, Room]);
   }
 
 
@@ -35,7 +36,7 @@ export default function Chaneels() {
     <div>
      
       <div className="bg-dark-100 h-[62rem] grid grid-cols-5 gap-x-2 mt-4">
-      { toggelModal && <CreateChannel sendChannelComp={AddChannelToList} CloseModal={()=>setToggelModal(false)} />}
+      { toggelModal && <CreateChannel AddChannelToList={AddChannelToList} CloseModal={()=>setToggelModal(false)} />}
         <ChaneelsList handeltoggelModal={handeltoggelModal} List={channelsList} />
         <MessageInput />
         <UserInfo />
