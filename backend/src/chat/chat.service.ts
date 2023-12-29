@@ -42,7 +42,8 @@ export class ChatService {
   // }
   async getRooms(oauthId: string) {
     // to do : test this function
-    console.log(oauthId);
+    // console.log(oauthId);
+    this.cacheService.delete(`user:${oauthId}`);
     const user = await this.GetUserByOauthId(oauthId);
     const rooms = user.rooms;
     if (!rooms) {
@@ -51,8 +52,10 @@ export class ChatService {
     const rooms_front = [];
     for (const room of rooms) {
       const room_front = await this.convertRoomToRoom_Front(room);
+
       rooms_front.push(room_front);
     }
+    console.log(rooms_front);
     return rooms_front;
   }
 
@@ -60,7 +63,7 @@ export class ChatService {
     const room_Front = new Room_Front_Dto();
     room_Front.Avatar = room_back.avatar;
     // eslint-disable-next-line prettier/prettier
-    room_Front.time = room_back.createdAt.hour + ':' + room_back.createdAt.minute;
+    room_Front.time = room_back.createdAt.hour + ':' + room_back.createdAt.minute;// udefined should be fixed
     room_Front.roomName = room_back.name;
     room_Front.roomType = room_back.type;
     room_Front.roomId = room_back.id;

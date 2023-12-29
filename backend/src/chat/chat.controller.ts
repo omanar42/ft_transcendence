@@ -14,7 +14,7 @@ export class ChatController {
   ) {}
   @Get('rooms')
   async getRooms(@Req() req) {
-    console.log('==========zaaaaaaaaaaaaaaaaabi===========');
+    // console.log('==========zaaaaaaaaaaaaaaaaabi===========');
     // return '==========zaaaaaaaaaaaaaaaaabi===========';
     // console.log(req.user.sub.toString());
     return await this.chatService.getRooms(req.user.sub.toString());
