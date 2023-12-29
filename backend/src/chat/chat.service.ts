@@ -39,6 +39,19 @@ export class ChatService {
   //   });
   // }
   // }
+  async convertRoomToRoom_Front(room_front: any, room_back: any) {
+    const room_Front = {
+      avatar: room_front.avatar,
+      message: room_front.message,
+      time: room_front.time,
+      roomName: room_back.name,
+      roomType: room_back.type,
+      roomPassword: room_back.hashedPass,
+      userName: room_front.userName,
+      roomId: room_back.id,
+    };
+    return room_Front;
+  }
   async GetRoomById(roomId: number) {
     const cacheKey = `room:${roomId}`;
     const cachedRoom = this.cacheService.get(cacheKey);
