@@ -9,6 +9,7 @@ import {
   CreateMessageDto,
   CreateRoomDto,
   JoinRoomDto,
+  Room_Front_Dto,
 } from './dto/create-message.dto';
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { RoomType, UserStatusInRoom } from '@prisma/client';
@@ -39,19 +40,55 @@ export class ChatService {
   //   });
   // }
   // }
-  async convertRoomToRoom_Front(room_front: any, room_back: any) {
-    const room_Front = {
-      avatar: room_front.avatar,
-      message: room_front.message,
-      time: room_front.time,
-      roomName: room_back.name,
-      roomType: room_back.type,
-      roomPassword: room_back.hashedPass,
-      userName: room_front.userName,
-      roomId: room_back.id,
-    };
+  async getRooms(oauthId: string) {
+    // to do : test this function
+    console.log(oauthId);
+    const user = await this.GetUserByOauthId(oauthId);
+    const rooms = user.rooms;
+    if (!rooms) {
+      return [];
+    }
+    const rooms_front = [];
+    for (const room of rooms) {
+      const room_front = await this.convertRoomToRoom_Front(room);
+      rooms_front.push(room_front);
+    }
+    return rooms_front;
+  }
+
+  async convertRoomToRoom_Front(room_back: any) {
+    const room_Front = new Room_Front_Dto();
+    room_Front.Avatar = room_back.avatar;
+    // eslint-disable-next-line prettier/prettier
+    room_Front.time = room_back.createdAt.hour + ':' + room_back.createdAt.minute;
+    room_Front.roomName = room_back.name;
+    room_Front.roomType = room_back.type;
+    room_Front.roomId = room_back.id;
+
     return room_Front;
   }
+
+  async GetUserByOauthId(oauthId: string) {
+    const cacheKey = `user:${oauthId}`;
+    const cachedUser = this.cacheService.get(cacheKey);
+    if (cachedUser) {
+      return cachedUser;
+    }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        oauthId: oauthId,
+      },
+      include: {
+        rooms: true,
+      },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    this.cacheService.set(cacheKey, user);
+    return user;
+  }
+
   async GetRoomById(roomId: number) {
     const cacheKey = `room:${roomId}`;
     const cachedRoom = this.cacheService.get(cacheKey);
@@ -82,6 +119,9 @@ export class ChatService {
     const user = await this.prisma.user.findUnique({
       where: {
         username: username,
+      },
+      include: {
+        rooms: true,
       },
     });
     if (!user) {

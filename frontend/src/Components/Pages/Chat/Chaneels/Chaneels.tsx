@@ -23,13 +23,14 @@ export default function Chaneels() {
   useEffect(()=>{
     const fetchRooms = async ()=>{
       try{
-        const response =  await axios.get("127.0.0.1:3000/chat/Rooms");
-        console.log(response);
+        const response =  await axios.get("http://127.0.0.1:3000/chat/rooms", {withCredentials: true});
+        console.log(response.data);
       }
       catch(error){
         console.error(error);
       }
     }
+    fetchRooms();
   },[])
   return (
     <div>
