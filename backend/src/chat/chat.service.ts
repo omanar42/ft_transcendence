@@ -285,7 +285,7 @@ export class ChatService {
   ) {
     const user = await this.GetUserByUsername(createRoomDto.userName);
     const types = ['public', 'private', 'protected'];
-    if (!types.includes(createRoomDto.roomType)) {
+    if (!types.includes(createRoomDto.roomType.toLocaleLowerCase())) {
       if (
         createRoomDto.roomType === 'protected' &&
         (!createRoomDto.roomPassword || createRoomDto.roomPassword === '')
