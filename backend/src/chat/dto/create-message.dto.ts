@@ -15,6 +15,7 @@ export class CreateRoomDto {
   roomName: string;
   roomType: string;
   roomPassword?: string;
+  roomId?: number;
 }
 
 export class JoinRoomDto {
