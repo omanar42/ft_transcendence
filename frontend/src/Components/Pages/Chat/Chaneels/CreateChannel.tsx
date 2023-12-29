@@ -74,15 +74,23 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
         userName: userInfo.username,
       };
       socket.emit('createRoom', Room);
-      AddChannelToList(Room);
       CloseModal();
     }
   };
-  useEffect(()=>{
-    socket.on("roomCreated", (Room)=>{
-      console.log(Room);
-    })
-  }, [socket])
+  useEffect(() => {
+    const handleRoomCreated = (Room) => {
+      AddChannelToList(Room);
+       
+    };
+
+    socket.off("roomCreated").on("roomCreated", handleRoomCreated);
+
+    // return () => {
+    //     // Use the same function reference for adding and removing the listener
+    //     socket.off("roomCreated", handleRoomCreated);
+    // };
+}, []); // Empty dependency array ensures this runs only once when the component mounts
+
   return (
     <div className="modal flex justify-center items-center">
       <form
