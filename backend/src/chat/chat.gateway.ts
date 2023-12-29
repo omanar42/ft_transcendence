@@ -97,7 +97,12 @@ export class ChatGateway
     try {
       const room = await this.messagesService.createRoom(client, createRoomDto);
       // this.server.to(room.id.toString()).emit('roomCreated', room);
-      this.server.emit('roomCreated', room);
+      const room_front = await this.messagesService.convertRoomToRoom_Front(
+        createRoomDto,
+        room,
+      );
+      console.log(room_front);
+      this.server.emit('roomCreated', room_front);
     } catch (error) {
       this.logger.log(error);
     }
