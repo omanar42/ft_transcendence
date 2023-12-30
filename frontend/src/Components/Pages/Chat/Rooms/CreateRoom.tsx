@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
-import "./CreateChannel.css";
+import "./CreateRoom.css";
 import Avatar from "../assets/avatar.jpeg";
-import { Room } from "./ChaneelsList";
+import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
 // import { socket } from "../../../../App";\
-import io from "socket.io-client"
+import io from "socket.io-client";
 
 const socket = io("127.0.0.1:3000/chat");
 
@@ -53,12 +53,12 @@ function SelectType({ setType, type }) {
   );
 }
 
-function CreateChannel({ AddChannelToList, CloseModal }) {
+function CreateRoom({ AddChannelToList, CloseModal }) {
   const [roomName, setroomName] = useState("");
   const [Roomtype, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
-  
-  const {userInfo} = useContext(LoginInfo);
+
+  const { userInfo } = useContext(LoginInfo);
 
   const handlSubmit = (event) => {
     event.preventDefault();
@@ -76,14 +76,13 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
         roomPassword: roomPassword,
         userName: userInfo.username,
       };
-      socket.emit('createRoom', Room);
+      socket.emit("createRoom", Room);
       CloseModal();
     }
   };
   useEffect(() => {
     const handleRoomCreated = (Room) => {
       AddChannelToList(Room);
-       
     };
 
     socket.off("roomCreated").on("roomCreated", handleRoomCreated);
@@ -92,7 +91,7 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
     //     // Use the same function reference for adding and removing the listener
     //     socket.off("roomCreated", handleRoomCreated);
     // };
-}, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   return (
     <div className="modal flex justify-center items-center">
@@ -148,4 +147,4 @@ function CreateChannel({ AddChannelToList, CloseModal }) {
   );
 }
 
-export default CreateChannel;
+export default CreateRoom;

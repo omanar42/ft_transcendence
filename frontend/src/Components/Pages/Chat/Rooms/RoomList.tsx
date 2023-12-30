@@ -1,7 +1,7 @@
 import Avatar from "../assets/avatar.jpeg";
-import "./ChaneelsList.css";
+import "./RoomList.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import CreateChannel from "./CreateChannel";
+import CreateRoom from "./CreateRoom";
 import { useState } from "react";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
@@ -25,10 +25,10 @@ export interface Room {
   roomName: string;
   roomType: string;
   roomPassword?: string;
-  userName?:string;
+  userName?: string;
 }
 
-function ListChaneels({ avatar, time, roomName, roomType }: Room) {
+function ListRooms({ avatar, time, roomName, roomType }: Room) {
   return (
     <li className="flex items-center justify-between mb-6 cursor-pointer">
       <div className="overflow-hidden flex items-center gap-5">
@@ -42,7 +42,8 @@ function ListChaneels({ avatar, time, roomName, roomType }: Room) {
     </li>
   );
 }
-function ChaneelsList({ handeltoggelModal, List }) {
+function RoomList({ handeltoggelModal, List }) {
+  const reversList = [...List].reverse();
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
@@ -59,15 +60,15 @@ function ChaneelsList({ handeltoggelModal, List }) {
       </div>
       <button
         onClick={handeltoggelModal}
-        className="w-11/12 flex items-center justify-center gap-10 bg-dark h-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]"
+        className="w-11/12 flex items-center justify-center gap-10 bg-dark flex-shrink-0 flex-grow-0 basis-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]"
       >
         Create Room
         <IoIosAddCircleOutline className="text-4xl" />
       </button>
 
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {List.map((conv) => (
-          <ListChaneels
+        {reversList.map((conv) => (
+          <ListRooms
             avatar={conv.avatar}
             time={conv.time}
             roomName={conv.roomName}
@@ -79,4 +80,4 @@ function ChaneelsList({ handeltoggelModal, List }) {
   );
 }
 
-export default ChaneelsList;
+export default RoomList;
