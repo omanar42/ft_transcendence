@@ -1,7 +1,7 @@
 export class Message {
 
-    content: string;
-    username: string;
+    message: string;
+    userName: string;
     roomId: number;
 }
 

@@ -56,7 +56,6 @@ export class ChatService {
         rooms_front.push(room_front);
       }
     }
-    console.log(rooms_front);
     return rooms_front;
   }
 
@@ -266,7 +265,7 @@ export class ChatService {
   }
   async createMessage(client: Socket, createMessageDto: CreateMessageDto) {
     const room = await this.GetRoomById(createMessageDto.roomId);
-    const sender = await this.GetUserByUsername(createMessageDto.username);
+    const sender = await this.GetUserByUsername(createMessageDto.userName);
     const sender_rommuser = room.roomuser.find(
       (roomuser) => roomuser.userId === sender.oauthId,
     );
@@ -278,7 +277,7 @@ export class ChatService {
     }
     const message = await this.prisma.message.create({
       data: {
-        content: createMessageDto.content,
+        content: createMessageDto.message,
         roomId: createMessageDto.roomId,
         userId: sender.oauthId,
       },
@@ -298,7 +297,7 @@ export class ChatService {
   }
 
   async identifyUser(createMessageDto: CreateMessageDto): Promise<boolean> {
-    const user = await this.GetUserByUsername(createMessageDto.username);
+    const user = await this.GetUserByUsername(createMessageDto.userName);
     const room = await this.GetRoomById(createMessageDto.roomId);
     const isUserInRoom = room.roomuser.some(
       (roomuser) => roomuser.userId === user.oauthId,
@@ -310,7 +309,7 @@ export class ChatService {
     @MessageBody() direct: CreateDirectMessageDto,
   ) {
     // use this function directly after accept friend request
-    const user_1 = await this.GetUserByUsername(direct.username);
+    const user_1 = await this.GetUserByUsername(direct.userName);
     const user_2 = await this.GetUserByUsername(direct.username_target);
     const existingRoom = await this.prisma.room.findFirst({
       where: {
