@@ -52,8 +52,9 @@ export class ChatService {
     const rooms_front = [];
     for (const room of rooms) {
       const room_front = await this.convertRoomToRoom_Front(room);
-
-      rooms_front.push(room_front);
+      if (room_front.roomType !== 'DIRECT_MESSAGE') {
+        rooms_front.push(room_front);
+      }
     }
     console.log(rooms_front);
     return rooms_front;
