@@ -1,8 +1,8 @@
 import Avatar from "../assets/avatar.jpeg";
 import "./RoomList.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
-import CreateRoom from "./CreateRoom";
-import { useState } from "react";
+import { useContext } from "react";
+import { RoomContext} from "../../../../Contexts/RoomContext";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
@@ -26,11 +26,20 @@ export interface Room {
   roomType: string;
   roomPassword?: string;
   userName?: string;
+  roomId: string;
 }
 
-function ListRooms({ avatar, time, roomName, roomType }: Room) {
+function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
+  const {setCurrentRoom} = useContext(RoomContext);
+
   return (
-    <li className="flex items-center justify-between mb-6 cursor-pointer">
+    <li 
+    className="flex items-center justify-between mb-6 cursor-pointer"
+    key={roomId}
+    onClick={()=>{
+      setCurrentRoom(roomId)
+    }}
+    >
       <div className="overflow-hidden flex items-center gap-5">
         <img className="h-[5rem] rounded-full" src={Avatar} alt="avatar" />
         <h1 className="text-2xl pb-2 font-extrabold">{roomName}</h1>
@@ -73,6 +82,7 @@ function RoomList({ handeltoggelModal, List }) {
             time={conv.time}
             roomName={conv.roomName}
             roomType={conv.roomType}
+            roomId={conv.roomId}
           />
         ))}
       </ul>

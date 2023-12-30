@@ -6,7 +6,7 @@ import LoginInfo from "../../../../Contexts/LoginContext";
 // import { socket } from "../../../../App";\
 import io from "socket.io-client";
 
-const socket = io("127.0.0.1:3000/chat");
+export const socket = io("127.0.0.1:3000/chat");
 
 interface InputBox {
   value?: string;
@@ -82,6 +82,7 @@ function CreateRoom({ AddChannelToList, CloseModal }) {
   };
   useEffect(() => {
     const handleRoomCreated = (Room) => {
+      console.log(Room);
       AddChannelToList(Room);
     };
 
