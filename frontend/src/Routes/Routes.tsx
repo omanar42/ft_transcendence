@@ -8,8 +8,8 @@ import Login from "../Components/Pages/Login/Login";
 import Welcome from "../Components/Pages/Welcome/Welcome";
 import MainLayout from "../Layouts/MainLayout";
 import ChatLayout from "../Layouts/ChatLayout";
-import Chaneels from "../Components/Pages/Chat/Chaneels/Chaneels";
 import Chat from "../Components/Pages/Chat/Home/Chat";
+import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
@@ -19,9 +19,8 @@ export const routermin = createBrowserRouter(
 
       <Route path="/chat" element={<ChatLayout />}>
         <Route index element={<Chat />} />
-        <Route path="rooms" element={<Chaneels />} />
+        <Route path="rooms" element={<Rooms />} />
         <Route path="chat" element={<Chat />} />
-
       </Route>
       <Route path="/login" element={<Login />} />
       <Route path="/Welcome" element={<Welcome />} />
