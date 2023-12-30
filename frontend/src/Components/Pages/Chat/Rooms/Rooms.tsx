@@ -41,7 +41,15 @@ export default function Rooms() {
           />
         )}
         <RoomList handeltoggelModal={handeltoggelModal} List={channelsList} />
-        <MessageInput />
+        <MessageInpinterface messageData{
+  message:string;
+  roomId:string;
+}
+interface messageData{
+  message:string;
+  roomId:string;
+}
+ut />
         <RoomMembers />
       </div>
       </RoomContextProvider>

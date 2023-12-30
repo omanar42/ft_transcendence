@@ -9,7 +9,12 @@ import { socket } from "../Rooms/CreateRoom";
 interface messageList {
   
   message:string,
-  time:string,
+}
+
+interface roomMessage{
+  message:string;
+  roomId: number;
+  userName: string;
 }
 
 function MessageInput() {
@@ -19,18 +24,15 @@ function MessageInput() {
   const {userInfo} = useContext(LoginInfo);
   const sendMessage = () => {
     if (currentMessage !== "") {
-      const messageData = {
+      const messageData:roomMessage = {
         message: currentMessage,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
           roomId:currentRoom,
           userName: userInfo.username,
       };
       setMessageList((list)=>[...list, messageData]);
       setcurrentMessage("");
       socket.emit("message" ,messageData);
+      console.log(messageData);
     }
   };
 
@@ -47,7 +49,7 @@ function MessageInput() {
               <p>{message.message}</p>
             </div>
             <div className="text-lg">
-              <p>{message.time}</p>
+              <p></p>
             </div>
           </div>)
         })}
