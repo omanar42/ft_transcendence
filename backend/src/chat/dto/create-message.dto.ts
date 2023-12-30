@@ -1,9 +1,9 @@
 import { Message } from '../entities/message.entity';
 
 export class CreateMessageDto extends Message {
-  content: string;
+  message: string;
   roomId: number;
-  username: string;
+  userName: string;
 }
 
 export class CreateDirectMessageDto extends Message {
