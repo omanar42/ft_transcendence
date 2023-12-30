@@ -5,6 +5,7 @@ import CreateRoom from "./CreateRoom";
 import { useEffect, useState } from "react";
 import { Room } from "./RoomList";
 import axios from "axios";
+import { RoomContextProvider } from "../../../../Contexts/RoomContext";
 
 export default function Rooms() {
   const [toggelModal, setToggelModal] = useState(false);
@@ -16,7 +17,6 @@ export default function Rooms() {
   const AddChannelToList = (Room: Room) => {
     setChannelsList((list) => [...list, Room]);
   };
-
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -32,6 +32,7 @@ export default function Rooms() {
   }, []);
   return (
     <div>
+      <RoomContextProvider>
       <div className="bg-dark-100 h-[62rem] grid grid-cols-5 gap-x-2 mt-4">
         {toggelModal && (
           <CreateRoom
@@ -43,6 +44,7 @@ export default function Rooms() {
         <MessageInput />
         <RoomMembers />
       </div>
+      </RoomContextProvider>
     </div>
   );
 }
