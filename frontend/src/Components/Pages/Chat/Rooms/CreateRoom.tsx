@@ -3,10 +3,10 @@ import "./CreateRoom.css";
 import Avatar from "../assets/avatar.jpeg";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
-// import { socket } from "../../../../App";\
 import io from "socket.io-client";
 
-export const socket = io("127.0.0.1:3000/chat");
+const {userInfo} = useContext(LoginInfo);
+export const socket = io(`127.0.0.1:3000/chat?${userInfo.username}`);
 
 interface InputBox {
   value?: string;
@@ -82,7 +82,6 @@ function CreateRoom({ AddChannelToList, CloseModal }) {
   };
   useEffect(() => {
     const handleRoomCreated = (Room) => {
-      console.log(Room);
       AddChannelToList(Room);
     };
 
