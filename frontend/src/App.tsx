@@ -9,9 +9,6 @@ import "./App.css";
 import { routermin } from "./Routes/Routes";
 import LoginInfo from "./Contexts/LoginContext";
 import { useState } from "react";
-import io from "socket.io-client"
-
-export const socket = io("127.0.0.1:3000/chat");
 
 export interface userInfo{
   avatar:string;
