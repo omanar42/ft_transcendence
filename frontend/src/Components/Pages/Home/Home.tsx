@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import LoginInfo from '../../../Contexts/LoginContext';
 
 function Home() {
-  const {userInfo, setuserInfo} = useContext(LoginInfo);
+  const {setuserInfo} = useContext(LoginInfo);
   
   useEffect(()=>{
     const fetchData = async ()=>{

@@ -1,12 +1,12 @@
 import Chat from "./Home/Chat";
 import Header from "./Header";
-import Chaneels from "./Chaneels/Chaneels";
+import Rooms from "./Rooms/Rooms";
 
 const Index = () => {
   return (
-    <div >
+    <div>
       <Header />
-      <Chaneels />
+      <Rooms />
       {/* <Chat /> */}
     </div>
   );
