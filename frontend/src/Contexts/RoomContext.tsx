@@ -3,7 +3,7 @@ import { createContext, useState, useContext} from "react";
 export const RoomContext = createContext({});
 
 export function RoomContextProvider({children}) {
-    const [currentRoom, setCurrentRoom] = useState("");
+    const [currentRoom, setCurrentRoom] = useState<number>(-1);
     const value = {
         currentRoom,
         setCurrentRoom,

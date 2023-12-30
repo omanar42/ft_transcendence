@@ -9,12 +9,13 @@ import { socket } from "../Rooms/CreateRoom";
 interface messageList {
   
   message:string,
+
 }
 
-interface roomMessage{
+interface messageData{
   message:string;
-  roomId: number;
-  userName: string;
+  roomId:number;
+  userName:string;
 }
 
 function MessageInput() {
@@ -24,8 +25,8 @@ function MessageInput() {
   const {userInfo} = useContext(LoginInfo);
   const sendMessage = () => {
     if (currentMessage !== "") {
-      const messageData:roomMessage = {
-        message: currentMessage,
+      const messageData:messageData = {
+          message: currentMessage,
           roomId:currentRoom,
           userName: userInfo.username,
       };
@@ -49,7 +50,7 @@ function MessageInput() {
               <p>{message.message}</p>
             </div>
             <div className="text-lg">
-              <p></p>
+              <p>{}</p>
             </div>
           </div>)
         })}
