@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -17,8 +17,13 @@ import {
   JoinRoomDto,
 } from './dto/create-message.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+// import { verify } from 'jsonwebtoken';
+import { AuthService } from 'src/auth/auth.service';
+import * as jwt from 'jsonwebtoken';
+import { CacheService } from './cache.service';
+
+// import { AtGuard } from 'src/auth/guards';
 // import { log } from 'console';
-// const port = process.env.PORT || 3000;
 
 @WebSocketGateway({
   port: 3000,
@@ -35,31 +40,36 @@ export class ChatGateway
   server: Server;
   constructor(
     private readonly messagesService: ChatService,
-    private prisma: PrismaService,
+    private prisma: PrismaService, // private AuthService: AuthService,
+    private cacheService: CacheService,
   ) {}
-  RoomsTosockets = new Map();
+  // RoomsTosockets = new Map();
   private logger: Logger = new Logger('ChatGateway');
   handleDisconnect(client: Socket) {
-    this.logger.log(`Client disconnected: ${client.id}`); // todo : remove socketId from user
+    this.logger.log(`Client disconnected: ${client.id}`);
+    try {
+      this.messagesService.DeleteOauthIdSocket(client);
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
+    console.log(client.handshake);
     try {
-      await this.prisma.user.update({
-        where: {
-          username: client.handshake.headers.username.toString(),
-        },
-        data: {
-          socketId: client.id,
-        },
-      });
+      const id = await jwt.verify(
+        client.handshake.query.token.toString(),
+        process.env.AT_SECRET,
+      );
+      this.messagesService.GetOauthIdSocket(id.sub.toString(), client);
     } catch (error) {
       this.logger.log(error);
     }
   }
-  afterInit() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
 
@@ -96,18 +106,16 @@ export class ChatGateway
   ) {
     try {
       const room = await this.messagesService.createRoom(client, createRoomDto);
-      // this.server.to(room.id.toString()).emit('roomCreated', room);
-      // const room_front = await this.messagesService.convertRoomToRoom_Front(
-      //   createRoomDto,
-      //   room,
-      // );
-      // console.log(room_front);
-      console.log(`==========>${room}`);
-      
+      this.messagesService.GetUserByUsername(createRoomDto.userName);
+      const user = await this.messagesService.GetUserByUsername(
+        createRoomDto.userName,
+      );
+      this.cacheService.delete(`user:${user.oauthId}`);
+      this.cacheService.delete(`user:${user.username}`);
       this.server.emit(
         'roomCreated',
         await this.messagesService.convertRoomToRoom_Front(room),
-      ); //todo : room_front after the function convertRoomToRoom_Front is done
+      );
     } catch (error) {
       this.logger.log(error);
     }

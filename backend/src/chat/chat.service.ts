@@ -42,8 +42,6 @@ export class ChatService {
   // }
   async getRooms(oauthId: string) {
     // to do : test this function
-    // console.log(oauthId);
-    this.cacheService.delete(`user:${oauthId}`);
     const user = await this.GetUserByOauthId(oauthId);
     const rooms = user.rooms;
     if (!rooms) {
@@ -62,13 +60,38 @@ export class ChatService {
   async convertRoomToRoom_Front(room_back: any) {
     const room_Front = new Room_Front_Dto();
     room_Front.Avatar = room_back.avatar;
-    // eslint-disable-next-line prettier/prettier
-    room_Front.time = room_back.createdAt.hour + ':' + room_back.createdAt.minute;// udefined should be fixed
     room_Front.roomName = room_back.name;
     room_Front.roomType = room_back.type;
     room_Front.roomId = room_back.id;
 
     return room_Front;
+  }
+
+  async GetOauthIdSocket(oauthid: string, client: Socket) {
+    const cacheKey = `socket:${oauthid}`;
+    const cachedSocket = this.cacheService.get(cacheKey);
+    if (cachedSocket) {
+      return cachedSocket;
+    }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        oauthId: oauthid,
+      },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    this.cacheService.set(cacheKey, client);
+    this.cacheService.set(`socket:${client.id}`, oauthid);
+    return client;
+  }
+  async DeleteOauthIdSocket(client: Socket) {
+    const cacheKey = `socket:${client.id}`;
+    const cachedSocket = this.cacheService.get(cacheKey);
+    if (cachedSocket) {
+      this.cacheService.delete(cacheKey);
+      this.cacheService.delete(`socket:${cachedSocket}`);
+    }
   }
 
   async GetUserByOauthId(oauthId: string) {
