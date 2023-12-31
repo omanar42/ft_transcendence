@@ -95,34 +95,37 @@ export class AuthService {
     }
   }
 
-    async login(req, res) {
-      let redirectUrl: string;
-      const user = req.user;
-      if (!user) {
-        throw new BadRequestException('Unauthenticated');
-      }
-
-      let found = await this.usersService.findOneByEmail(user.email);
-      redirectUrl = process.env.FRONTEND_URL + '/home';
-    
-      if (!found) {
-        found = await this.registerUser(user);
-        redirectUrl = process.env.FRONTEND_URL + '/welcome';
-      }
-
-      const tokens = await this.getTokens(found.oauthId, found.email);
-      await this.updateRtHash(found.oauthId, tokens.refresh_token);
-
-      res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
-      res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
-
-      this.usersService.setStatus(found.oauthId, Status["ONLINE"]);
-      
-      if (found.twoFactor)
-        redirectUrl = process.env.FRONTEND_URL + '/two-factor';
-
-      return res.redirect(redirectUrl);
+  async login(req, res) {
+    let redirectUrl: string;
+    const user = req.user;
+    if (!user) {
+      throw new BadRequestException('Unauthenticated');
     }
+
+    let found = await this.usersService.findOneByEmail(user.email);
+    redirectUrl = '/home';
+  
+    if (!found) {
+      found = await this.registerUser(user);
+      redirectUrl = '/welcome';
+    }
+
+    const tokens = await this.getTokens(found.oauthId, found.email);
+    await this.updateRtHash(found.oauthId, tokens.refresh_token);
+
+    res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
+    res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
+
+    this.usersService.setStatus(found.oauthId, Status["ONLINE"]);
+    
+    if (found.twoFactor)
+      redirectUrl = '/two-factor';
+
+    return res.status(HttpStatus.OK).json({
+      redirectUrl: redirectUrl,
+      tokens: tokens,
+    });
+  }
 
   async logout(oauthId: string) {
 		await this.prisma.user.updateMany({
