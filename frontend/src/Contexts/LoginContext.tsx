@@ -24,7 +24,7 @@ export const LoginInfoContext = ({children}:any)=>{
     const [isLogged, setIsLogged] = useState(false);
     const [userInfo, setuserInfo] = useState<userInfo>(userLoginInfo);
     const [name, setName] = useState("");
-    const [token, setToken] = useState("");
+    const [token, setToken] = useState<string | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
 
     const value = {
