@@ -50,4 +50,11 @@ export class AuthController {
 	async refresh(@Req() req, @Res() res: Response) {
 		return this.authService.refresh(req, res);
 	}
+
+	@Get('token')
+	async token(@Req() req, @Res() res: Response) {
+		const token = this.authService.token(req);
+		if (!token) throw new ForbiddenException();
+		return res.json(token);
+	}
 }
