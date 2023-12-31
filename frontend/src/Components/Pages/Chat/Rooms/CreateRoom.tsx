@@ -3,13 +3,7 @@ import "./CreateRoom.css";
 import Avatar from "../assets/avatar.jpeg";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
-import io from 'socket.io-client';
 
-const token = useContext(LoginInfo);
-export const socket = io("http://127.0.0.1:3000/chat",{
-    query: {token},
-  }
-);
 
 
 interface InputBox {
@@ -62,7 +56,7 @@ function CreateRoom({ AddChannelToList, CloseModal }) {
   const [Roomtype, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
 
-  const { userInfo } = useContext(LoginInfo);
+  const { userInfo, socket } = useContext(LoginInfo);
 
   const handlSubmit = (event) => {
     event.preventDefault();

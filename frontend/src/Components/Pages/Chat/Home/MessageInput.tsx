@@ -4,7 +4,6 @@ import axios from 'axios'
 import avatar from '../assets/avatar.jpeg';
 import { RoomContext } from "../../../../Contexts/RoomContext";
 import LoginInfo from "../../../../Contexts/LoginContext";
-import { socket } from "../Rooms/CreateRoom";
 
 interface messageList {
   
@@ -22,7 +21,7 @@ function MessageInput() {
   const [currentMessage, setcurrentMessage] = useState("");
   const [messageList, setMessageList] = useState<messageList[]>([]);
   const {currentRoom} = useContext(RoomContext);
-  const {userInfo} = useContext(LoginInfo);
+  const {userInfo, socket} = useContext(LoginInfo);
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData:messageData = {

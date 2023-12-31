@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from "react";
-
+import  {Socket} from 'socket.io-client';
 
 
 const LoginInfo = createContext({});
@@ -25,6 +25,7 @@ export const LoginInfoContext = ({children}:any)=>{
     const [userInfo, setuserInfo] = useState<userInfo>(userLoginInfo);
     const [name, setName] = useState("");
     const [token, setToken] = useState("");
+    const [socket, setSocket] = useState<Socket | null>(null);
 
     const value = {
         isLogged, 
@@ -34,7 +35,9 @@ export const LoginInfoContext = ({children}:any)=>{
         name,
         setName,
         token,
-        setToken
+        setToken,
+        setSocket,
+        socket
     }
 
     return(<LoginInfo.Provider value={value}>{children}</LoginInfo.Provider >)
