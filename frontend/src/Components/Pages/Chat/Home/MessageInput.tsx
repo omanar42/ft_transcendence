@@ -35,7 +35,11 @@ function MessageInput() {
       console.log(messageData);
     }
   };
-
+  useEffect(()=>{
+    socket.on("message", (Data)=>{
+      setMessageList(Data);
+    })
+  },[socket])
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
       <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
