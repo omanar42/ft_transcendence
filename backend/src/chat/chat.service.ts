@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
@@ -67,7 +67,12 @@ export class ChatService {
     return room_Front;
   }
 
-  async GetOauthIdSocket(oauthid: string, client: Socket) {
+  async SetOauthIdSocket(oauthid: string, client: Socket) {
+    const cacheKey = `socket:${oauthid}`;
+    this.cacheService.set(cacheKey, client);
+    this.cacheService.set(`socket:${client.id}`, oauthid);
+  }
+  async GetOauthIdSocket(oauthid: string) {
     const cacheKey = `socket:${oauthid}`;
     const cachedSocket = this.cacheService.get(cacheKey);
     if (cachedSocket) {
@@ -81,9 +86,6 @@ export class ChatService {
     if (!user) {
       throw new Error('User not found');
     }
-    this.cacheService.set(cacheKey, client);
-    this.cacheService.set(`socket:${client.id}`, oauthid);
-    return client;
   }
   async DeleteOauthIdSocket(client: Socket) {
     const cacheKey = `socket:${client.id}`;
@@ -286,7 +288,7 @@ export class ChatService {
     }
     this.cacheService.delete(`room:${roomId}`);
   }
-  async createMessage(client: Socket, createMessageDto: CreateMessageDto) {
+  async createMessage(serv: Server, createMessageDto: CreateMessageDto) {
     const room = await this.GetRoomById(createMessageDto.roomId);
     const sender = await this.GetUserByUsername(createMessageDto.userName);
     const sender_rommuser = room.roomuser.find(
@@ -315,9 +317,9 @@ export class ChatService {
     });
     const new_roomUsers = await this.filter_blocked_users(sender, roomUsers);
     new_roomUsers.forEach(async (user) => {
-      const _client = await this.GetOauthIdSocket(user.userId, client);
-      client.to(_client.id).emit('message', message);
-      console.log(`socket==========> ${_client.id}. message ====> ${message}`);
+      const _client = await this.GetOauthIdSocket(user.userId);
+      serv.to(_client.id).emit('new_message', message);
+      console.log('new message sent to ' + _client.id);
     });
   }
 
