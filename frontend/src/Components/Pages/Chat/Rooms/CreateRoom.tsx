@@ -3,9 +3,10 @@ import "./CreateRoom.css";
 import Avatar from "../assets/avatar.jpeg";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
-import io from "socket.io-client";
+import io from 'socket.io-client';
 
-export const socket = io(`127.0.0.1:3000/chat`);
+
+export const socket = io("http://127.0.0.1:3000/chat");
 
 interface InputBox {
   value?: string;

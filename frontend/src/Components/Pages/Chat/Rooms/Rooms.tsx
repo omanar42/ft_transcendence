@@ -2,15 +2,18 @@ import RoomList from "./RoomList";
 import RoomMembers from "./RoomMembers";
 import MessageInput from "../Home/MessageInput";
 import CreateRoom from "./CreateRoom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Room } from "./RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
+import io from "socket.io-client";
+
+
+
 
 export default function Rooms() {
   const [toggelModal, setToggelModal] = useState(false);
   const [channelsList, setChannelsList] = useState<Room[]>([]);
-
   const handeltoggelModal = () => {
     setToggelModal(!toggelModal);
   };
@@ -27,9 +30,14 @@ export default function Rooms() {
       } catch (error) {
         console.error(error);
       }
+
     };
     fetchRooms();
   }, []);
+  useEffect(()=>{
+    const socket = io("127.0.0.1:3000/chat");
+      
+  },[])
   return (
     <div>
       <RoomContextProvider>

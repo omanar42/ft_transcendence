@@ -2,6 +2,7 @@ import {
   createBrowserRouter,
   Route,
   createRoutesFromElements,
+  Navigate,
 } from "react-router-dom";
 import Home from "../Components/Pages/Home/Home";
 import Login from "../Components/Pages/Login/Login";
@@ -10,6 +11,18 @@ import MainLayout from "../Layouts/MainLayout";
 import ChatLayout from "../Layouts/ChatLayout";
 import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
+import { useContext } from "react";
+import LoginInfo from "../Contexts/LoginContext";
+
+
+
+const ProtectLoginRoute = ()=>{
+  const isLogged = useContext(LoginInfo);
+  if (isLogged)
+    <Navigate to="/home" replace/>
+
+  return (<Login />);
+}
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
@@ -22,12 +35,8 @@ export const routermin = createBrowserRouter(
         <Route path="rooms" element={<Rooms />} />
         <Route path="chat" element={<Chat />} />
       </Route>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login" element={<ProtectLoginRoute />} />
       <Route path="/Welcome" element={<Welcome />} />
     </Route>
   )
 );
-
-// export const allRoutes = () => {
-//   return <RouterProvider router={router} />;
-// };

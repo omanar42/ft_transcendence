@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import login from "./assets/login.png";
 import intra from "./assets/42.png";
 import google from "./assets/Google.png";
 import Logo from "../../../assets/logo.png";
+import LoginInfo from "../../../Contexts/LoginContext";
+
 interface ButtonType {
   icon: string;
   text: string;
@@ -22,6 +24,12 @@ function Button({ icon, text, bgColor, textColor }: ButtonType) {
 }
 
 function Login() {
+  
+  const {setuserInfo, userInfo} = useContext(LoginInfo);
+  useEffect(()=>{
+    
+  },
+  [])
   return (
     <div className="h-screen flex justify-center items-center pl-10 pr-10">
       <div className="grid grid-cols-3 max-w-140">
