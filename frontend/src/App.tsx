@@ -12,7 +12,7 @@ import { useContext, useEffect } from "react";
 import axios from "axios";
 
 function App() {
-  const {setuserInfo, userInfo, isLogged, setIsLogged} = useContext(LoginInfo);
+  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken} = useContext(LoginInfo);
 
   useEffect(()=>{
     const fetchData = async ()=>{
@@ -25,6 +25,8 @@ function App() {
           status:response.data.status,
           username:response.data.username,
         }))
+        const token = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
+        setToken(token);
       }
       catch(error){
         console.error(error);

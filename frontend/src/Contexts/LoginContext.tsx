@@ -24,13 +24,17 @@ export const LoginInfoContext = ({children}:any)=>{
     const [isLogged, setIsLogged] = useState(false);
     const [userInfo, setuserInfo] = useState<userInfo>(userLoginInfo);
     const [name, setName] = useState("");
+    const [token, setToken] = useState("");
+
     const value = {
         isLogged, 
         setIsLogged,
         userInfo,
         setuserInfo,
         name,
-        setName
+        setName,
+        token,
+        setToken
     }
 
     return(<LoginInfo.Provider value={value}>{children}</LoginInfo.Provider >)
