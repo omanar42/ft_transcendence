@@ -1,11 +1,11 @@
 import ChatList from "./ChatList";
 import MessageInput from "./MessageInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserInfo from "./UserInfo";
 
 function Chat() {
   const [currentChatuser, setCurentUser] = useState("");
-
+  
   const showChatuser = (user: any) => {
     setCurentUser(user);
   };

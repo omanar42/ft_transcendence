@@ -10,9 +10,11 @@ import { routermin } from "./Routes/Routes";
 import LoginInfo, { LoginInfoContext } from "./Contexts/LoginContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
+import io from 'socket.io-client';
+
 
 function App() {
-  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken} = useContext(LoginInfo);
+  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket, token} = useContext(LoginInfo);
 
   useEffect(()=>{
     const fetchData = async ()=>{
@@ -26,7 +28,8 @@ function App() {
           username:response.data.username,
         }))
         const token = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
-        setToken(token);
+        setToken(token.data);
+        console.log(token);
       }
       catch(error){
         console.error(error);
@@ -36,6 +39,18 @@ function App() {
     if (userInfo.username)
       setIsLogged(true);
   },[]);
+
+  
+
+  useEffect(()=> {
+    const newSocket = io("127.0.0.1:3000/chat", {
+      query: {token},
+    })
+    setSocket(newSocket);
+    return ()=>{
+      newSocket.disconnect();
+    };
+  },[])
 
   return (  
         <RouterProvider router={routermin} />
