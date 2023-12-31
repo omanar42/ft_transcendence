@@ -1,0 +1,7 @@
+.game {
+  border-image: linear-gradient(to right, #3490dc, #6574cd, #9561e2) 50 round;
+  border-image-slice: 1;
+  border-width: 7px;
+	border-style: solid;
+  overflow: hidden;
+}
