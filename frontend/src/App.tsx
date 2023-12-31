@@ -49,9 +49,9 @@ function App() {
       })
       setSocket(newSocket);
     }
-    return ()=>{
-      newSocket.disconnect();
-    };
+    // return ()=>{
+    //   newSocket.disconnect();
+    // };
   },[token])
 
   return (  
