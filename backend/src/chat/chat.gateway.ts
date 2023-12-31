@@ -57,21 +57,21 @@ export class ChatGateway
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
-    if (!client.handshake.query.token) {
-      this.logger.log(
-        `Client disconnected no token: ${client.id} : token ${client.handshake.query.token}`,
-      ); // todo : add this to the logger
-      client.disconnect();
-      console.log(client.id);
-      return;
-    }
+    // if (!client.handshake.query.token) {
+    //   this.logger.log(
+    //     `Client disconnected no token: ${client.id} : token ${client.handshake.query.token}`,
+    //   ); // todo : add this to the logger
+    //   client.disconnect();
+    //   console.log(client.id);
+    //   return;
+    // }
     // console.log(`==========>${client.handshake.query.token}`);
     try {
       const id = await jwt.verify(
         client.handshake.query.token.toString(),
         process.env.AT_SECRET,
       );
-      this.messagesService.GetOauthIdSocket(id.sub.toString(), client);
+      this.messagesService.SetOauthIdSocket(id.sub.toString(), client);
     } catch (error) {
       this.logger.log(error);
     }
@@ -87,7 +87,7 @@ export class ChatGateway
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
     try {
-      await this.messagesService.createMessage(client, createMessageDto);
+      await this.messagesService.createMessage(this.server, createMessageDto);
     } catch (error) {
       this.logger.log(error);
     }
