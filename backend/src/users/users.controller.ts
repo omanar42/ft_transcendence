@@ -169,4 +169,19 @@ export class UsersController {
     return res.json(message);
   }
 
+  @Post("verify2fa")
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async verify2FA(@Req() req, @Res() res: Response, @Body("token") token: string) {
+    const message = await this.usersService.verify2FA(req.user.sub, token);
+    return res.json(message);
+  }
 }
