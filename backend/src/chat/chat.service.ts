@@ -314,8 +314,10 @@ export class ChatService {
       },
     });
     const new_roomUsers = await this.filter_blocked_users(sender, roomUsers);
-    new_roomUsers.forEach((user) => {
-      client.to(user.user.socketId).emit('message', message);
+    new_roomUsers.forEach(async (user) => {
+      const _client = await this.GetOauthIdSocket(user.userId, client);
+      client.to(_client.id).emit('message', message);
+      console.log(`socket==========> ${_client.id}. message ====> ${message}`);
     });
   }
 
