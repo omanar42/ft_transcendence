@@ -5,8 +5,12 @@ import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
 import io from 'socket.io-client';
 
+const token = useContext(LoginInfo);
+export const socket = io("http://127.0.0.1:3000/chat",{
+    query: {token},
+  }
+);
 
-export const socket = io("http://127.0.0.1:3000/chat");
 
 interface InputBox {
   value?: string;
