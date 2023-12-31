@@ -7,10 +7,8 @@ Project Description
 ### Todo
 
 - [ ] Matching players  
-- [ ] Two-Factor Auth  
 - [ ] Match History  
 - [ ] server-side validation for forms and any user  
-- [ ] SQL injections  
 
 ### In Progress
 
@@ -18,6 +16,12 @@ Project Description
 
 ### Done ✓
 
+- [x] Protectec 2fa in cookies  
+- [x] SQL injections  
+- [x] Docker  
+- [x] node:lts-ailpine  
+- [x] prisma command before run docker  
+- [x] Two-Factor Auth  
 - [x] Settings  
 - [x] Update profile  
 - [x] upload an avatar  
@@ -31,3 +35,14 @@ Project Description
 - [x] refresh tokens  
 - [x] JWT  
 
+
+___________________________________________
+
+
+Getting data from channels form
+
+Nested routes in chat root
+
+USe reusable components 
+
+Link all components togther

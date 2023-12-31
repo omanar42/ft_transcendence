@@ -1,0 +1,5 @@
+.submit-btn,
+.wlc-form {
+  border-image: linear-gradient(to right, #3490dc, #6574cd, #9561e2);
+  border-image-slice: 1;
+}

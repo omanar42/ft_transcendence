@@ -3,9 +3,13 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendActions, FriendStatus, Status, User } from '@prisma/client';
+import * as otplib from 'otplib';
 
 @Injectable()
 export class UsersService {
+  findUnique(arg0: { where: { id: any; }; include: { rooms: boolean; }; }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService) {}
 
   async create(user: User) {
@@ -105,7 +109,6 @@ export class UsersService {
 
   async getFriends(id: string) {
     const friends = await this.getAllFriends(id);
-
     const friendsList = friends.filter(f => f.status === FriendStatus["FRIENDS"]);
     return friendsList;
   }
@@ -157,6 +160,9 @@ export class UsersService {
           },
         },
         friendId: friend.oauthId,
+        frUser: friend.username,
+        frAvatar: friend.avatar,
+        ftStatus: friend.status,
         status: FriendStatus["PENDING"],
         actions: [FriendActions['REVOKE']],
       },
@@ -170,6 +176,9 @@ export class UsersService {
           },
         },
         friendId: user.oauthId,
+        frUser: user.username,
+        frAvatar: user.avatar,
+        ftStatus: user.status,
         status: FriendStatus["PENDING"],
         actions: [FriendActions['ACCEPT'], FriendActions['REJECT']],
       },
@@ -409,5 +418,16 @@ export class UsersService {
     });
 
     return "Friend unblocked";
+  }
+
+  async verify2FA(id: string, token: string) {
+    const user = await this.findOneById(id);
+    if (!user) return "User not found";
+    if (!user.twoFactor) return "2FA not enabled";
+
+    const isValid = otplib.authenticator.check(token, user.twoFaSec);
+    if (!isValid) return "Invalid code";
+
+    return "2FA verified successfully";
   }
 }

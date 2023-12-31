@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - transcendence
+    ports:
+      - 5432:5432
+  server:
+    image: server
+    container_name: server
+    build: ./backend
+    restart: always
+    depends_on:
+      - postgres
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/src:/usr/src/app/src:ro
+      - ./backend/uploads:/usr/src/app/uploads
+    networks:
+      - transcendence
+    ports:
+      - 3000:3000
+      - 5555:5555
+  client:
+    image: client
+    container_name: client
+    build: ./frontend
+    restart: always
+    depends_on:
+      - server
+    volumes:
+      - ./frontend/src:/usr/src/app/src:ro
+    networks:
+      - transcendence
+    ports:
+      - 5173:5173
+
+volumes:
+  postgres:
+
+networks:
+  transcendence:
+  
