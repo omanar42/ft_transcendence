@@ -4,6 +4,7 @@ import intra from "./assets/42.png";
 import google from "./assets/Google.png";
 import Logo from "../../../assets/logo.png";
 import LoginInfo from "../../../Contexts/LoginContext";
+import axios from "axios";
 
 interface ButtonType {
   icon: string;
@@ -25,18 +26,21 @@ function Button({ icon, text, bgColor, textColor }: ButtonType) {
 
 function Login() {
   
-  const {setuserInfo, userInfo} = useContext(LoginInfo);
-  useEffect(()=>{
-    
-  },
-  [])
+  const handLogging = async () =>{
+    try{
+      const response = await axios.get("http://127.0.0.1:3000/auth/token");
+      console.log(response);
+    }catch(error){
+      console.error(error);
+    }
+  }
   return (
     <div className="h-screen flex justify-center items-center pl-10 pr-10">
       <div className="grid grid-cols-3 max-w-140">
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
 
-          <a href="http://localhost:3000/auth/42">
+          <a onClick={handLogging} href="http://localhost:3000/auth/42">
           <Button
             icon={intra}
             text="Sing in with intra"

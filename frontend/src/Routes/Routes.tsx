@@ -13,6 +13,7 @@ import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
+import Settings from "../Components/Pages/Settings/Settings";
 
 
 
@@ -35,8 +36,9 @@ export const routermin = createBrowserRouter(
         <Route path="rooms" element={<Rooms />} />
         <Route path="chat" element={<Chat />} />
       </Route>
-      <Route path="/login" element={<ProtectLoginRoute />} />
-      <Route path="/Welcome" element={<Welcome />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/Welcom" element={<Welcome />} />
+      <Route path="/Settings" element={<Settings />} />
     </Route>
   )
 );
