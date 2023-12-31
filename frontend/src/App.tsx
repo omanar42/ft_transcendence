@@ -43,14 +43,16 @@ function App() {
   
 
   useEffect(()=> {
-    const newSocket = io("127.0.0.1:3000/chat", {
-      query: {token},
-    })
-    setSocket(newSocket);
+    if (token){
+      var newSocket = io("127.0.0.1:3000/chat", {
+        query: {token},
+      })
+      setSocket(newSocket);
+    }
     return ()=>{
       newSocket.disconnect();
     };
-  },[])
+  },[token])
 
   return (  
         <RouterProvider router={routermin} />
