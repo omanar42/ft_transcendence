@@ -11,6 +11,7 @@ import ChatLayout from "../Layouts/ChatLayout";
 import Chaneels from "../Components/Pages/Chat/Chaneels/Chaneels";
 import Chat from "../Components/Pages/Chat/Home/Chat";
 import Settings from "../Components/Pages/Settings/Settings";
+import Game from "../Components/Pages/Game/Game";
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ export const routermin = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="/Welcom" element={<Welcome />} />
       <Route path="/Settings" element={<Settings />} />
+      <Route path="/Game" element={<Game />} />
     </Route>
   )
 );

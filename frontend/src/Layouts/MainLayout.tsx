@@ -41,6 +41,9 @@ function MainLayout() {
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
                 Chat
               </NavigationLink>
+              <NavigationLink to="/game" onClick={CloseDropMenu}>
+                Game
+              </NavigationLink>
             </ul>
           </nav>
           <FaBell className="text-4xl" />
