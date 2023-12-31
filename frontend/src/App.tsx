@@ -7,30 +7,16 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import { routermin } from "./Routes/Routes";
-import LoginInfo from "./Contexts/LoginContext";
-import { useState } from "react";
+import { LoginInfoContext } from "./Contexts/LoginContext";
 
-export interface userInfo{
-  avatar:string;
-  fullname:string;
-  status:string;
-  username:string;
-}
-
-const userLoginInfo:userInfo = {
-  avatar:"",
-  fullname:"",
-  status:"",
-  username:"",
-};
 
 function App() {
-  const [userInfo, setuserInfo] = useState<userInfo>(userLoginInfo);
-  const [name, setName] = useState("");
+
   return (
-    <LoginInfo.Provider value={{userInfo, setuserInfo, name, setName}}>
-      <RouterProvider router={routermin} />
-    </LoginInfo.Provider>
+      <LoginInfoContext>
+
+        <RouterProvider router={routermin} />
+      </LoginInfoContext>
   );
 }
 

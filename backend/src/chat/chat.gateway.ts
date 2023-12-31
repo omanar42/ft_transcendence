@@ -47,9 +47,10 @@ export class ChatGateway
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
     try {
+      console.log(client.handshake.query.token.toString());
       await this.prisma.user.update({
         where: {
-          username: client.handshake.headers.username.toString(),
+          username: client.handshake.query.token.toString(),
         },
         data: {
           socketId: client.id,
