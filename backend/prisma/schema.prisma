@@ -91,9 +91,6 @@ model Friend {
   user      User      @relation(fields: [userId], references: [oauthId])
   userId    String
   friendId  String
-  frUser    String
-  frAvatar  String
-  ftStatus  Status
   status    FriendStatus
   actions   FriendActions[]
 }

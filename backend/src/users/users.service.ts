@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto , UpdateUserDto} from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendActions, FriendStatus, Status, User } from '@prisma/client';
 import * as otplib from 'otplib';
@@ -104,11 +104,24 @@ export class UsersService {
     return friends.friends;
   }
 
+  async CreateDtoFriendFront(friendsList: any) {
+    const friends = [];
+  for (const friend of friendsList) {
+    const UserModle = await this.findOneById(friend.friendId);
+    const new_f = new UpdateUserDto(UserModle);
+    new_f.id = friend.id;
+    new_f.userId = friend.userId;
+    new_f.status = friend.status;
+    new_f.actions = friend.actions;
+    if(new_f.status === FriendStatus["FRIENDS"]){
+      friends.push(new_f);
+    }
+  }    
+  return friends;
+  }
   async getFriends(id: string) {
     const friends = await this.getAllFriends(id);
-
-    const friendsList = friends.filter(f => f.status === FriendStatus["FRIENDS"]);
-    return friendsList;
+    return await this.CreateDtoFriendFront(friends);
   }
 
   async getOneFriend(id: string, friendId: string) {
@@ -158,9 +171,6 @@ export class UsersService {
           },
         },
         friendId: friend.oauthId,
-        frUser: friend.username,
-        frAvatar: friend.avatar,
-        ftStatus: friend.status,
         status: FriendStatus["PENDING"],
         actions: [FriendActions['REVOKE']],
       },
@@ -174,9 +184,6 @@ export class UsersService {
           },
         },
         friendId: user.oauthId,
-        frUser: user.username,
-        frAvatar: user.avatar,
-        ftStatus: user.status,
         status: FriendStatus["PENDING"],
         actions: [FriendActions['ACCEPT'], FriendActions['REJECT']],
       },
