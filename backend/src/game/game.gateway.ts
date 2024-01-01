@@ -7,6 +7,24 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { GameService } from './game.service';
+import { subscribe } from 'diagnostics_channel';
+
+interface Player {
+  x: number;
+  y: number;
+  score: number;
+}
+
+interface Ball {
+  x: number;
+  y: number;
+}
+
+interface GameState {
+  user: Player;
+  enemy: Player;
+  ball: Ball;
+}
 
 @WebSocketGateway()
 export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -14,29 +32,43 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private readonly gameService: GameService) {}
 
-  private gameSessions = new Map<string, GameSession>(); // GameSession is a custom class to manage game states
-  private rooms = [];
+  // private gameSessions = new Map<string, GameSession>(); // GameSession is a custom class to manage game states
 
-  handleConnection(client: any, ...args: any[]) {
+  private gameState: GameState;
+
+  handleConnection(client: Socket, ...args: any[]) {
     // Handle new client connection
-    console.log('Client connected');
-  }
+    console.log('Client connected ' + client.id);
 
-  handleDisconnect(client: any) {
+    // Create new game session
+    // const session = new GameSession();
+    // this.gameSessions.set(client.id, session);
+
+    // Init game state
+    this.gameState = this.gameService.initState();
+  }
+  
+  handleDisconnect(client: Socket) {
     // Handle client disconnect
-    console.log('Client disconnected');
+    console.log('Client disconnected ' + client.id);
   }
 
-  @SubscribeMessage('joinGame')
-  handleJoinGame(client: any, data): void {
-    console.log('Joining game', data);
-
-    if (this.rooms.length > 0 && this.rooms[this.rooms.length - 1].players.length === 1) {
-      this.rooms[this.rooms.length - 1].players.push(data);
-      client.join(this.rooms[this.rooms.length - 1].name);
-      this.server.to(this.rooms[this.rooms.length - 1].name).emit('gameState', this.rooms[this.rooms.length - 1]);
-    }
+  @SubscribeMessage('getGameState')
+  handleGameState(client: Socket): void {
+    console.log('Sending game state to client', client.id);
+    this.server.to(client.id).emit('gameState', this.gameState);
   }
+
+
+  // @SubscribeMessage('joinGame')
+  // handleJoinGame(client: Socket, data): void {
+  //   console.log('Joining game', data);
+  // }
+
+  // @SubscribeMessage('move')
+  // handleMove(client: Socket, data): void {
+  //   console.log('Move', data);
+  // }
 
   // @SubscribeMessage('playerAction')
   // handlePlayerAction(client: Socket, action: any): void {

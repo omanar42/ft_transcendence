@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
 
 const user = {
   x: 5,
@@ -37,23 +36,47 @@ const ball = {
   color: "#6574cd",
 };
 
+interface Player {
+  x: number;
+  y: number;
+  score: number;
+}
+
+interface Ball {
+  x: number;
+  y: number;
+}
+
+interface GameState {
+  user: Player;
+  enemy: Player;
+  ball: Ball;
+}
+
 @Injectable()
 export class GameService {
-	private readonly connectedClients: Map<string, Socket> = new Map();
-
-  handleConnection(socket: Socket): void {
-    const clientId = socket.id;
-    this.connectedClients.set(clientId, socket);
-
-    socket.on('disconnect', () => {
-      this.connectedClients.delete(clientId);
-    });
-
-    // Handle other events and messages from the client
-    socket.on('playerAction', (action) => {
-      this.updateState(action);
-      this.broadcastGameState();
-    });
+  constructor() {}
+	
+  initState(): GameState {
+    const player = {
+      x: 5,
+      y: 800 / 2 - 100 / 2,
+      score: 0,
+    };
+    const enemy = {
+      x: 1400 - 5 - 16,
+      y: 800 / 2 - 100 / 2,
+      score: 0,
+    };
+    const ball = {
+      x: 1400 / 2,
+      y: 800 / 2,
+    };
+    return {
+      user: player,
+      enemy: enemy,
+      ball: ball,
+    };
   }
 
   collision(player, ball): boolean {
@@ -91,7 +114,7 @@ export class GameService {
       let direction = (ball.x < 1400 / 2) ? 1 : -1;
       ball.velocityX = direction * ball.speed * Math.cos(angleRad);
       ball.velocityY = ball.speed * Math.sin(angleRad);
-      ball.speed += 0.1;
+      ball.speed += 0.5;
     }
     if (ball.x - ball.radius < 0) {
       enemy.score++;
@@ -117,11 +140,11 @@ export class GameService {
     }
   }
 
-  broadcastGameState(): void {
-    this.connectedClients.forEach((client) => {
-      client.emit('gameState', this.getState());
-    });
-  }
+  // broadcastGameState(): void {
+  //   this.connectedClients.forEach((client) => {
+  //     client.emit('gameState', this.getState());
+  //   });
+  // }
 
   // Add more methods for handling events, messages, etc.
 }
