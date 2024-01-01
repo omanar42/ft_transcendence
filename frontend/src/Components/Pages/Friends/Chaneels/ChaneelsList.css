@@ -1,0 +1,41 @@
+.scroll-container::-webkit-scrollbar {
+  width: 0px; /* Set your desired scrollbar width */
+}
+
+.ww {
+color: white;
+}
+
+.progress-bar-container {
+width: 300px;
+height: 20px;
+border: 1px solid #ccc;
+overflow: hidden;
+border-radius: 10px; /* Ajout de bords arrondis */
+}
+
+.progress-bar {
+height: 100%;
+background-color: #4caf50;
+color: #fff;
+text-align: center;
+line-height: 20px;
+border-radius: 10px; /* Ajout de bords arrondis */
+}
+
+.element {
+/* background-color: #ccc; */
+height: 80px;
+border-radius: 20px;
+/* text-align: center; */
+}
+
+.content {
+font-size: 1.2em; /* Ajustez la taille du texte selon vos préférences */
+}
+
+.score {
+font-size: 1.5em; /* Ajustez la taille du score selon vos préférences */
+/* font-weight: bold; */
+/* margin: 300px; */
+}

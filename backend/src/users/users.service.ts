@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { FriendActions, FriendStatus, Status, User } from '@prisma/client';
+import * as otplib from 'otplib';
 
 @Injectable()
 export class UsersService {
@@ -409,5 +410,16 @@ export class UsersService {
     });
 
     return "Friend unblocked";
+  }
+
+  async verify2FA(id: string, token: string) {
+    const user = await this.findOneById(id);
+    if (!user) return "User not found";
+    if (!user.twoFactor) return "2FA not enabled";
+
+    const isValid = otplib.authenticator.check(token, user.twoFaSec);
+    if (!isValid) return "Invalid code";
+
+    return "2FA verified successfully";
   }
 }
