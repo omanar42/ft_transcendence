@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Friend, Match, Stats, Status } from "@prisma/client";
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Max, MaxLength, MinLength } from "class-validator";
 
 export class CreateUserDto {
 	@ApiProperty()
@@ -9,6 +9,7 @@ export class CreateUserDto {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(3)
+	@MaxLength(14)
 	@ApiProperty()
 	readonly username: string;
 
@@ -58,3 +59,24 @@ export class CreateUserDto {
 	@ApiProperty()
 	readonly updatedAt: Date;
 }
+
+export class UpdateUserDto {
+	constructor(data : any) {
+		this.id = 0;
+		this.userId = "";
+		this.friendId = data.oauthId;
+		this.frUser = data.username;
+		this.frAvatar = data.avatar;
+		this.ftStatus = data.status;
+		this.status = "";
+		this.actions = [];
+	}
+	id : number;
+	userId : string;
+	friendId : string;
+	frUser : string;
+	frAvatar : string;
+	ftStatus : string;
+	status : string;
+	actions : string[];
+  }
