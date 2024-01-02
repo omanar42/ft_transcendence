@@ -22,7 +22,6 @@ function MessageInput() {
   const [messageList, setMessageList] = useState<messageList[]>([]);
   const {currentRoom} = useContext(RoomContext);
   const {userInfo, socket} = useContext(LoginInfo);
-  const [roomName, setroomName] = useState("");
 
   const sendMessage = () => {
     if (currentMessage !== "") {
@@ -39,7 +38,8 @@ function MessageInput() {
   };
   useEffect(()=>{
     console.log('this from socket', socket);
-    socket?.on("new_message", (data)=>{
+    console.log(userInfo);
+    socket?.off("new_message").on("new_message", (data)=>{
       const message:messageData = {message:data.content, roomId:data.id}
       
       console.log('message from backend ',data);
@@ -63,7 +63,7 @@ function MessageInput() {
   ,[currentRoom])
   return (
   <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
-  {currentRoom && <>
+  {currentRoom ? <>
   <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
     <p className="text-3xl">mrobaii</p>
@@ -97,7 +97,7 @@ function MessageInput() {
 
     />
   </div>
-  </>}
+  </> : <div></div>}
   </div>
   );
 }

@@ -36,7 +36,7 @@ function App() {
         setIsLogged(true);
       const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
       setToken(newtoken.data);
-      if (newtoken){
+      if (newtoken.data){
         const newSocket =  io("127.0.0.1:3000/chat", {
           query: {token:newtoken.data},
         })
