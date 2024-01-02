@@ -6,6 +6,13 @@ import { RoomContext} from "../../../../Contexts/RoomContext";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
+
+interface messageData{
+  message:string;
+  roomId:number;
+  userName:string;
+}
+
 interface ListAvatars {
   avatar: string;
 }
@@ -20,13 +27,13 @@ function ListAvatars({ avatar }: ListAvatars) {
 
 export interface Room {
   avatar: string; // assuming avatar is a string URL or similar
-  message?: string;
   time: string;
   roomName: string;
   roomType: string;
   roomPassword?: string;
   userName?: string;
   roomId: string;
+  messageList:messageData,
 }
 
 function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
@@ -62,8 +69,8 @@ function RoomList({ handeltoggelModal, List }) {
           placeholder="search"
         />
         <ul className="flex gap-5 w-11/12">
-          {avatars.map((avatar) => (
-            <ListAvatars avatar={avatar} />
+          {avatars.map((avatar, i) => (
+            <ListAvatars avatar={avatar} key={i}/>
           ))}
         </ul>
       </div>
@@ -76,13 +83,14 @@ function RoomList({ handeltoggelModal, List }) {
       </button>
 
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {reversList.map((conv) => (
+        {reversList.map((conv, i) => (
           <ListRooms
             avatar={conv.avatar}
             time={conv.time}
             roomName={conv.roomName}
             roomType={conv.roomType}
             roomId={conv.roomId}
+            key={i}
           />
         ))}
       </ul>
