@@ -120,11 +120,11 @@ export class ChatService {
   }
 
   async GetMessagesByRoomId(roomId: number, oauthId: string) {
-    const cacheKey = `messages:${roomId}${oauthId}`;
-    const cachedMessages = this.cacheService.get(cacheKey);
-    if (cachedMessages) {
-      return cachedMessages;
-    }
+    // const cacheKey = `messages:${roomId}${oauthId}`;
+    // const cachedMessages = this.cacheService.get(cacheKey);
+    // if (cachedMessages) {
+    //   return cachedMessages;
+    // }
     const Room_messages_model = await this.prisma.room.findUnique({
       where: {
         id: roomId,
@@ -162,7 +162,7 @@ export class ChatService {
         Messages_Front.messages.push(message_front);
       }
     }
-    this.cacheService.set(cacheKey, Messages_Front);
+    Messages_Front.messages.reverse();
     return Messages_Front;
   }
   // async GetRoomUsers(roomId: number) {
