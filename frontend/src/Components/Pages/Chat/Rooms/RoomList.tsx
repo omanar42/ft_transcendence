@@ -33,7 +33,6 @@ export interface Room {
   roomPassword?: string;
   userName?: string;
   roomId: string;
-  messageList:messageData,
 }
 
 function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
