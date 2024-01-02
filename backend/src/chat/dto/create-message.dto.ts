@@ -22,6 +22,23 @@ export class Room_Front_Dto {
   roomType: string;
   roomId: number;
 }
+export class Message_Front_Dto {
+  message: string;
+  roomId: number;
+  userName: string;
+  time: string;
+}
+export class Messages_Front_Dto extends Room_Front_Dto {
+  constructor(data: any) {
+    super();
+    this.Avatar = data.avatar;
+    this.roomName = data.name;
+    this.roomType = data.type;
+    this.roomId = data.id;
+    this.messages = [];
+  }
+  messages: Message_Front_Dto[];
+}
 export class CreateRoomDto {
   userName: string;
   roomName: string;

@@ -14,18 +14,22 @@ export class ChatController {
   ) {}
   @Get('Messages')
   async getMessages(@Req() req) {
-    console.log("=================");
-    console.log(req.query.roomId);
     try {
-    return (await this.chatService.findRoomMessages(parseInt(req.query.roomId))).reverse();
+      return await this.chatService.GetMessagesByRoomId(
+        parseInt(req.query.roomId),
+        req.user.sub.toString(),
+      );
     } catch (error) {
       console.log(error);
     }
-    // return await this.chatService.getMessages(req.);
   }
   @Get('rooms')
   async getRooms(@Req() req) {
-    return await this.chatService.getRooms(req.user.sub.toString());
+    try {
+      return await this.chatService.getRooms(req.user.sub.toString());
+    } catch (error) {
+      console.log(error);
+    }
   }
   @Post('CreateRoom')
   async createRoom() {}
