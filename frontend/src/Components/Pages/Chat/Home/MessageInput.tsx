@@ -22,6 +22,8 @@ function MessageInput() {
   const [messageList, setMessageList] = useState<messageList[]>([]);
   const {currentRoom} = useContext(RoomContext);
   const {userInfo, socket} = useContext(LoginInfo);
+  const [roomName, setroomName] = useState("");
+
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData:messageData = {
@@ -40,18 +42,25 @@ function MessageInput() {
     socket?.on("new_message", (data)=>{
       const message:messageData = {message:data.content, roomId:data.id}
       
-      console.log(data);
+      console.log('message from backend ',data);
       setMessageList((list)=>[...list, message]);
       
     })
   },[socket]);
   useEffect(()=>{
     const fetchMessages = async () =>{
-      const messages = await axios.get(`http://127.0.0.1:3000/chat/Messages?${currentRoom}`);
-      console.log(messages);
+      const messages = await axios.get(`http://127.0.0.1:3000/chat/Messages`, {
+      params: {
+        roomId: currentRoom,
+      },  
+      withCredentials: true});
+      console.log('all messagaes', messages.data);
+    }
+    if (currentRoom){
+      fetchMessages();
     }
   }
-  ,[])
+  ,[currentRoom])
   return (
   <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
   {currentRoom && <>
