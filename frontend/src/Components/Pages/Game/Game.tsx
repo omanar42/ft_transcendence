@@ -265,6 +265,11 @@ const Game = () => {
     }
   }, [handleKeyDown, handleKeyUp]);
 
+  // On the client-side, listen for 'gameStateUpdate' and render the new state
+  // socket.on('gameStateUpdate', (gameState) => {
+  //   // Update the game rendering based on the new game state
+  // });
+
   return (
     <div className="h-screen flex justify-center items-center">
       <canvas

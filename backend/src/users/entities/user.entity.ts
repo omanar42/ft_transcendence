@@ -9,7 +9,7 @@ export class UserEntity implements User {
 	@IsString()
 	@IsNotEmpty()
 	@MinLength(3)
-	@MaxLength(20)
+	@MaxLength(14)
 	@ApiProperty()
 	readonly username: string;
 

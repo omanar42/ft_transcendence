@@ -1,150 +1,46 @@
 import { Injectable } from '@nestjs/common';
 
-const user = {
-  x: 5,
-  y: 800 / 2 - 100 / 2,
-  width: 10,
-  height: 100,
-  color: "#41a5fc",
-  score: 0,
-};
-
-const enemy = {
-  x: 1400 - 15,
-  y: 800 / 2 - 100 / 2,
-  width: 10,
-  height: 100,
-  color: "#f600d4",
-  score: 0,
-};
-
-const net = {
-  x: 1400 / 2 - 2 / 2,
-  y: 0,
-  width: 2,
-  height: 10,
-  color: "#6574cd",
-};
-
-const ball = {
-  x: 1400 / 2,
-  y: 800 / 2,
-  radius: 10,
-  speed: 5,
-  velocityX: 5,
-  velocityY: 5,
-  color: "#6574cd",
-};
-
-interface Player {
-  x: number;
-  y: number;
+interface PlayerState {
+  paddlePosition: number; // Position of the paddle (y-coordinate)
   score: number;
+  // Additional player-related states like power-ups can be added here
 }
 
-interface Ball {
-  x: number;
-  y: number;
+interface BallState {
+  position: { x: number; y: number };
+  velocity: { x: number; y: number };
 }
 
-interface GameState {
-  user: Player;
-  enemy: Player;
-  ball: Ball;
+class GameState {
+  playerOne: PlayerState;
+  playerTwo: PlayerState;
+  ball: BallState;
+  running: boolean;
+  // Additional game-related states like game status (running, paused, over) can be added here
+
+  constructor() {
+    // Initialize the game state
+    this.playerOne = { paddlePosition: 0, score: 0 };
+    this.playerTwo = { paddlePosition: 0, score: 0 };
+    this.ball = { position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 } };
+    this.running = false;
+  }
+
+  // Methods to update game state based on player actions and game rules
+  updatePlayerPosition(playerId: string, position: number) {
+    // Update the paddle position for the specified player
+  }
+
+  updateBallPosition() {
+    // Update the ball position based on its velocity and any collisions
+  }
+
+  // Additional methods for game logic like scoring, collision detection, etc.
 }
+
 
 @Injectable()
 export class GameService {
   constructor() {}
-	
-  initState(): GameState {
-    const player = {
-      x: 5,
-      y: 800 / 2 - 100 / 2,
-      score: 0,
-    };
-    const enemy = {
-      x: 1400 - 5 - 16,
-      y: 800 / 2 - 100 / 2,
-      score: 0,
-    };
-    const ball = {
-      x: 1400 / 2,
-      y: 800 / 2,
-    };
-    return {
-      user: player,
-      enemy: enemy,
-      ball: ball,
-    };
-  }
 
-  collision(player, ball): boolean {
-    player.top = player.y;
-    player.bottom = player.y + player.height;
-    player.left = player.x;
-    player.right = player.x + player.width;
-
-    ball.top = ball.y - ball.radius;
-    ball.bottom = ball.y + ball.radius;
-    ball.left = ball.x - ball.radius;
-    ball.right = ball.x + ball.radius;
-
-    return ball.left < player.right && ball.top < player.bottom && ball.right > player.left && ball.bottom > player.top;
-  }
-
-  resetBall(): void {
-    ball.x = 1400 / 2;
-    ball.y = 800 / 2;
-    ball.speed = 5;
-    ball.velocityX = -ball.velocityX;
-  }
-
-  update(): void {
-    ball.x += ball.velocityX;
-    ball.y += ball.velocityY;
-    if (ball.y + ball.radius > 800 || ball.y - ball.radius < 0) {
-      ball.velocityY = -ball.velocityY;
-    }
-    let player = (ball.x < 1400 / 2) ? user : enemy;
-    if (this.collision(player, ball)) {
-      let collidePoint = (ball.y - (player.y + player.height / 2));
-      collidePoint = collidePoint / (player.height / 2);
-      let angleRad = (Math.PI / 4) * collidePoint;
-      let direction = (ball.x < 1400 / 2) ? 1 : -1;
-      ball.velocityX = direction * ball.speed * Math.cos(angleRad);
-      ball.velocityY = ball.speed * Math.sin(angleRad);
-      ball.speed += 0.5;
-    }
-    if (ball.x - ball.radius < 0) {
-      enemy.score++;
-      this.resetBall();
-    } else if (ball.x + ball.radius > 1400) {
-      user.score++;
-      this.resetBall();
-    }
-  }
-
-  getState(): any {
-    return { user, enemy, ball, net };
-  }
-
-  updateState(action: any): void {
-    switch (action.type) {
-      case "MOVE_UP":
-        user.y -= 8;
-        break;
-      case "MOVE_DOWN":
-        user.y += 8;
-        break;
-    }
-  }
-
-  // broadcastGameState(): void {
-  //   this.connectedClients.forEach((client) => {
-  //     client.emit('gameState', this.getState());
-  //   });
-  // }
-
-  // Add more methods for handling events, messages, etc.
 }
