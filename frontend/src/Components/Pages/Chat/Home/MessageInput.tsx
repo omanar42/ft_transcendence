@@ -6,8 +6,8 @@ import { RoomContext } from "../../../../Contexts/RoomContext";
 import LoginInfo from "../../../../Contexts/LoginContext";
 
 interface messageList {
-  
   message:string,
+  userName:string;
 
 }
 
@@ -55,6 +55,7 @@ function MessageInput() {
       },  
       withCredentials: true});
       console.log('all messagaes', messages.data);
+      setMessageList(messages.data.messages);
     }
     if (currentRoom){
       fetchMessages();
@@ -74,6 +75,7 @@ function MessageInput() {
         <div className=" bg-pink-100  p-[1rem] rounded-lg ">
           <p>{message.message}</p>
         </div>
+        <p className="text-sm w-3">{message.userName}</p>
         <div className="text-lg">
           <p>{}</p>
         </div>
