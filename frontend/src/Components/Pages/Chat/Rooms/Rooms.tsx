@@ -24,6 +24,7 @@ export default function Rooms() {
           withCredentials: true,
         });
         setChannelsList(response.data);
+        console.log('Response data', response.data);
       } catch (error) {
         console.error(error);
       }
