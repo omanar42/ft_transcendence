@@ -93,16 +93,17 @@ function CreateRoom({ AddChannelToList, CloseModal }) {
 
   return (
     <div className="modal flex justify-center items-center">
-      <form
-        onSubmit={handlSubmit}
-        className="w-3/6 h-3/6  flex relative flex-col items-center border-2 bg-dark-100 rounded-3xl justify-around border-white border-opacity-20"
-      >
-        <button
+              <button
           onClick={CloseModal}
-          className=" absolute top-[-3.5rem] left-[0.3rem] text-[7rem] text-pink-100"
+          className=" absolute top-[18rem] left-[47rem] text-[7rem] text-pink-100"
         >
           &times;
         </button>
+      <form
+        onSubmit={handlSubmit}
+        className="w-3/6 h-3/6  flex  flex-col items-center border-2 bg-dark-100 rounded-3xl justify-around border-white border-opacity-20"
+      >
+
         <h1 className="text-6xl uppercase font-bold pt-5 pb-10 ">
           Create new Room
         </h1>

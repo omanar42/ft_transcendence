@@ -6,9 +6,6 @@ import { useContext, useEffect, useState } from "react";
 import { Room } from "./RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
-import io from "socket.io-client";
-
-
 
 
 export default function Rooms() {
@@ -34,14 +31,10 @@ export default function Rooms() {
     };
     fetchRooms();
   }, []);
-  useEffect(()=>{
-    const socket = io("127.0.0.1:3000/chat");
-      
-  },[])
   return (
     <div>
       <RoomContextProvider>
-      <div className="bg-dark-100 h-[62rem] grid grid-cols-5 gap-x-2 mt-4">
+      <div className="bg-dark-100 h-[62rem] grid  relative grid-cols-5 gap-x-2 mt-4">
         {toggelModal && (
           <CreateRoom
             AddChannelToList={AddChannelToList}

@@ -27,18 +27,21 @@ const ProtectLoginRoute = ()=>{
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
+    <Route>
+
+    <Route path="/login" element={<Login />} />
     <Route path="/" element={<MainLayout />}>
       <Route path="home" element={<Home />} />
-      <Route index element={<Home />} />
+      {/* <Route index element={<Home />} /> */}
 
       <Route path="/chat" element={<ChatLayout />}>
         <Route index element={<Chat />} />
         <Route path="rooms" element={<Rooms />} />
         <Route path="chat" element={<Chat />} />
       </Route>
-      <Route path="/login" element={<Login />} />
       <Route path="/Welcom" element={<Welcome />} />
       <Route path="/Settings" element={<Settings />} />
+    </Route>
     </Route>
   )
 );
