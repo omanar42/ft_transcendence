@@ -12,6 +12,17 @@ export class ChatController {
     private readonly chatService: ChatService,
     private prisma: PrismaService,
   ) {}
+  @Get('Messages')
+  async getMessages(@Req() req) {
+    console.log("=================");
+    console.log(req.query.roomId);
+    try {
+    return (await this.chatService.findRoomMessages(parseInt(req.query.roomId))).reverse();
+    } catch (error) {
+      console.log(error);
+    }
+    // return await this.chatService.getMessages(req.);
+  }
   @Get('rooms')
   async getRooms(@Req() req) {
     return await this.chatService.getRooms(req.user.sub.toString());
