@@ -128,16 +128,16 @@ export class ChatGateway
       this.logger.log(error);
     }
   }
-  @SubscribeMessage('joinRoom')
-  async handleJoinRoom(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() createRoomDto: JoinRoomDto,
-  ) {
-    try {
-      const room = await this.messagesService.joinRoom(client, createRoomDto);
-      this.server.emit('roomJoined', room);
-    } catch (error) {
-      this.logger.log(error);
-    }
-  }
+  // @SubscribeMessage('joinRoom')
+  // async handleJoinRoom(
+  //   @ConnectedSocket() client: Socket,
+  //   @MessageBody() createRoomDto: JoinRoomDto,
+  // ) {
+  //   try {
+  //     // const room = await this.messagesService.joinRoom(client, createRoomDto);
+  //     this.server.emit('roomJoined', room);
+  //   } catch (error) {
+  //     this.logger.log(error);
+  //   }
+  // }
 }
