@@ -12,6 +12,7 @@ function ChatLayout() {
             <NavigationLink to="/chat">Conversations</NavigationLink>
             <NavigationLink to="rooms">Rooms</NavigationLink>
             <NavigationLink to="friends">Friends</NavigationLink>
+            <NavigationLink to="explore">Explore</NavigationLink>
           </ul>
           <div className="flex items-center gap-[5rem] relative">
           </div>
