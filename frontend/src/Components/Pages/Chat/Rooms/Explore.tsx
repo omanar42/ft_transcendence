@@ -6,17 +6,31 @@ import avatar from '../../../../assets/avatar.jpeg'
 
 function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
 
-  const joinRoom = ()=>{
-    const options = {
-      withCredentials: true,
+
+  const joinRoom = async () => {
+     const dataToSend = {
+      roomId: roomId,
+    };
+    
+    axios.post('http://127.0.0.1:3000/chat/joinRoom' , dataToSend, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    })
+    .then(response => {
+      console.log('Response:', response.data);
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   };
-    axios.post("http://127.0.0.1/chat/joinRoom", "ZAbi data", options);
-  }
+  
   return (
     <li 
     className="flex items-center justify-between mb-6 cursor-pointer border-2 border-white border-opacity-20 p-3 rounded-xl w-[25rem] hover:bg-white hover:bg-opacity-80 hover:border-pink-100 hover:text-black hover:duration-[0.3s] "
     key={roomId}
-    onClick={()=>joinRoom}
+    onClick={()=>joinRoom()}
     >
       <div className="overflow-hidden flex items-center gap-5">
         <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />

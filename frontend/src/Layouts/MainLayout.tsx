@@ -32,7 +32,7 @@ function MainLayout() {
         <div className="flex items-center gap-[8rem] relative">
           <nav>
             <ul className="flex gap-40">
-              <NavigationLink to="/" onClick={CloseDropMenu}>
+              <NavigationLink to="/home" onClick={CloseDropMenu}>
                 Home
               </NavigationLink>
               <NavigationLink to="/login" onClick={CloseDropMenu}>
