@@ -189,7 +189,6 @@ export class ChatService {
         rooms_explore.push(await this.convertRoomToRoom_Front(room));
       }
     }
-    console.log(rooms_explore);
     return rooms_explore;
   }
   // async GetRoomUsers(roomId: number) {
@@ -414,7 +413,7 @@ export class ChatService {
     new_roomUsers.forEach(async (user) => {
       const _client = await this.GetOauthIdSocket(user.userId);
       serv.to(_client.id).emit('new_message', message);
-      console.log('new message sent to ' + _client.id);
+      // console.log('new message sent to ' + _client.id);
     });
   }
 
@@ -508,12 +507,10 @@ export class ChatService {
     return room;
   }
 
-  async joinRoom(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() createRoomDto: JoinRoomDto,
-  ) {
-    const user = await this.GetUserByUsername(createRoomDto.username);
-    const room_ = await this.GetRoomById(createRoomDto.roomId);
+  async joinRoom(oauthId: string, roomId: number) {
+    // const user = await this.GetUserByUsername(createRoomDto.username);
+    const user = await this.GetUserByOauthId(oauthId);
+    const room_ = await this.GetRoomById(roomId);
     if (room_.type === RoomType['DIRECT_MESSAGE']) {
       throw new Error(
         'you dont have access to this direct message , ghayrha ya 7abibi',
@@ -525,8 +522,8 @@ export class ChatService {
 
     await this.prisma.roomUser.create({
       data: {
-        roomId: createRoomDto.roomId,
-        userId: user.oauthId,
+        roomId: roomId,
+        userId: oauthId,
       },
     });
     return true;

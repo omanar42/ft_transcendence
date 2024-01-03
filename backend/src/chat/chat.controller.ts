@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatService } from './chat.service';
 import { AtGuard } from 'src/auth/guards';
 import { CacheService } from './cache.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -26,6 +26,29 @@ export class ChatController {
         parseInt(req.query.roomId),
         req.user.sub.toString(),
       );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  @Post('joinRoom')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        userotherId: { type: 'string' },
+      },
+    },
+  })
+  async joinRoom(@Req() req) {
+    try {
+      console.log('====================');
+      console.log(req.body);
+      const test = await this.chatService.joinRoom(
+        req.user.sub.toString(),
+        parseInt(req.body.roomId),
+      );
+      // console.log(test);
     } catch (error) {
       console.log(error);
     }
