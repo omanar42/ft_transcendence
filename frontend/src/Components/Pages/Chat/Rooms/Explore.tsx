@@ -24,6 +24,7 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
     .catch(error => {
       console.error('Error:', error);
     });
+    console.log(dataToSend);
   };
   
   return (
@@ -64,7 +65,7 @@ function Explore() {
         <div className='border-2 border-white w-full h-[62rem] bg-dark-100 border-opacity-20 rounded-xl p-[5rem]'>
         <ul className=' flex gap-[3rem] flex-wrap justify-center'>
           {rooms.map((room)=>(
-            <ListRooms avatar={avatar} roomName={room.roomName} roomType={room.roomType} />
+            <ListRooms avatar={avatar} roomName={room.roomName} roomType={room.roomType} roomId={room.roomId}/>
           ))}
         </ul>
         </div>
@@ -72,4 +73,4 @@ function Explore() {
   )
 }
 
-export default Explore
+export default Explore;
