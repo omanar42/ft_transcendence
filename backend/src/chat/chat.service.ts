@@ -165,6 +165,33 @@ export class ChatService {
     Messages_Front.messages.reverse();
     return Messages_Front;
   }
+  async GetRoomUsers(roomId: number) {
+    const room = await this.GetRoomById(roomId);
+    return room.roomuser;
+  }
+  async explore(oauthId: string) {
+    const rooms = await this.getRooms(oauthId);
+    const rooms_explore = [];
+    const all_rooms = await this.prisma.room.findMany({
+      where: {
+        OR: [
+          {
+            type: RoomType['PUBLIC'],
+          },
+          {
+            type: RoomType['PROTECTED'],
+          },
+        ],
+      },
+    });
+    for (const room of all_rooms) {
+      if (!rooms.some((room_) => room_.roomId === room.id)) {
+        rooms_explore.push(await this.convertRoomToRoom_Front(room));
+      }
+    }
+    console.log(rooms_explore);
+    return rooms_explore;
+  }
   // async GetRoomUsers(roomId: number) {
   //   const cacheKey = `roomusers:${roomId}`;
   //   const cachedRoomUsers = this.cacheService.get(cacheKey);
