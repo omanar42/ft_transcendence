@@ -35,8 +35,6 @@ export default {
         'dark-100': '#2b2c26',
         'dark-200': '#2b2c26',
         'dark-300': '#42433e',
-        'pink-100': '#953e91',
-        'blue-100': '#1C00CBB2'
       },
       letterSpacing: {
         '1': '0em',
