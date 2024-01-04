@@ -7,6 +7,9 @@ import * as otplib from 'otplib';
 
 @Injectable()
 export class UsersService {
+  findUnique(arg0: { where: { id: any; }; include: { rooms: boolean; }; }) {
+    throw new Error('Method not implemented.');
+  }
   constructor(private prisma: PrismaService) {}
 
   async create(user: User) {
@@ -106,7 +109,6 @@ export class UsersService {
 
   async getFriends(id: string) {
     const friends = await this.getAllFriends(id);
-
     const friendsList = friends.filter(f => f.status === FriendStatus["FRIENDS"]);
     return friendsList;
   }
