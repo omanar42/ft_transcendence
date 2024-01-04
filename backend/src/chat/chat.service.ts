@@ -45,13 +45,15 @@ export class ChatService {
   async getRooms(oauthId: string) {
     // to do : test this function
     const user = await this.GetUserByOauthId(oauthId);
-    const rooms = user.rooms;
+    const rooms = user.roomsuser;
     if (!rooms) {
       return [];
     }
     const rooms_front = [];
     for (const room of rooms) {
-      const room_front = await this.convertRoomToRoom_Front(room);
+      const room_front = await this.convertRoomToRoom_Front(
+        await this.GetRoomById(room.roomId),
+      );
       if (room_front.roomType !== 'DIRECT_MESSAGE') {
         rooms_front.push(room_front);
       }
@@ -110,6 +112,7 @@ export class ChatService {
       },
       include: {
         rooms: true,
+        roomsuser: true,
       },
     });
     if (!user) {
@@ -170,7 +173,14 @@ export class ChatService {
     return room.roomuser;
   }
   async explore(oauthId: string) {
-    const rooms = await this.getRooms(oauthId);
+    // const rooms = await this.getRooms(oauthId);
+    const rooms = await this.GetUserByOauthId(oauthId).then((user) => {
+      return user.roomsuser;
+    });
+    console.log('======================');
+    console.log(rooms);
+    console.log('======================');
+    // const rooms = await this.GetRoomById()
     const rooms_explore = [];
     const all_rooms = await this.prisma.room.findMany({
       where: {
@@ -411,8 +421,10 @@ export class ChatService {
     });
     const new_roomUsers = await this.filter_blocked_users(sender, roomUsers);
     new_roomUsers.forEach(async (user) => {
-      const _client = await this.GetOauthIdSocket(user.userId);
-      serv.to(_client.id).emit('new_message', message);
+      if (user.userId !== sender.oauthId) {
+        const _client = await this.GetOauthIdSocket(user.userId);
+        serv.to(_client.id).emit('new_message', message);
+      }
       // console.log('new message sent to ' + _client.id);
     });
   }
@@ -526,7 +538,10 @@ export class ChatService {
         userId: oauthId,
       },
     });
-    return true;
+    this.cacheService.delete(`room:${roomId}`);
+    this.cacheService.delete(`user:${oauthId}`);
+    this.cacheService.delete(`user:${user.username}`);
+    return await this.explore(oauthId);
   }
 
   async findRoomMessages(roomId: number) {

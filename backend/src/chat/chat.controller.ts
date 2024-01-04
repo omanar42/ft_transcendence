@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Response, Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -6,6 +6,7 @@ import { ChatService } from './chat.service';
 import { AtGuard } from 'src/auth/guards';
 import { CacheService } from './cache.service';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Console } from 'console';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -40,14 +41,15 @@ export class ChatController {
       },
     },
   })
-  async joinRoom(@Req() req) {
+  async joinRoom(@Req() req, @Res() res: Response, @Body() body) {
     try {
-      console.log('====================');
-      console.log(req.body);
-      const test = await this.chatService.joinRoom(
+      // console.log(req.body);
+      const response = await this.chatService.joinRoom(
         req.user.sub.toString(),
-        parseInt(req.body.roomId),
+        parseInt(body.roomId),
       );
+      console.log(response);
+      return res.json(response);
       // console.log(test);
     } catch (error) {
       console.log(error);
