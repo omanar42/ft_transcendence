@@ -71,6 +71,19 @@ export class ChatService {
     return room_Front;
   }
 
+  async Socket_Front_Dto(Message: any) {
+    const Message_sock_front = new Message_Front_Dto();
+    Message_sock_front.message = Message.content;
+    Message_sock_front.roomId = Message.roomId;
+    Message_sock_front.userName = await this.GetUserByOauthId(
+      Message.userId,
+    ).then((user) => {
+      return user.username;
+    });
+    Message_sock_front.time = Message.createdAt.toString();
+    return Message_sock_front;
+  }
+
   async SetOauthIdSocket(oauthid: string, client: Socket) {
     const cacheKey = `socket:${oauthid}`;
     this.cacheService.set(cacheKey, client);
@@ -173,14 +186,10 @@ export class ChatService {
     return room.roomuser;
   }
   async explore(oauthId: string) {
-    // const rooms = await this.getRooms(oauthId);
     const rooms = await this.GetUserByOauthId(oauthId).then((user) => {
       return user.roomsuser;
     });
-    console.log('======================');
     console.log(rooms);
-    console.log('======================');
-    // const rooms = await this.GetRoomById()
     const rooms_explore = [];
     const all_rooms = await this.prisma.room.findMany({
       where: {
@@ -430,9 +439,10 @@ export class ChatService {
     new_roomUsers.forEach(async (user) => {
       if (user.userId !== sender.oauthId) {
         const _client = await this.GetOauthIdSocket(user.userId);
-        serv.to(_client.id).emit('new_message', message);
+        serv
+          .to(_client.id)
+          .emit('new_message', await this.Socket_Front_Dto(message));
       }
-      // console.log('new message sent to ' + _client.id);
     });
   }
 
