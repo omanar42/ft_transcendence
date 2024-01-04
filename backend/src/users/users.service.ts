@@ -106,19 +106,20 @@ export class UsersService {
 
   async CreateDtoFriendFront(friendsList: any) {
     const friends = [];
-  for (const friend of friendsList) {
-    const UserModle = await this.findOneById(friend.friendId);
-    const new_f = new UpdateUserDto(UserModle);
-    new_f.id = friend.id;
-    new_f.userId = friend.userId;
-    new_f.status = friend.status;
-    new_f.actions = friend.actions;
-    if(new_f.status === FriendStatus["FRIENDS"]){
-      friends.push(new_f);
-    }
-  }    
-  return friends;
+    for (const friend of friendsList) {
+      const UserModle = await this.findOneById(friend.friendId);
+      const new_f = new UpdateUserDto(UserModle);
+      new_f.id = friend.id;
+      new_f.userId = friend.userId;
+      new_f.status = friend.status;
+      new_f.actions = friend.actions;
+      if(new_f.status === FriendStatus["FRIENDS"]){
+        friends.push(new_f);
+      }
+    }    
+    return friends;
   }
+
   async getFriends(id: string) {
     const friends = await this.getAllFriends(id);
     return await this.CreateDtoFriendFront(friends);
@@ -154,6 +155,10 @@ export class UsersService {
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
       return "User not found";
+    }
+
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot add yourself";
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -198,6 +203,10 @@ export class UsersService {
       return "User not found";
     }
 
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot remove yourself";
+    }
+
     const friends = await this.getAllFriends(user.oauthId);
 
     const existingFriend = friends.find(f => f.friendId === friend.oauthId);
@@ -231,6 +240,10 @@ export class UsersService {
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
       return "User not found";
+    }
+
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot accept yourself";
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -276,6 +289,10 @@ export class UsersService {
       return "User not found";
     }
 
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot reject yourself";
+    }
+
     const friends = await this.getAllFriends(user.oauthId);
 
     const existingFriend = friends.find(f => f.friendId === friend.oauthId);
@@ -311,6 +328,10 @@ export class UsersService {
       return "User not found";
     }
 
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot revoke yourself";
+    }
+
     const friends = await this.getAllFriends(user.oauthId);
 
     const existingFriend = friends.find(f => f.friendId === friend.oauthId);
@@ -344,6 +365,10 @@ export class UsersService {
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
       return "User not found";
+    }
+
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot block yourself";
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -387,6 +412,10 @@ export class UsersService {
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
       return "User not found";
+    }
+
+    if (user.oauthId === friend.oauthId) {
+      return "Cannot unblock yourself";
     }
 
     const friends = await this.getAllFriends(user.oauthId);
