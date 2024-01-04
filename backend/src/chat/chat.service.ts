@@ -283,7 +283,11 @@ export class ChatService {
       (roomuser) => roomuser.userId === seter,
     );
     const target_user = room.roomuser.find(
-      (roomuser) => roomuser.userId === target,
+      async (roomuser) =>
+        roomuser.userId ===
+        (await this.GetUserByUsername(target).then((user) => {
+          return user.oauthId;
+        })),
     );
     if (!room || !seter_user || !target_user) {
       throw new Error('User or Room not found');
@@ -292,8 +296,9 @@ export class ChatService {
       throw new Error('You cant kick the owner');
     }
     if (
-      seter_user.status !== UserStatusInRoom['OWNER'] ||
-      seter_user.status !== UserStatusInRoom['ADMIN']
+      seter_user.status === UserStatusInRoom['MEMBER'] ||
+      (seter_user.status === UserStatusInRoom['ADMIN'] &&
+        target_user.status === UserStatusInRoom['ADMIN'])
     ) {
       throw new Error('You are not allowed to kick users');
     }
@@ -355,22 +360,24 @@ export class ChatService {
   async BanUserFromRoom(
     roomId: number,
     seter_oauthId: string,
-    target_oauthId: string,
+    target_username: string,
   ) {
     const room = await this.GetRoomById(roomId);
+
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter_oauthId,
     );
     const target_user = room.roomuser.find(
-      (roomuser) => roomuser.userId === target_oauthId,
+      async (roomuser) =>
+        roomuser.userId ===
+        (await this.GetUserByUsername(target_username).then((user) => {
+          return user.oauthId;
+        })),
     );
     if (!room || !seter_user || !target_user) {
       throw new Error('User or Room not found');
     }
-    if (
-      seter_user.status !== UserStatusInRoom['OWNER'] ||
-      seter_user.status !== UserStatusInRoom['ADMIN']
-    ) {
+    if (seter_user.status === UserStatusInRoom['MEMBER']) {
       throw new Error('You are not allowed to ban users');
     }
     if (target_user.status === UserStatusInRoom['BANNED']) {
@@ -378,8 +385,8 @@ export class ChatService {
     }
     if (
       target_user.status !== UserStatusInRoom['OWNER'] ||
-      (seter_user.status === UserStatusInRoom['ADMIN'] &&
-        target_user.status === UserStatusInRoom['MEMBER'])
+      (target_user.status === UserStatusInRoom['ADMIN'] &&
+        seter_user.status !== UserStatusInRoom['ADMIN'])
     ) {
       await this.prisma.roomUser.update({
         where: {
@@ -531,7 +538,11 @@ export class ChatService {
     if (room_.roomuser.some((roomuser) => roomuser.userId === user.oauthId)) {
       throw new Error('User already in room');
     }
-
+    if (room_.type === RoomType['PROTECTED']) {
+      if (!(await bcrypt.compare(room_.hashedPass, user.password))) {
+        throw new Error('Wrong password');
+      }
+    }
     await this.prisma.roomUser.create({
       data: {
         roomId: roomId,
