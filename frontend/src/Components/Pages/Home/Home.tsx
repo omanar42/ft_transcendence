@@ -1,5 +1,55 @@
+import { useEffect } from 'react';
 import Robot from './assets/Robot.png'
+import axios from 'axios';
+import { useContext } from 'react';
+import LoginInfo from '../../../Contexts/LoginContext';
+
 function Home() {
+  const {setuserInfo, userInfo} = useContext(LoginInfo);
+  
+  useEffect(()=>{
+    const savedUserData = localStorage.getItem('userData');
+    
+    const fetchData = async ()=>{
+      try{
+        const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+        setuserInfo((prevstate)=>({
+          ...prevstate,
+          avatar:response.data.avatar,
+          fullname:response.data.fullname,
+          status:response.data.status,
+          username:response.data.username,
+        }))
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+      }
+      catch(error){
+        console.error(error);
+      }
+    }
+    if (savedUserData){
+        setuserInfo(savedUserData);
+    }
+    else
+      fetchData();
+      const allCookies = document.cookie;
+ 
+      function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        return value;
+      }
+      
+      // Usage
+      const token = getCookie('access_token');
+      console.log('here is the token', token)
+
+  },[])
+
+
+
+  // useEffect(()=>{
+  //     console.log(userInfo);
+  // }, [userInfo])
+
   return (
     <div className="h-screen flex justify-center relative items-center text-white">
       <div className="w-140 flex gap-[10rem] ">

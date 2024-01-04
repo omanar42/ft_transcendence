@@ -1,10 +1,16 @@
-import { Friend, Match, Stats, Status, User } from "@prisma/client";
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
+import { Friend, Match, Stats, Status, User } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class UserEntity implements User {
-	@ApiProperty()
-	readonly oauthId: string;
+  @ApiProperty()
+  readonly oauthId: string;
 
 	@IsString()
 	@IsNotEmpty()
@@ -13,49 +19,52 @@ export class UserEntity implements User {
 	@ApiProperty()
 	readonly username: string;
 
-	@IsString()
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly fullname: string;
+  @IsString()
+  readonly socketId: string;
 
-	@IsString()
-	@IsNotEmpty()
-	@IsEmail()
-	@ApiProperty()
-	readonly email: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly fullname: string;
 
-	@ApiProperty()
-	readonly avatar: string;
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
+  readonly email: string;
 
-	@ApiProperty()
-	readonly provider: string;
+  @ApiProperty()
+  readonly avatar: string;
 
-	@ApiProperty()
-	readonly hashedRt: string;
+  @ApiProperty()
+  readonly provider: string;
 
-	@ApiProperty()
-	readonly twoFactor: boolean;
+  @ApiProperty()
+  readonly hashedRt: string;
 
-	@IsString()
-	@IsNotEmpty()
-	@ApiProperty()
-	readonly twoFaSec: string;
+  @ApiProperty()
+  readonly twoFactor: boolean;
 
-	@ApiProperty()
-	readonly status: Status;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly twoFaSec: string;
 
-	@ApiProperty()
-	readonly friends: Friend[];
-	
-	@ApiProperty()
-	readonly stats: Stats[];
-	
-	@ApiProperty()
-	readonly matches: Match[];
+  @ApiProperty()
+  readonly status: Status;
 
-	@ApiProperty()
-	readonly createdAt: Date;
+  @ApiProperty()
+  readonly friends: Friend[];
 
-	@ApiProperty()
-	readonly updatedAt: Date;
+  @ApiProperty()
+  readonly stats: Stats[];
+
+  @ApiProperty()
+  readonly matches: Match[];
+
+  @ApiProperty()
+  readonly createdAt: Date;
+
+  @ApiProperty()
+  readonly updatedAt: Date;
 }
