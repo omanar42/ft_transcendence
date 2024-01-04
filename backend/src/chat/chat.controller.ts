@@ -31,6 +31,51 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Post('kick_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomid: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async kickUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.KickUserFromRoom(
+        parseInt(body.roomid),
+        req.user.sub.toString(),
+        body.target_username,
+      );
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  @Post('ban_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomid: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async banUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.BanUserFromRoom(
+        parseInt(body.roomid),
+        req.user.sub.toString(),
+        body.target_username,
+      );
+      console.log(response);
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Post('joinRoom')
   @ApiBody({
     schema: {
@@ -43,14 +88,12 @@ export class ChatController {
   })
   async joinRoom(@Req() req, @Res() res: Response, @Body() body) {
     try {
-      // console.log(req.body);
       const response = await this.chatService.joinRoom(
         req.user.sub.toString(),
         parseInt(body.roomId),
       );
       console.log(response);
       return res.json(response);
-      // console.log(test);
     } catch (error) {
       console.log(error);
     }

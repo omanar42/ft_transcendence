@@ -10,6 +10,8 @@ export class CreateDirectMessageDto extends Message {
   username_target: string;
 }
 
+
+
 export class Room_Front_Dto {
   constructor() {
     this.Avatar = '';
