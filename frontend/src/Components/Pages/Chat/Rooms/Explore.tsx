@@ -1,10 +1,20 @@
 import React, { useEffect } from 'react'
-import { Room } from './RoomList';
 import { useState } from 'react';
 import axios from 'axios';
 import avatar from '../../../../assets/avatar.jpeg'
 
-function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
+
+export interface UnjoinedRoom {
+  avatar: string; // assuming avatar is a string URL or similar
+  time: string;
+  roomName: string;
+  roomType: string;
+  roomPassword?: string;
+  userName?: string;
+  roomId: string;
+  setRooms: Function;
+}
+function ListRooms({ avatar,roomName, roomType, roomId, setRooms}: UnjoinedRoom) {
 
 
   const joinRoom = async () => {
@@ -20,11 +30,12 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
     })
     .then(response => {
       console.log('Response:', response.data);
+      setRooms(response.data);
     })
     .catch(error => {
       console.error('Error:', error);
     });
-    console.log(dataToSend);
+    console.log('Join room', dataToSend);
   };
   
   return (
@@ -45,7 +56,7 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
   );
 }
 function Explore() {
-    const [rooms, setRooms] = useState<Room[]>([]);
+    const [rooms, setRooms] = useState<UnjoinedRoom[]>([]);
     useEffect(()=>{
         const fetchRooms = async () => {
             try {
@@ -65,7 +76,7 @@ function Explore() {
         <div className='border-2 border-white w-full h-[62rem] bg-dark-100 border-opacity-20 rounded-xl p-[5rem]'>
         <ul className=' flex gap-[3rem] flex-wrap justify-center'>
           {rooms.map((room)=>(
-            <ListRooms avatar={avatar} roomName={room.roomName} roomType={room.roomType} roomId={room.roomId}/>
+            <ListRooms avatar={avatar} roomName={room.roomName} roomType={room.roomType} roomId={room.roomId} setRooms={setRooms}/>
           ))}
         </ul>
         </div>
