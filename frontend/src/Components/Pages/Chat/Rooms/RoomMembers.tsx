@@ -7,92 +7,7 @@ import { RoomContext } from "../../../../Contexts/RoomContext";
 import { FaBan } from "react-icons/fa";
 import { GiBootKick } from "react-icons/gi";
 
-const chats = [
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "omanar",
-    message: "Andoz eandk lyoum",
-    time: "10.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "yessad",
-    message: "Match nadi a sat",
-    time: "6.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "yassin",
-    message: "galo liya khsarto ?",
-    time: "12.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "ilyas",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-  {
-    avatar: Avatar,
-    username: "mrobaii",
-    message: "Anchdk n72ik a balaty",
-    time: "9.00 am",
-    status: "online"
-  },
-];
+const owner = false;
 
 interface RoomMembers{
   Avatar:string;
@@ -142,13 +57,13 @@ function RenderMembers({ avatar, username, currentRoom }) {
     }
 }
   return (
-    <li className="flex pl-[2rem] w-full  items-center justify-between cursor-pointer hover:bg-slate-600 hover:duration-[0.2s] rounded-3xl border-[1px] border-white border-opacity-20">
+    <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-slate-600 hover:duration-[0.2s] rounded-xl  ">
       <div className="flex flex-col items-start gap-3">
         <h1 className="text-xl font-bold tracking-2">{username}</h1>
-        <div className="flex gap-4 items-center">
+        {owner && <div className="flex gap-4 items-center">
           <FaBan onClick={BanUser} className='text-4xl text-red-600 cursor-pointer hover:text-white hover:bg-red-600 hover:duration-[0.2s] rounded-full' />
           <GiBootKick onClick={KickUser} className='text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full'  />
-        </div>
+        </div>}
       </div>
       <img className="w-[6rem] rounded-full status" src={avatar} alt="avatar" />
 
@@ -159,7 +74,7 @@ function RenderMembers({ avatar, username, currentRoom }) {
 function RoomMembers() {
   const [roomMembers, setRoomMembers] = useState<RoomMembers[]>([]);
   const {currentRoom} = useContext(RoomContext);
-  console.log('room id',currentRoom);
+
   useEffect(()=>{
     const fetchRoommemebers = async ()=>{
       try{
