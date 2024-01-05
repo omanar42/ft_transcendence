@@ -41,11 +41,10 @@ function MessageInput() {
   useEffect(()=>{
     console.log('this from socket', socket);
     console.log(userInfo);
-    socket?.off("new_message").on("new_message", (data)=>{
-      const message:messageData = {message:data.content, roomId:data.id, userName:""}
-      
+    socket?.off("new_message").on("new_message", (data)=>{      
       console.log('message from backend ',data);
-      setMessageList((list)=>[...list, message]);
+
+      setMessageList((list)=>[...list, data]);
       
     })
   },[socket]);
@@ -72,7 +71,7 @@ function MessageInput() {
   <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
     <p className="text-3xl">{roomName}</p>
-    <IoLogOutSharp className="text-5xl text-pink-100 cursor-pointer" />
+    <IoLogOutSharp className="text-5xl text-red-600 cursor-pointer" />
   </div>
   <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll">
     {messageList.map((message, i)=> {
