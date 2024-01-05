@@ -8,9 +8,11 @@ import {
   CreateDirectMessageDto,
   CreateMessageDto,
   CreateRoomDto,
+  Data,
   JoinRoomDto,
   Message_Front_Dto,
   Messages_Front_Dto,
+  RoomUser_front_Dto,
   Room_Front_Dto,
 } from './dto/create-message.dto';
 import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
@@ -182,9 +184,18 @@ export class ChatService {
     return Messages_Front;
   }
   async GetRoomUsers(roomId: number) {
+    // eslint-disable-next-line prefer-const
+    let front_members = [];
     const room = await this.GetRoomById(roomId);
-
-    return room.roomuser;
+    if (!room) {
+      throw new Error('Room not found');
+    }
+    for (const roomuser of room.roomuser) {
+      const user = await this.GetUserByOauthId(roomuser.userId);
+      const roomuser_front = new RoomUser_front_Dto(user);
+      front_members.push(roomuser_front);
+    }
+    return front_members;
   }
   async explore(oauthId: string) {
     const rooms = await this.GetUserByOauthId(oauthId).then((user) => {
