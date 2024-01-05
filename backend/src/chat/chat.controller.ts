@@ -68,6 +68,7 @@ export class ChatController {
   })
   async kickUser(@Req() req, @Res() res: Response, @Body() body) {
     try {
+      // console.log(body.target_username);
       const response = await this.chatService.KickUserFromRoom(
         parseInt(body.roomid),
         req.user.sub.toString(),
