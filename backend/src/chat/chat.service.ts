@@ -611,7 +611,7 @@ export class ChatService {
     return room;
   }
 
-  async joinRoom(oauthId: string, roomId: number) {
+  async joinRoom(oauthId: string, roomId: number, password: string) {
     // const user = await this.GetUserByUsername(createRoomDto.username);
     const user = await this.GetUserByOauthId(oauthId);
     const room_ = await this.GetRoomById(roomId);
@@ -624,7 +624,7 @@ export class ChatService {
       throw new Error('User already in room');
     }
     if (room_.type === RoomType['PROTECTED']) {
-      if (!(await bcrypt.compare(room_.hashedPass, user.password))) {
+      if (!(await bcrypt.compare(room_.hashedPass, password))) {
         throw new Error('Wrong password');
       }
     }

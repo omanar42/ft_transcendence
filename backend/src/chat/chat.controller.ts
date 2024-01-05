@@ -108,7 +108,7 @@ export class ChatController {
       type: 'object',
       properties: {
         roomId: { type: 'number' },
-        userotherId: { type: 'string' },
+        password: { type: 'string' },
       },
     },
   })
@@ -117,6 +117,7 @@ export class ChatController {
       const response = await this.chatService.joinRoom(
         req.user.sub.toString(),
         parseInt(body.roomId),
+        body.password,
       );
       console.log(response);
       return res.json(response);
