@@ -55,7 +55,9 @@ export class UsersService {
 				avatar: true,
 				username: true,
         fullname: true,
+        email: true,
         status: true,
+        twoFactor: true,
 			},
 		});
 		return infos;
