@@ -118,12 +118,15 @@ export class ChatGateway
       const user = await this.messagesService.GetUserByUsername(
         createRoomDto.userName,
       );
+      const _client = await this.messagesService.GetOauthIdSocket(user.oauthId);
       this.cacheService.delete(`user:${user.oauthId}`);
       this.cacheService.delete(`user:${user.username}`);
-      this.server.emit(
-        'roomCreated',
-        await this.messagesService.convertRoomToRoom_Front(room),
-      );
+      this.server
+        .to(_client.id)
+        .emit(
+          'roomCreated',
+          await this.messagesService.convertRoomToRoom_Front(room),
+        );
     } catch (error) {
       this.logger.log(error);
     }
