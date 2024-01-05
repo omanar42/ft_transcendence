@@ -31,6 +31,31 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Post('leaveroom')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        newOwner: { type: 'string' },
+      },
+    },
+  })
+  async leaveRoom(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const data = {
+        roomId: parseInt(body.roomId),
+        newOwner: body.newOwner,
+      };
+      const response = await this.chatService.Leaveroom(
+        req.user.sub.toString(),
+        data,
+      );
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Post('kick_user')
   @ApiBody({
     schema: {
@@ -121,9 +146,5 @@ export class ChatController {
     } catch (error) {
       console.log(error);
     }
-  }
-  @Post('CreateRoom')
-  async createRoom() {
-    
   }
 }
