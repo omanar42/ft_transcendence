@@ -40,7 +40,7 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
 
   return (
     <li 
-    className="flex items-center justify-between mb-6 cursor-pointer"
+    className="flex items-center justify-between mb-6 cursor-pointer hover:bg-slate-500 rounded-lg pl-2 pr-2 hover:duration-[0.2s]"
     key={roomId}
     onClick={()=>{
       setCurrentRoom(roomId)
