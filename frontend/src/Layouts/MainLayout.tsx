@@ -4,7 +4,8 @@ import NavigationLink from "../Utils/NavigationLink";
 import { FaBell } from "react-icons/fa6";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 import Avatar from "../assets/avatar.jpeg";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import UserInfo from "../Components/Pages/Chat/Home/UserInfo";
 
 function DropDwonMenu() {
   return (
@@ -20,7 +21,7 @@ function DropDwonMenu() {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-
+  const {} = useContext(UserInfo);
   const CloseDropMenu = () => setisDropDown(false);
   return (
     <div>
