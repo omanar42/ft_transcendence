@@ -121,7 +121,6 @@ enum AchievementName {
   WIN_1_GAMES
   WIN_5_GAMES
   WIN_10_GAMES
-  FIRST_WIN
   FIRST_LOSS
   PERFECT_WIN
 }

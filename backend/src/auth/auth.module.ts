@@ -3,15 +3,16 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from 'src/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { FortyTwoStrategy, GoogleStrategy, AtStrategy, RtStrategy } from './strategies';
+import {
+  FortyTwoStrategy,
+  GoogleStrategy,
+  AtStrategy,
+  RtStrategy,
+} from './strategies';
 import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  imports: [
-    PrismaModule,
-    UsersModule,
-    JwtModule.register({}),
-  ],
+  imports: [PrismaModule, UsersModule, JwtModule.register({})],
   controllers: [AuthController],
   providers: [
     AuthService,
@@ -19,6 +20,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
     GoogleStrategy,
     AtStrategy,
     RtStrategy,
-  ]
+  ],
 })
 export class AuthModule {}
