@@ -1,20 +1,27 @@
-import { BadRequestException, ForbiddenException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Status, User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { generateFromEmail } from 'unique-username-generator';
 import { JwtPayload } from './types';
+import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import { stat } from 'fs';
 
 @Injectable()
 export class AuthService {
-	constructor (
+  constructor(
     private prisma: PrismaService,
-		private readonly usersService: UsersService,
-		private readonly jwtService: JwtService
-	) {}
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async updateRtHash(oauthId: string, rt: string) {
     const saltOrRounds = 10;
@@ -29,7 +36,10 @@ export class AuthService {
     });
   }
 
-  async getTokens(oauthId: string, email: string) {
+  async getTokens(
+    oauthId: string,
+    email: string,
+  ): Promise<{ access_token: string; refresh_token: string }> {
     const jwtPayload: JwtPayload = {
       sub: oauthId,
       email: email,
@@ -52,30 +62,39 @@ export class AuthService {
     };
   }
 
-  async refresh(req, res) {
+  async refresh(req: any, res: Response) {
     const user = req.user;
     if (!user) throw new ForbiddenException();
     const found = await this.usersService.findOneById(user.sub);
     if (!found || !found.hashedRt) throw new ForbiddenException();
 
-    const isMatch = await bcrypt.compare(req.cookies.refresh_token, found.hashedRt)
+    const isMatch = await bcrypt.compare(
+      req.cookies.refresh_token,
+      found.hashedRt,
+    );
     if (!isMatch) throw new ForbiddenException();
 
     const tokens = await this.getTokens(found.oauthId, found.email);
     await this.updateRtHash(found.oauthId, tokens.refresh_token);
 
-    res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
-    res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
 
     return res.status(HttpStatus.OK).json(tokens);
   }
 
-  async createDefaultStats(user: User) {
+  async createDefaultStats(user: User): Promise<any> {
     const defaultStats = await this.prisma.stats.create({
       data: {
         user: {
           connect: {
-            oauthId: user.oauthId
+            oauthId: user.oauthId,
           },
         },
       },
@@ -83,19 +102,19 @@ export class AuthService {
     return defaultStats;
   }
 
-  async registerUser(user: User) {
+  async registerUser(user: User): Promise<User> {
     try {
-			const username = generateFromEmail(user.email, 5);
-			user.username = username;
+      const username = generateFromEmail(user.email, 5);
+      user.username = username;
       const newUser = await this.usersService.create(user);
       await this.createDefaultStats(newUser);
       return newUser;
     } catch {
-      throw new InternalServerErrorException();
+      throw new ForbiddenException();
     }
   }
 
-  async login(req, res) {
+  async login(req: any, res: Response) {
     let redirectUrl: string;
     const user = req.user;
     if (!user) {
@@ -104,7 +123,7 @@ export class AuthService {
 
     let found = await this.usersService.findOneByEmail(user.email);
     redirectUrl = '/home';
-  
+
     if (!found) {
       found = await this.registerUser(user);
       redirectUrl = '/welcome';
@@ -113,13 +132,18 @@ export class AuthService {
     const tokens = await this.getTokens(found.oauthId, found.email);
     await this.updateRtHash(found.oauthId, tokens.refresh_token);
 
-    res.cookie('access_token', tokens.access_token, { httpOnly: true, secure : true});
-    res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true, secure : true});
+    res.cookie('access_token', tokens.access_token, {
+      httpOnly: true,
+      secure: true,
+    });
+    res.cookie('refresh_token', tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+    });
 
-    this.usersService.setStatus(found.oauthId, Status["ONLINE"]);
-    
-    if (found.twoFactor)
-      redirectUrl = '/two-factor';
+    this.usersService.setStatus(found.oauthId, Status['ONLINE']);
+
+    if (found.twoFactor) redirectUrl = '/two-factor';
 
     return res.status(HttpStatus.OK).json({
       redirectUrl: redirectUrl,
@@ -128,7 +152,7 @@ export class AuthService {
   }
 
   async logout(oauthId: string) {
-		await this.prisma.user.updateMany({
+    await this.prisma.user.updateMany({
       where: {
         oauthId: oauthId,
         hashedRt: {
@@ -137,17 +161,17 @@ export class AuthService {
       },
       data: {
         hashedRt: null,
-        status: Status["OFFLINE"],
+        status: Status['OFFLINE'],
       },
     });
     return true;
-	}
+  }
 
-  token = (req) =>  {
+  token = (req: Request): string => {
     let token = null;
     if (req && req.cookies) {
       token = req.cookies['access_token'];
     }
     return token;
-  }
+  };
 }
