@@ -17,6 +17,7 @@ export class RoomUser_front_Dto {
   }
   UserName: string;
   Avatar: string;
+  status: string;
 }
 export class Room_Front_Dto {
   constructor() {

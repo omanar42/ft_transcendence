@@ -190,9 +190,14 @@ export class ChatService {
     if (!room) {
       throw new Error('Room not found');
     }
+    const room_users = room.roomuser;
     for (const roomuser of room.roomuser) {
       const user = await this.GetUserByOauthId(roomuser.userId);
+      const room_user = room_users.find(
+        (roomuser) => roomuser.userId === user.oauthId,
+      );
       const roomuser_front = new RoomUser_front_Dto(user);
+      roomuser_front.status = room_user.status;
       front_members.push(roomuser_front);
     }
     return front_members;
@@ -302,18 +307,16 @@ export class ChatService {
     this.cacheService.set(cacheKey, blocked_users);
     return blocked_users;
   }
+
   // the seter is oauthId of the user
   async KickUserFromRoom(roomId: number, seter: string, target: string) {
     const room = await this.GetRoomById(roomId);
+    const target_userModel = await this.GetUserByUsername(target);
+    const target_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === target_userModel.oauthId,
+    );
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter,
-    );
-    const target_user = room.roomuser.find(
-      async (roomuser) =>
-        roomuser.userId ===
-        (await this.GetUserByUsername(target).then((user) => {
-          return user.oauthId;
-        })),
     );
     if (!room || !seter_user || !target_user) {
       throw new Error('User or Room not found');
