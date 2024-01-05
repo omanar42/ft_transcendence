@@ -454,12 +454,9 @@ export class ChatService {
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter_oauthId,
     );
+    const target_user_model = await this.GetUserByUsername(target_username);
     const target_user = room.roomuser.find(
-      async (roomuser) =>
-        roomuser.userId ===
-        (await this.GetUserByUsername(target_username).then((user) => {
-          return user.oauthId;
-        })),
+      (roomuser) => roomuser.userId === target_user_model.oauthId,
     );
     if (!room || !seter_user || !target_user) {
       throw new Error('User or Room not found');
