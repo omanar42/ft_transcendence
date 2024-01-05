@@ -278,12 +278,17 @@ export class ChatService {
     if (cachedBlocked) {
       return cachedBlocked;
     }
+    // eslint-disable-next-line prefer-const
+    let blocked_users = [];
     const blocked = await this.usersService.getBlocked(oauthId);
-    if (!blocked) {
+    for (const block of blocked) {
+      blocked_users.push(await this.GetUserByOauthId(block.friendId));
+    }
+    if (!blocked_users) {
       throw new Error('User not found');
     }
-    this.cacheService.set(cacheKey, blocked);
-    return blocked;
+    this.cacheService.set(cacheKey, blocked_users);
+    return blocked_users;
   }
   // the seter is oauthId of the user
   async KickUserFromRoom(roomId: number, seter: string, target: string) {
@@ -365,7 +370,12 @@ export class ChatService {
     }
     return users_list_not_blocked;
   }
-
+  // async LeaveRoom(oauthId: string, roomId: number) {
+  //   const room = await this.GetRoomById(roomId);
+  //   const user = await this.GetUserByOauthId(oauthId);
+  //   const RoomMembers = room.roomuser;
+  //   if(RoomMembers.some((roomuser) => 
+  // }
   async BanUserFromRoom(
     roomId: number,
     seter_oauthId: string,
@@ -500,14 +510,14 @@ export class ChatService {
       }
       throw new Error('Room type not correct');
     }
-    this.prisma.user.update({
-      where: {
-        username: createRoomDto.userName,
-      },
-      data: {
-        socketId: client.id,
-      },
-    });
+    // this.prisma.user.update({
+    //   where: {
+    //     username: createRoomDto.userName,
+    //   },
+    //   data: {
+    //     socketId: client.id,
+    //   },
+    // });
     this.cacheService.delete(`user:${createRoomDto.userName}`);
     const room = await this.prisma.room.create({
       data: {
