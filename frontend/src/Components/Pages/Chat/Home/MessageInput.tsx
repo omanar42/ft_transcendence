@@ -5,7 +5,7 @@ import avatar from '../assets/avatar.jpeg';
 import { RoomContext } from "../../../../Contexts/RoomContext";
 import LoginInfo from "../../../../Contexts/LoginContext";
 import { IoLogOutSharp } from "react-icons/io5";
-
+import '../Rooms/CreateRoom.css'
 interface messageList {
   message:string,
   userName:string;
@@ -22,9 +22,9 @@ function MessageInput() {
   const [currentMessage, setcurrentMessage] = useState("");
   const [roomName, setRoomName] = useState("");
   const [messageList, setMessageList] = useState<messageList[]>([]);
-  const {currentRoom} = useContext(RoomContext);
+  const {currentRoom, setCurrentRoom} = useContext(RoomContext);
   const {userInfo, socket} = useContext(LoginInfo);
-
+  const [isOpen, setIsOpen] = useState(false);
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData:messageData = {
@@ -38,6 +38,11 @@ function MessageInput() {
       // console.log(messageData);
     }
   };
+
+  const leaveRoom = async () =>{
+    setIsOpen(false);
+    setCurrentRoom(0);
+  }
   useEffect(()=>{
     console.log('this from socket', socket);
     console.log(userInfo);
@@ -71,7 +76,16 @@ function MessageInput() {
   <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
     <p className="text-3xl">{roomName}</p>
-    <IoLogOutSharp className="text-5xl text-red-600 cursor-pointer" />
+    <IoLogOutSharp onClick={()=>setIsOpen(true)} className="text-5xl text-red-600 cursor-pointer" />
+   {isOpen && <div className="modal flex items-center justify-center text-black ">
+      <div className="w-[60rem] bg-white h-[20rem] bg-opacity-80 flex flex-col justify-around items-center rounded-2xl">
+        <h1 className="uppercase text-4xl font-extrabold">Are you sure you want to leave?</h1>
+        <div className="text-5xl font-bold flex gap-[5rem] text-white">
+          <button onClick={leaveRoom} className="bg-pink-600 p-3 rounded-2xl hover:bg-white hover:text-black  hover:duration-[0.2s]">Yes</button>
+          <button onClick={()=>setIsOpen(false)} className=" border-2 border-black p-3 rounded-2xl text-black hover:bg-slate-600 hover:text-white hover:duration-[0.2s] ">Cancel</button>
+        </div>
+      </div>
+    </div>}
   </div>
   <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll">
     {messageList.map((message, i)=> {
