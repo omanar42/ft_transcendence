@@ -10,6 +10,8 @@ COPY . .
 
 RUN chmod +x run.sh
 
+RUN npx prisma generate
+
 EXPOSE 3000
 
-CMD [ "sh", "./run.sh" ]
+CMD [ "npm", "run", "start:dev" ]
