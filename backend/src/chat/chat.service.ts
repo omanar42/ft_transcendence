@@ -591,13 +591,14 @@ export class ChatService {
         type: RoomType[createRoomDto.roomType.toUpperCase()],
       },
     });
-    if (createRoomDto.roomType === 'protected') {
+    if (createRoomDto.roomType.toLowerCase() === 'protected') {
+      const hashedPass_ = await bcrypt.hash(createRoomDto.roomPassword, 10);
       await this.prisma.room.update({
         where: {
           id: room.id,
         },
         data: {
-          hashedPass: await bcrypt.hash(createRoomDto.roomPassword, 10),
+          hashedPass: hashedPass_,
         },
       });
     }
@@ -613,6 +614,7 @@ export class ChatService {
 
   async joinRoom(oauthId: string, roomId: number, password: string) {
     // const user = await this.GetUserByUsername(createRoomDto.username);
+    this.cacheService.delete(`room:${roomId}`);
     const user = await this.GetUserByOauthId(oauthId);
     const room_ = await this.GetRoomById(roomId);
     if (room_.type === RoomType['DIRECT_MESSAGE']) {
@@ -624,7 +626,8 @@ export class ChatService {
       throw new Error('User already in room');
     }
     if (room_.type === RoomType['PROTECTED']) {
-      if (!(await bcrypt.compare(room_.hashedPass, password))) {
+      const isMatch = await bcrypt.compare(password, room_.hashedPass);
+      if (!isMatch) {
         throw new Error('Wrong password');
       }
     }
