@@ -183,6 +183,7 @@ export class ChatService {
   }
   async GetRoomUsers(roomId: number) {
     const room = await this.GetRoomById(roomId);
+
     return room.roomuser;
   }
   async explore(oauthId: string) {
@@ -370,12 +371,65 @@ export class ChatService {
     }
     return users_list_not_blocked;
   }
-  // async LeaveRoom(oauthId: string, roomId: number) {
-  //   const room = await this.GetRoomById(roomId);
-  //   const user = await this.GetUserByOauthId(oauthId);
-  //   const RoomMembers = room.roomuser;
-  //   if(RoomMembers.some((roomuser) => 
-  // }
+  async Leaveroom(oauthId: string, data: any) {
+    const room = await this.GetRoomById(data.roomId);
+    const user = await this.GetUserByOauthId(oauthId);
+    const roomuser = room.roomuser.find(
+      (roomuser) => roomuser.userId === oauthId,
+    );
+    const RoomMembers = room.roomuser;
+    if (roomuser && room.type !== RoomType['DIRECT_MESSAGE']) {
+      if (roomuser.status === UserStatusInRoom['OWNER']) {
+        if (!data.newOwner) {
+          throw new Error(
+            'You are the owner of this room , you have to choose a new owner',
+          );
+        }
+        const newOwner = await this.GetUserByUsername(data.newOwner);
+        if (!newOwner) {
+          throw new Error('New owner not found');
+        }
+        if (
+          !RoomMembers.some((roomuser) => roomuser.userId === newOwner.oauthId)
+        ) {
+          throw new Error('New owner is not a member of this room');
+        }
+        await this.prisma.roomUser.delete({
+          where: {
+            id: roomuser.id,
+          },
+        });
+        await this.prisma.room.update({
+          where: {
+            id: room.id,
+          },
+          data: {
+            ownerId: newOwner.oauthId.toString(),
+          },
+        });
+        const newOwner_roomuser = room.roomuser.find(
+          (roomuser) => roomuser.userId === newOwner.oauthId,
+        );
+        await this.prisma.roomUser.update({
+          where: {
+            id: newOwner_roomuser.id,
+          },
+          data: {
+            status: UserStatusInRoom['OWNER'],
+          },
+        });
+      } else {
+        await this.prisma.roomUser.delete({
+          where: {
+            id: roomuser.id,
+          },
+        });
+      }
+    }
+    this.cacheService.delete(`room:${data.roomId}`);
+    this.cacheService.delete(`user:${oauthId}`);
+    this.cacheService.delete(`user:${user.username}`);
+  }
   async BanUserFromRoom(
     roomId: number,
     seter_oauthId: string,
