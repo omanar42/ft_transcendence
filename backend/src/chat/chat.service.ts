@@ -46,6 +46,7 @@ export class ChatService {
   // }
   async getRooms(oauthId: string) {
     // to do : test this function
+    this.cacheService.delete(`user:${oauthId}`);
     const user = await this.GetUserByOauthId(oauthId);
     const rooms = user.roomsuser;
     if (!rooms) {
