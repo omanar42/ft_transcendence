@@ -95,8 +95,8 @@ const chats = [
 ];
 
 interface RoomMembers{
-  avatar:string;
-  username:string;
+  Avatar:string;
+  UserName:string;
 }
 
 function RenderMembers({ avatar, username, currentRoom }) {
@@ -128,7 +128,7 @@ function RenderMembers({ avatar, username, currentRoom }) {
         roomid: currentRoom,
         target_username: username
       }
-      axios.post("http://http://127.0.0.1:3000/chat/kick_user", user, {
+      axios.post("http://127.0.0.1:3000/chat/kick_user", user, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -142,9 +142,9 @@ function RenderMembers({ avatar, username, currentRoom }) {
     }
 }
   return (
-    <li className="flex pl-[2rem] w-full items-center justify-between">
+    <li className="flex pl-[2rem] w-full  items-center justify-between cursor-pointer hover:bg-slate-600 hover:duration-[0.2s] rounded-3xl border-[1px] border-white border-opacity-20">
       <div className="flex flex-col items-start gap-3">
-        <h1 className="text-3xl font-bold tracking-2">{username}</h1>
+        <h1 className="text-xl font-bold tracking-2">{username}</h1>
         <div className="flex gap-4 items-center">
           <FaBan onClick={BanUser} className='text-4xl text-red-600 cursor-pointer hover:text-white hover:bg-red-600 hover:duration-[0.2s] rounded-full' />
           <GiBootKick onClick={KickUser} className='text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full'  />
@@ -164,7 +164,8 @@ function RoomMembers() {
     const fetchRoommemebers = async ()=>{
       try{
         const response = await axios.get("http://127.0.0.1:3000/chat/roomUsers", {withCredentials: true, params: {roomId: currentRoom}});
-        console.log(response.data);
+        console.log('room members',response.data);
+        setRoomMembers(response.data);
       }
       catch(error){
         console.error(error);
@@ -175,15 +176,15 @@ function RoomMembers() {
   },
   [currentRoom])
   return (
-    <div className="flex flex-col gap-[0.5rem] overflow-hidden">
-      <div className="pt-7 pb-7 border-2 text-center border-white border-opacity-20 rounded-2xl">
+    <div className="flex flex-col gap-[0.5rem] items-center overflow-hidden">
+      <div className="pt-7 pb-7 border-2 text-center w-full border-white border-opacity-20 rounded-2xl">
         <h1 className="text-4xl">Room Members</h1>
       </div>
-      <ul className="flex overflow-auto flex-col gap-[1rem] items-end pr-[3rem] w-full text-2xl border-2 border-white border-opacity-20 rounded-2xl">
-        {chats.map((memeber, i) => (
-          <RenderMembers avatar={memeber.avatar} username={memeber.username} currentRoom={currentRoom} key={i}/>
-        ))}
-      </ul>
+        <ul className="flex overflow-auto flex-col items-center gap-[0.5rem] w-full border-2 border-white border-opacity-20 h-full text-2xl rounded-2xl">
+          {roomMembers.map((memeber, i) => (
+            <RenderMembers avatar={memeber.Avatar} username={memeber.UserName} currentRoom={currentRoom} key={i}/>
+          ))}
+        </ul>
     </div>
   );
 }
