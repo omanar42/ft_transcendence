@@ -8,8 +8,6 @@ RUN npm install
 
 COPY . .
 
-RUN chmod +x run.sh
-
 RUN npx prisma generate
 
 EXPOSE 3000
