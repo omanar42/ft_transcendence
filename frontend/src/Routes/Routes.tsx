@@ -15,6 +15,7 @@ import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
+import Game from "../Components/Pages/Game/Game";
 
 
 
