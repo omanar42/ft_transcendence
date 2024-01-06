@@ -1,34 +1,58 @@
-interface PlayerState {
-  paddlePosition: number;
-  score: number;
-}
-  
-interface BallState {
-  position: { x: number; y: number };
-  velocity: { x: number; y: number };
-}
+import { Ball } from './ball';
+import { Player } from './player';
 
 export class GameState {
-  playerOne: PlayerState;
-  playerTwo: PlayerState;
-  ball: BallState;
+  playerOne: Player;
+  playerTwo: Player;
+  ball: Ball;
   running: boolean;
 
-  constructor() {
-    this.playerOne = { paddlePosition: 0, score: 0 };
-    this.playerTwo = { paddlePosition: 0, score: 0 };
-    this.ball = { position: { x: 0, y: 0 }, velocity: { x: 0, y: 0 } };
+  constructor(_playerOne: Player, _playerTwo: Player) {
+    this.playerOne = _playerOne;
+    this.playerTwo = _playerTwo;
+    this.ball = new Ball();
     this.running = false;
   }
 
-  // Methods to update game state based on player actions and game rules
-  updatePlayerPosition(playerId: string, position: number) {
-    // Update the paddle position for the specified player
-  }
+  collision = (p: Player) => {
+    const pTop = p.y;
+    const pBottom = p.y + p.height;
+    const pLeft = p.x;
+    const pRight = p.x + p.width;
 
-  updateBallPosition() {
-    // Update the ball position based on its velocity and any collisions
-  }
+    const bTop = this.ball.y - this.ball.radius;
+    const bBottom = this.ball.y + this.ball.radius;
+    const bLeft = this.ball.x - this.ball.radius;
+    const bRight = this.ball.x + this.ball.radius;
 
-  // Additional methods for game logic like scoring, collision detection, etc.
+    return pLeft < bRight && pTop < bBottom && pRight > bLeft && pBottom > bTop;
+  };
+
+  update = () => {
+    this.ball.update();
+
+    const player = this.ball.x < 1300 / 2 ? this.playerOne : this.playerTwo;
+
+    if (this.collision(player)) {
+      let collidePoint = this.ball.y - (player.y + player.height / 2);
+      collidePoint /= player.height / 2;
+
+      const angleRad = (Math.PI / 4) * collidePoint;
+
+      const direction = this.ball.x < 1300 / 2 ? 1 : -1;
+
+      this.ball.velocityX = direction * this.ball.speed * Math.cos(angleRad);
+      this.ball.velocityY = this.ball.speed * Math.sin(angleRad);
+
+      this.ball.speed += 0.1;
+    }
+
+    if (this.ball.x - this.ball.radius < 0) {
+      this.playerTwo.updateScore();
+      this.ball.resetBall();
+    } else if (this.ball.x + this.ball.radius > 800) {
+      this.playerOne.updateScore();
+      this.ball.resetBall();
+    }
+  };
 }
