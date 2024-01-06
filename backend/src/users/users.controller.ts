@@ -1,4 +1,13 @@
-import { Controller, Get, UseGuards, Req, Res, Post, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Req,
+  Res,
+  Post,
+  Body,
+  Param,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -10,54 +19,60 @@ import { AtGuard } from 'src/auth/guards';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get("info")
-  async getInfo(@Req() req, @Res() res: Response) {
+  @Get('info')
+  async getInfo(@Req() req: any, @Res() res: Response) {
+    if (!req.user.sub)
+      return res.status(400).json({ message: 'Invalid token' });
     const infos = await this.usersService.getInfo(req.user.sub);
     return res.json(infos);
   }
 
-  @Get("stats")
-  async getStats(@Req() req, @Res() res: Response) {
+  @Get('stats')
+  async getStats(@Req() req: any, @Res() res: Response) {
     const stats = await this.usersService.getStats(req.user.sub);
     return res.json(stats);
   }
 
-  @Get("allFriends")
-  async getAllFriends(@Req() req, @Res() res: Response) {
+  @Get('allFriends')
+  async getAllFriends(@Req() req: any, @Res() res: Response) {
     const friends = await this.usersService.getAllFriends(req.user.sub);
     return res.json(friends);
   }
 
-  @Get("friends")
-  async getFriends(@Req() req, @Res() res: Response) {
+  @Get('friends')
+  async getFriends(@Req() req: any, @Res() res: Response) {
     const friends = await this.usersService.getFriends(req.user.sub);
     return res.json(friends);
   }
 
-  @Get("requests")
-  async getRequests(@Req() req, @Res() res: Response) {
+  @Get('requests')
+  async getRequests(@Req() req: any, @Res() res: Response) {
     const requests = await this.usersService.getRequests(req.user.sub);
     return res.json(requests);
   }
 
-  @Get("invitations")
-  async getInvitations(@Req() req, @Res() res: Response) {
+  @Get('invitations')
+  async getInvitations(@Req() req: any, @Res() res: Response) {
     const invitations = await this.usersService.getInvitations(req.user.sub);
     return res.json(invitations);
   }
 
-  @Get("blocked")
-  async getBlocked(@Req() req, @Res() res: Response) {
+  @Get('blocked')
+  async getBlocked(@Req() req: any, @Res() res: Response) {
     const blocks = await this.usersService.getBlocked(req.user.sub);
     return res.json(blocks);
   }
 
-  @Get("avatar/:filename")
-  async getPicture(@Req() req, @Res() res: Response, @Param('filename') filename: string) {
+  @Get('avatar/:filename')
+  async getPicture(
+    @Req() req: any,
+    @Res() res: Response,
+    @Param('filename') filename: string,
+  ) {
     return res.sendFile(filename, { root: './uploads' });
   }
 
-  @Post("add")
+  @Post('add')
   @ApiBody({
     schema: {
       type: 'object',
@@ -68,12 +83,16 @@ export class UsersController {
       },
     },
   })
-  async addFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
+  async addFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
     const message = await this.usersService.addFriend(req.user.sub, friendUser);
     return res.json(message);
   }
 
-  @Post("remove")
+  @Post('remove')
   @ApiBody({
     schema: {
       type: 'object',
@@ -84,12 +103,19 @@ export class UsersController {
       },
     },
   })
-  async removeFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.removeFriend(req.user.sub, friendUser);
+  async removeFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.removeFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("accept")
+  @Post('accept')
   @ApiBody({
     schema: {
       type: 'object',
@@ -100,12 +126,19 @@ export class UsersController {
       },
     },
   })
-  async acceptFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.acceptFriend(req.user.sub, friendUser);
+  async acceptFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.acceptFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("reject")
+  @Post('reject')
   @ApiBody({
     schema: {
       type: 'object',
@@ -116,12 +149,19 @@ export class UsersController {
       },
     },
   })
-  async rejectFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.rejectFriend(req.user.sub, friendUser);
+  async rejectFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.rejectFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("revoke")
+  @Post('revoke')
   @ApiBody({
     schema: {
       type: 'object',
@@ -132,12 +172,19 @@ export class UsersController {
       },
     },
   })
-  async revokeFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.revokeFriend(req.user.sub, friendUser);
+  async revokeFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.revokeFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("block")
+  @Post('block')
   @ApiBody({
     schema: {
       type: 'object',
@@ -148,12 +195,19 @@ export class UsersController {
       },
     },
   })
-  async blockFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.blockFriend(req.user.sub, friendUser);
+  async blockFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.blockFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("unblock")
+  @Post('unblock')
   @ApiBody({
     schema: {
       type: 'object',
@@ -164,12 +218,19 @@ export class UsersController {
       },
     },
   })
-  async unblockFriend(@Req() req, @Res() res: Response, @Body("friendUser") friendUser: string) {
-    const message = await this.usersService.unblockFriend(req.user.sub, friendUser);
+  async unblockFriend(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('friendUser') friendUser: string,
+  ) {
+    const message = await this.usersService.unblockFriend(
+      req.user.sub,
+      friendUser,
+    );
     return res.json(message);
   }
 
-  @Post("verify2fa")
+  @Post('verify2fa')
   @ApiBody({
     schema: {
       type: 'object',
@@ -180,7 +241,11 @@ export class UsersController {
       },
     },
   })
-  async verify2FA(@Req() req, @Res() res: Response, @Body("token") token: string) {
+  async verify2FA(
+    @Req() req: any,
+    @Res() res: Response,
+    @Body('token') token: string,
+  ) {
     const message = await this.usersService.verify2FA(req.user.sub, token);
     return res.json(message);
   }

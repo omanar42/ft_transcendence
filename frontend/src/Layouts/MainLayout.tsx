@@ -4,7 +4,8 @@ import NavigationLink from "../Utils/NavigationLink";
 import { FaBell } from "react-icons/fa6";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 import Avatar from "../assets/avatar.jpeg";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import LoginInfo from "../Contexts/LoginContext";
 
 function DropDwonMenu() {
   return (
@@ -20,7 +21,7 @@ function DropDwonMenu() {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-
+  const {userInfo}:any = useContext(LoginInfo);
   const CloseDropMenu = () => setisDropDown(false);
   return (
     <div>
@@ -35,20 +36,20 @@ function MainLayout() {
               <NavigationLink to="/home" onClick={CloseDropMenu}>
                 Home
               </NavigationLink>
-              <NavigationLink to="/login" onClick={CloseDropMenu}>
-                Log in
+              <NavigationLink to="/game" onClick={CloseDropMenu}>
+                Game
               </NavigationLink>
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
                 Chat
               </NavigationLink>
-              <NavigationLink to="/game" onClick={CloseDropMenu}>
-                Game
+              <NavigationLink to="/settings" onClick={CloseDropMenu}>
+                Settings
               </NavigationLink>
             </ul>
           </nav>
           <FaBell className="text-4xl" />
           <ProfileAvatar
-            src={Avatar}
+            src={userInfo.avatar}
             className="h-[6rem] cursor-pointer rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
             onClick={()=>setisDropDown(!isDropDown)}
           />

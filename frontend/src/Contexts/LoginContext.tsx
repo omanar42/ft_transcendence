@@ -21,7 +21,7 @@ export interface userInfo{
   
 export const useLoginInfo = ()=> useContext(LoginInfo);
 export const LoginInfoContext = ({children}:any)=>{
-    const [isLogged, setIsLogged] = useState(false);
+    const [isLogged, setIsLogged] = useState<boolean>(false);
     const [userInfo, setuserInfo] = useState<userInfo>(userLoginInfo);
     const [name, setName] = useState("");
     const [token, setToken] = useState<string | null>(null);

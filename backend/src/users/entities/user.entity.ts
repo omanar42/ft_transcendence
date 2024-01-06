@@ -12,15 +12,12 @@ export class UserEntity implements User {
   @ApiProperty()
   readonly oauthId: string;
 
-	@IsString()
-	@IsNotEmpty()
-	@MinLength(3)
-	@MaxLength(14)
-	@ApiProperty()
-	readonly username: string;
-
   @IsString()
-  readonly socketId: string;
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(14)
+  @ApiProperty()
+  readonly username: string;
 
   @IsString()
   @IsNotEmpty()

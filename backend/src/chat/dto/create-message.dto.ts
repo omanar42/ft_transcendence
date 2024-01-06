@@ -10,8 +10,15 @@ export class CreateDirectMessageDto extends Message {
   username_target: string;
 }
 
-
-
+export class RoomUser_front_Dto {
+  constructor(data: any) {
+    this.UserName = data.username;
+    this.Avatar = data.avatar;
+  }
+  UserName: string;
+  Avatar: string;
+  status: string;
+}
 export class Room_Front_Dto {
   constructor() {
     this.Avatar = '';
