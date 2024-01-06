@@ -4,6 +4,7 @@ import {
   Routes,
   Link,
   RouterProvider,
+  Navigate,
 } from "react-router-dom";
 import "./App.css";
 import { routermin } from "./Routes/Routes";
@@ -14,7 +15,7 @@ import io from 'socket.io-client';
 
 
 function App() {
-  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket, socket, token} = useContext(LoginInfo);
+  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
 
   useEffect(()=>{
   fetchData();
@@ -32,8 +33,10 @@ function App() {
         status:response.data.status,
         username:response.data.username,
       }))
-      if (userInfo.username)
+      if (userInfo.username){
         setIsLogged(true);
+        // <Navigate to="/home" />
+      }
       const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
       setToken(newtoken.data);
       if (newtoken.data){

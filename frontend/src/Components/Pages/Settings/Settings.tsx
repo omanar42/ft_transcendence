@@ -1,75 +1,67 @@
-import React, { useState } from "react";
-import "./Settings.css";
-import ProfileImage from "./ProfileImage";
-import CustomSwitch from "./CustomSwitch";
+import React, { useContext, useRef, useState } from 'react'
+import LoginInfo from '../../../Contexts/LoginContext'
 
 function Settings() {
-  const [fullName, setFullName] = useState("Ossama Manar");
-  const [userName, setUserName] = useState("Omanar");
-  const [email, setEmail] = useState("omanar@gmail.com");
+    const [image, setImage] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
+    const {userInfo} = useContext(LoginInfo);
+    const imageRef = useRef(null);
+
+    const handelImageClick = ()=>{
+        imageRef.current?.click();
+    }
+    const handelUpload = (e:any)=>{
+        const file = e.target.files[0];
+
+        if (file){
+            setImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        console.log('here',file);
+
+    }
   return (
-    <div className="flex h-screen items-center justify-center pl-10">
-      <div className="h-[636px] w-[1152px] rounded-[16px] border border-pink-100 backdrop-blur">
-        <div className="pl-[250px] pt-[24px] font-Orbitron text-4xl text-white">
-          Account Settings
-        </div>
-        <div className="pl-[250px] pt-[10px] ">
-          <div className="h-[496px] w-[614px] rounded-[12-px] border border-blue-400 backdrop-blur-xl">
-            <div className="absolute left-[50px] top-[80px]">
-              <ProfileImage initialImage="https://cdn.intra.42.fr/users/3fe187b98b948c31ae17b534ea656927/omanar.jpg" />
-            </div>
+    <div className='flex justify-center items-center h-full mt-4'>
 
-            <div className="flex-row pl-[319px] pt-[80px]">
-              <p className="text-xl font-bold text-white">Full Name</p>
-              <input
-                type="text"
-                value={fullName}
-                onChange={(event) => setFullName(event.target.value)}
-                className="h-[37px] w-[263px] rounded-full border bg-transparent text-center font-Orbitron text-white"
-              />
-
-              <p className="pt-12 text-xl font-bold text-white">Last Name</p>
-              <input
-                type="text"
-                value={userName}
-                onChange={(event) => setUserName(event.target.value)}
-                className="h-[37px] w-[263px] rounded-full border bg-transparent text-center font-Orbitron text-white"
-              />
-
-              <p className="pt-12 text-xl font-bold text-white">E-mail</p>
-              <input
-                type="text"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                className="h-[37px] w-[263px] rounded-full border bg-transparent text-center font-Orbitron text-white"
-              />
-
-              <div className="pt-16">
-                <div className=" flex h-[37px] w-[263px] items-center justify-center rounded-full border bg-transparent">
-                  <p className=" m-4 text-center font-Orbitron text-white">
-                    Two-Factor Authentication
-                  </p>
-                  <div className="">
-                    <CustomSwitch />
-                  </div>
+        <div className='text-white text-opacity-50  border-[1px] border-pink-600 w-140 h-[62rem] bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center'>
+        <div className='w-2/3 h-5/6'>
+            <h1 className='text-7xl mb-6'>Acount Settings</h1>
+            <div className='border-[1px] border-blue-600 h-5/6 bg-black bg-opacity-40 rounded-3xl flex flex-col gap-[5rem] justify-center items-center'>
+                <div className='flex justify-around items-center w-3/4'>
+                    <div onClick={handelImageClick}>
+                 { !image ?  <img 
+                        className='w-[20rem] cursor-pointer  border-2 border-pink-600 h-[20rem] rounded-full'
+                        src={userInfo.avatar}
+                    />
+                    :
+                    <img 
+                    className='w-[20rem] cursor-pointer  border-2 border-pink-600 h-[20rem] rounded-full'
+                    src={imageUrl}
+                />
+                    }
+                    <input type='file' onChange={handelUpload} ref={imageRef} className='hidden'/>
+                    </div>
+                    <div className='flex flex-col gap-[2rem] text-2xl'>
+                        <h1 className='text-4xl'>Full name</h1>
+                        <input className='bg-white bg-opacity-10 h-[4rem] rounded-full pl-4 outline-none' placeholder='Full name' />
+                        <h1 className='text-4xl'>User name</h1>
+                        <input onChange={handelUpload} className='bg-white bg-opacity-10 h-[4rem] rounded-full pl-4 outline-none' placeholder='Username' />
+                    </div>
                 </div>
-              </div>
-
-              <div className="space-x-[38px] pl-[31px] pt-[55px]">
-                <button className="h-[25px] w-[83px] font-Orbitron text-2xl text-white">
-                  Cancel
-                </button>
-                <button className="h-[25px] w-[83px] font-Orbitron text-2xl text-white">
-                  Apply
-                </button>
-              </div>
+                <div className='flex justify-around w-2/4 text-3xl font-bold'>
+                    <button className='bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]'>Apply</button>
+                    <button className='border-[1px] border-white rounded-xl border-opacity-20 hover:bg-white hover:text-black hover:duration-[0.2s] pl-2 pr-2'>Cancel</button>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+        </div>
     </div>
-  );
+  )
 }
 
-export default Settings;
+export default Settings
