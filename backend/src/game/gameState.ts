@@ -16,6 +16,14 @@ export class GameState {
     this.roomId = `room:${_playerOne.id}${_playerTwo.id}`;
   }
 
+  paddleMove = (playerId: string, position: number) => {
+    if (playerId === this.playerOne.id) {
+      this.playerOne.y = position;
+    } else if (playerId === this.playerTwo.id) {
+      this.playerTwo.y = position;
+    }
+  };
+
   collision = (p: Player) => {
     const pTop = p.y;
     const pBottom = p.y + p.height;
@@ -56,5 +64,13 @@ export class GameState {
       this.playerOne.updateScore();
       this.ball.resetBall();
     }
+  };
+
+  toJSON = () => {
+    return {
+      playerOne: this.playerOne,
+      playerTwo: this.playerTwo,
+      ball: this.ball,
+    };
   };
 }
