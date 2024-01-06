@@ -7,13 +7,13 @@ export class Player {
   color: string;
   score: number;
 
-  constructor(id) {
+  constructor(id, n: number) {
     this.id = id;
     this.y = 700 / 2 - 100 / 2;
     this.width = 16;
     this.height = 128;
     this.score = 0;
-    if (id === 1) {
+    if (n === 1) {
       this.x = 4;
       this.color = '#41a5fc';
     } else {
