@@ -1,4 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useContext} from "react";
+import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 
 interface Player {
@@ -35,6 +36,9 @@ interface GameState {
   ball: Ball;
 }
 
+const emitPaddlePosition = (paddlePosition) => {
+  gameSocket.emit('paddlePosition', paddlePosition);
+};
 const Game = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
@@ -176,17 +180,16 @@ const Game = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
+    const {userInfo, gamesocket}:any = useContext(LoginInfo);
 
     if (ctx && canvas) {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
-
       const render = () => {
         update();
         draw(ctx);
         requestAnimationFrame(render);
       };
-
       render();
 
       return () => {

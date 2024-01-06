@@ -6,12 +6,14 @@ export class GameState {
   playerTwo: Player;
   ball: Ball;
   running: boolean;
+  roomId: string;
 
   constructor(_playerOne: Player, _playerTwo: Player) {
     this.playerOne = _playerOne;
     this.playerTwo = _playerTwo;
     this.ball = new Ball();
     this.running = false;
+    this.roomId = `room:${_playerOne.id}${_playerTwo.id}`;
   }
 
   collision = (p: Player) => {
