@@ -50,8 +50,8 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // Then, emit the updated game state to all clients in the room
     // this.server.to(action.roomId).emit('gameStateUpdate', updatedGameState);
 
-    this.rooms.get(action.roomId).gameState.updatePlayerPosition(client.id, action.position);
+    // this.rooms.get(action.roomId).gameState.updatePlayerPosition(client.id, action.position);
 
-    this.server.to(action.roomId).emit('gameStateUpdate', this.rooms.get(action.roomId).gameState);
+    // this.server.to(action.roomId).emit('gameStateUpdate', this.rooms.get(action.roomId).gameState);
   }
 }
