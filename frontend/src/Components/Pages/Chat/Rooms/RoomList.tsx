@@ -40,7 +40,7 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
 
   return (
     <li 
-    className="flex items-center justify-between mb-6 cursor-pointer hover:bg-slate-500 rounded-lg pl-2 pr-2 hover:duration-[0.2s]"
+    className="flex items-center justify-between mb-6 cursor-pointer hover:bg-pink-600 rounded-lg pl-2 pr-2 hover:duration-[0.2s]"
     key={roomId}
     onClick={()=>{
       setCurrentRoom(roomId)
@@ -60,10 +60,10 @@ function ListRooms({ avatar, time, roomName, roomType, roomId}: Room) {
 function RoomList({ handeltoggelModal, List }) {
   const reversList = [...List].reverse();
   return (
-    <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden">
-      <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
+    <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden border-2 border-white border-opacity-20 rounded-2xl">
+      <div className=" border-b-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
         <input
-          className="w-11/12 h-[2.5rem] rounded-full pl-10 text-black outline-none"
+          className="w-11/12 h-[2.5rem] rounded-full pl-10 text-white bg-black bg-opacity-80 text-xl outline-none border-2 border-white border-opacity-20"
           type="text"
           placeholder="search"
         />
