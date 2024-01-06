@@ -11,7 +11,7 @@ function DropDwonMenu() {
   return (
     <div className="transition-all duration-[0.3s] absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[13rem]">
       <ul className="flex flex-col items-center justify-center gap-4 font-bold text-2xl">
-        <NavigationLink to="Profile">Profile</NavigationLink>
+        <NavigationLink to="Profile/me">Profile</NavigationLink>
         <NavigationLink to="Settings">Settings</NavigationLink>
         <NavigationLink to="logout">Logout</NavigationLink>
       </ul>
@@ -50,7 +50,7 @@ function MainLayout() {
           <FaBell className="text-4xl" />
           <ProfileAvatar
             src={userInfo.avatar}
-            className="h-[6rem] cursor-pointer rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
+            className="h-[6rem] w-[6rem] cursor-pointer rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
             onClick={()=>setisDropDown(!isDropDown)}
           />
           {isDropDown && <DropDwonMenu />}
