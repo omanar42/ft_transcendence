@@ -51,7 +51,7 @@ export class SettingService {
         username: profile.username,
       },
     });
-    if (exist)
+    if (exist && exist.oauthId !== id)
       return res.status(400).json({ message: 'Username already exist' });
     await this.prisma.user.update({
       where: {
