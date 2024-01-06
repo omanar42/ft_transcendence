@@ -12,8 +12,6 @@ import MainLayout from "../Layouts/MainLayout";
 import ChatLayout from "../Layouts/ChatLayout";
 import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
-import { useContext } from "react";
-import LoginInfo from "../Contexts/LoginContext";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
 import Friends from "../Components/Friends/Friends";
