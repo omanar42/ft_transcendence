@@ -27,7 +27,7 @@ function MainLayout() {
     <div>
       <div className="max-w-140  ml-auto mr-auto p-10 text-3xl text-white h-40 flex justify-between items-center font-extrabold">
         <Link to="/">
-          <img className="h-[15rem] cursor-pointer" src={Logo} />
+          <img className="h-10 cursor-pointer" src={Logo} />
         </Link>
 
         <div className="flex items-center gap-[8rem] relative">

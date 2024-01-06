@@ -63,7 +63,7 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
           <GiBootKick onClick={KickUser} className='text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full'  />
         </div> : <h1>OWNER</h1>}
       </div>
-      <img className="w-[6rem] rounded-full status" src={avatar} alt="avatar" />
+      <img className="w-[6rem] h-[6rem] rounded-full status" src={avatar} alt="avatar" />
 
     </li>
   );

@@ -90,7 +90,7 @@ const Scoure = ({ userInfo }) => {
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
         <div className="flex  items-center justify-around w-full">
           <img
-            className="h-[15rem] w-[15rem] rounded-full"
+            className="h-[15rem] w-[15rem] rounded-full cursor-pointer hover:scale-[1.1] hover:duration-[0.2s]"
             src={userInfo.avatar}
           />
           <div className="flex flex-col gap-[2rem]">
@@ -109,7 +109,7 @@ const Scoure = ({ userInfo }) => {
 
 const MatchHistory = ({ avatar, username }) => {
   return (
-    <div className="bg-white bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4">
+    <div className="bg-white bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer">
       <div className="flex items-center gap-[1rem] text-white font-bold flex-1">
         <img className="h-[4rem] w-[4rem] rounded-full" src={avatar} />
         <h1 className="text-2xl font-bold">{username}</h1>
@@ -126,24 +126,26 @@ const MatchHistory = ({ avatar, username }) => {
 
 function Profile() {
   const { userInfo } = useContext(LoginInfo);
-  const { username } = useParams();
-  console.log(`' ${username} '`);
+  const [openMatch, setOpenMatch] = React.useState(false);
   return (
     <div className="ml-auto mr-auto mt-4 text-white text-opacity-50  border-[1px] border-green-600 w-140 h-[70rem] overflow-hidden bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center">
       <div className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full">
         <Scoure userInfo={userInfo} />
         <div className="grid-2 bg-black bg-opacity-40 rounded-3xl pl-8 pr-8 pt-5 overflow-auto">
           <nav className="flex gap-[3rem] text-3xl text-white font-bold">
-            <button>Match History</button>
+            <button className="hover:bg-white hover:text-black rounded-3xl pl-2 pr-2 hover:duration-[0.2s]" onClick={()=>setOpenMatch(true)}>Match History</button>
             <div className="border-[0.5px] h-[4rem]"></div>
-            <button>Friends</button>
+            <button className="hover:bg-white hover:text-black rounded-3xl pl-2 pr-2 hover:duration-[0.2s]" onClick={()=>setOpenMatch(false)} >Friends</button>
           </nav>
-          <main className="mt-[2rem] overflow-auto">
-            <div className="flex flex-col text-white gap-[0.7rem]">
+          <main className="mt-[2rem]">
+            {openMatch && <div className="flex flex-col text-white gap-[0.7rem]">
               {History.map((user) => (
                 <MatchHistory username={user.username} avatar={user.avatar} />
               ))}
-            </div>
+            </div>}
+              <div className="text-8xl text-white">
+                
+              </div>
           </main>
           <div></div>
         </div>
