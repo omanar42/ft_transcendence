@@ -11,6 +11,8 @@ import {
 export class UserEntity implements User {
   @ApiProperty()
   readonly oauthId: string;
+  @ApiProperty()
+  readonly oauthId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -23,7 +25,16 @@ export class UserEntity implements User {
   @IsNotEmpty()
   @ApiProperty()
   readonly fullname: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly fullname: string;
 
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty()
+  readonly email: string;
   @IsString()
   @IsNotEmpty()
   @IsEmail()
@@ -32,13 +43,21 @@ export class UserEntity implements User {
 
   @ApiProperty()
   readonly avatar: string;
+  @ApiProperty()
+  readonly avatar: string;
 
+  @ApiProperty()
+  readonly provider: string;
   @ApiProperty()
   readonly provider: string;
 
   @ApiProperty()
   readonly hashedRt: string;
+  @ApiProperty()
+  readonly hashedRt: string;
 
+  @ApiProperty()
+  readonly twoFactor: boolean;
   @ApiProperty()
   readonly twoFactor: boolean;
 
@@ -46,7 +65,13 @@ export class UserEntity implements User {
   @IsNotEmpty()
   @ApiProperty()
   readonly twoFaSec: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
+  readonly twoFaSec: string;
 
+  @ApiProperty()
+  readonly status: Status;
   @ApiProperty()
   readonly status: Status;
 
@@ -58,10 +83,22 @@ export class UserEntity implements User {
 
   @ApiProperty()
   readonly matches: Match[];
+  @ApiProperty()
+  readonly friends: Friend[];
+
+  @ApiProperty()
+  readonly stats: Stats[];
+
+  @ApiProperty()
+  readonly matches: Match[];
 
   @ApiProperty()
   readonly createdAt: Date;
+  @ApiProperty()
+  readonly createdAt: Date;
 
+  @ApiProperty()
+  readonly updatedAt: Date;
   @ApiProperty()
   readonly updatedAt: Date;
 }
