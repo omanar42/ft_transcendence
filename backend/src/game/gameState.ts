@@ -8,7 +8,7 @@ interface BallState {
   velocity: { x: number; y: number };
 }
 
-class GameState {
+export class GameState {
   playerOne: PlayerState;
   playerTwo: PlayerState;
   ball: BallState;
