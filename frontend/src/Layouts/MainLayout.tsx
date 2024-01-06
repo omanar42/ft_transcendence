@@ -21,7 +21,7 @@ function DropDwonMenu() {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-  const {userInfo} = useContext(LoginInfo);
+  const {userInfo}:any = useContext(LoginInfo);
   const CloseDropMenu = () => setisDropDown(false);
   return (
     <div>
@@ -36,11 +36,14 @@ function MainLayout() {
               <NavigationLink to="/home" onClick={CloseDropMenu}>
                 Home
               </NavigationLink>
-              <NavigationLink to="/login" onClick={CloseDropMenu}>
-                Log in
+              <NavigationLink to="/Game" onClick={CloseDropMenu}>
+                Game
               </NavigationLink>
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
                 Chat
+              </NavigationLink>
+              <NavigationLink to="/settings" onClick={CloseDropMenu}>
+                Settings
               </NavigationLink>
             </ul>
           </nav>

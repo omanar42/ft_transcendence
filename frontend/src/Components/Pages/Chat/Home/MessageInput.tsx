@@ -22,8 +22,8 @@ function MessageInput() {
   const [currentMessage, setcurrentMessage] = useState("");
   const [roomName, setRoomName] = useState("");
   const [messageList, setMessageList] = useState<messageList[]>([]);
-  const {currentRoom, setCurrentRoom} = useContext(RoomContext);
-  const {userInfo, socket} = useContext(LoginInfo);
+  const {currentRoom, setCurrentRoom}:any = useContext(RoomContext);
+  const {userInfo, socket}:any = useContext(LoginInfo);
   const [isOpen, setIsOpen] = useState(false);
   const sendMessage = () => {
     if (currentMessage !== "") {
@@ -44,15 +44,13 @@ function MessageInput() {
     setCurrentRoom(0);
   }
   useEffect(()=>{
-    console.log('this from socket', socket);
-    console.log(userInfo);
-    socket?.off("new_message").on("new_message", (data)=>{      
-      console.log('message from backend ',data);
 
-      setMessageList((list)=>[...list, data]);
+    socket?.off("new_message").on("new_message", (data:any)=>{      
+      if (data.roomId === currentRoom)
+        setMessageList((list)=>[...list, data]);
       
     })
-  },[socket]);
+  },[socket, currentRoom]);
   
   useEffect(()=>{
     const fetchMessages = async () =>{
