@@ -11,12 +11,30 @@ export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get(':username')
+  async getProfilePage(
+    @Req() req: any,
+    @Res() res: Response,
+    @Param('username') username: string,
+  ) {
+    const profilePage = await this.profileService.getProfilePage(
+      req.user.sub,
+      username,
+    );
+    if (!profilePage)
+      res.status(404).json({ message: 'User profile not found' });
+    else res.json(profilePage);
+  }
+
+  @Get(':username/relations')
   async getRelations(
     @Req() req: any,
     @Res() res: Response,
     @Param('username') profile: string,
   ) {
-    const relations = await this.profileService.getRelations(req.user, profile);
+    const relations = await this.profileService.getRelations(
+      req.user.sub,
+      profile,
+    );
     if (!relations) res.status(404).json({ message: 'User profile not found' });
     else res.json(relations);
   }
