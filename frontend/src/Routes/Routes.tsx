@@ -34,7 +34,7 @@ export const routermin = createBrowserRouter(
         <Route path="/" element={<MainLayout />}>
           <Route path="home" element={<Home />} />
 
-          <Route path="/game" element={<Friends />} />
+          <Route path="/game" element={<Game />} />
           <Route path="/chat" element={<ChatLayout />}>
             <Route index element={<Chat />} />
             <Route path="rooms" element={<Rooms />} />
