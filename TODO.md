@@ -8,14 +8,14 @@ Project Description
 
 - [ ] Matching players  
 - [ ] Match History  
-- [ ] server-side validation for forms and any user  
 
 ### In Progress
 
-- [ ] status (online, offline, in a game, and so forth)  
 
 ### Done ✓
 
+- [x] status (online, offline, in a game, and so forth)  
+- [x] server-side validation for forms and any user  
 - [x] Protectec 2fa in cookies  
 - [x] SQL injections  
 - [x] Docker  
@@ -34,15 +34,9 @@ Project Description
 - [x] Friends Database  
 - [x] refresh tokens  
 - [x] JWT  
+- ___________________________________________  
+- Getting data from channels form  
+- Nested routes in chat root  
+- USe reusable components  
+- Link all components togther  
 
-
-___________________________________________
-
-
-Getting data from channels form
-
-Nested routes in chat root
-
-USe reusable components 
-
-Link all components togther

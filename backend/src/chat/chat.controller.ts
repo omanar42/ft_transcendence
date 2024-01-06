@@ -31,6 +31,31 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Post('leaveroom')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        newOwner: { type: 'string' },
+      },
+    },
+  })
+  async leaveRoom(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const data = {
+        roomId: parseInt(body.roomId),
+        newOwner: body.newOwner,
+      };
+      const response = await this.chatService.Leaveroom(
+        req.user.sub.toString(),
+        data,
+      );
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Post('kick_user')
   @ApiBody({
     schema: {
@@ -43,6 +68,7 @@ export class ChatController {
   })
   async kickUser(@Req() req, @Res() res: Response, @Body() body) {
     try {
+      // console.log(body.target_username);
       const response = await this.chatService.KickUserFromRoom(
         parseInt(body.roomid),
         req.user.sub.toString(),
@@ -82,7 +108,7 @@ export class ChatController {
       type: 'object',
       properties: {
         roomId: { type: 'number' },
-        userotherId: { type: 'string' },
+        password: { type: 'string' },
       },
     },
   })
@@ -91,6 +117,7 @@ export class ChatController {
       const response = await this.chatService.joinRoom(
         req.user.sub.toString(),
         parseInt(body.roomId),
+        body.password,
       );
       console.log(response);
       return res.json(response);
@@ -122,6 +149,4 @@ export class ChatController {
       console.log(error);
     }
   }
-  @Post('CreateRoom')
-  async createRoom() {}
 }

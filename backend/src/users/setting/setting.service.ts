@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Response } from 'express';
 import * as otplib from 'otplib';
 import * as qrcode from 'qrcode';
 
@@ -7,15 +8,16 @@ import * as qrcode from 'qrcode';
 export class SettingService {
   constructor(private prisma: PrismaService) {}
 
-  async updateUsername(id: string, username: string) {
-    if (!username) return 'Username cannot be empty';
-    console.log(id, username);
+  async updateUsername(id: string, username: string, res: Response) {
+    if (!username)
+      return res.status(400).json({ message: 'Username required' });
     const exist = await this.prisma.user.findUnique({
       where: {
         username: username,
       },
     });
-    if (exist) return 'Username already taken';
+    if (exist)
+      return res.status(400).json({ message: 'Username already exist' });
 
     await this.prisma.user.update({
       where: {
@@ -25,7 +27,7 @@ export class SettingService {
         username: username,
       },
     });
-    return 'Username updated';
+    return res.json({ message: 'Username updated successfully' });
   }
 
   async updateAvatar(id: string, filePath: string) {
@@ -39,7 +41,18 @@ export class SettingService {
     });
   }
 
-  async updateProfile(id: string, profile: any) {
+  async updateProfile(id: string, profile: any, res: Response) {
+    if (!profile.fullname)
+      return res.status(400).json({ message: 'Fullname required' });
+    if (!profile.username)
+      return res.status(400).json({ message: 'Username required' });
+    const exist = await this.prisma.user.findUnique({
+      where: {
+        username: profile.username,
+      },
+    });
+    if (exist)
+      return res.status(400).json({ message: 'Username already exist' });
     await this.prisma.user.update({
       where: {
         oauthId: id,
@@ -49,13 +62,14 @@ export class SettingService {
         fullname: profile.fullname,
       },
     });
-    return 'Profile updated';
+    return res.json({ message: 'Profile updated successfully' });
   }
 
-  async enable2FA(id: string) {
+  async enable2FA(id: string, res: Response) {
     const user = await this.prisma.user.findUnique({ where: { oauthId: id } });
-    if (!user) return 'User not found';
-    if (user.twoFactor) return '2FA already enabled';
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.twoFactor)
+      return res.status(400).json({ message: '2FA already enabled' });
 
     const secret = otplib.authenticator.generateSecret();
     await this.prisma.user.update({
@@ -71,13 +85,14 @@ export class SettingService {
       secret,
     );
     const qrCodeUrl = await qrcode.toDataURL(otpauth);
-    return qrCodeUrl;
+    return res.json({ qrCodeUrl });
   }
 
-  async disable2FA(id: string) {
+  async disable2FA(id: string, res: Response) {
     const user = await this.prisma.user.findUnique({ where: { oauthId: id } });
-    if (!user) return 'User not found';
-    if (!user.twoFactor) return '2FA already disabled';
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user.twoFactor)
+      return res.status(400).json({ message: '2FA already disabled' });
     await this.prisma.user.update({
       where: { oauthId: id },
       data: {
@@ -85,6 +100,6 @@ export class SettingService {
         twoFaSec: null,
       },
     });
-    return '2FA disabled';
+    return res.json({ message: '2FA disabled' });
   }
 }

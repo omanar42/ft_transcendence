@@ -49,15 +49,14 @@ enum FriendActions {
 model User {
   oauthId   String    @unique
   username  String    @unique
-  socketId  String?
   fullname  String
-  email     String    @unique
+  email     String   @unique
   avatar    String?
   provider  String
   hashedRt  String?
-  twoFactor Boolean   @default(false)
+  twoFactor Boolean  @default(false)
   twoFaSec  String?
-  status    Status    @default(OFFLINE)
+  status    Status   @default(OFFLINE)
   friends   Friend[]
   stats     Stats?
   matches   Match[]
@@ -93,72 +92,58 @@ model RoomUser {
 }
 
 model Message {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   userId    String
-  room      Room      @relation(fields: [roomId], references: [id])
+  room      Room     @relation(fields: [roomId], references: [id])
   roomId    Int
   content   String
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Match {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [oauthId])
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [oauthId])
   userId    String
   win       Boolean
   enemyId   String
-  createdAt DateTime  @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Friend {
-  id        Int       @id @default(autoincrement())
-  user      User      @relation(fields: [userId], references: [oauthId])
-  userId    String
-  friendId  String
-  frUser    String
-  frAvatar  String
-  ftStatus  Status
-  status    FriendStatus
-  actions   FriendActions[]
+  id       Int             @id @default(autoincrement())
+  user     User            @relation(fields: [userId], references: [oauthId])
+  userId   String
+  friendId String
+  status   FriendStatus
+  actions  FriendActions[]
 }
 
 model Stats {
-  id            Int       @id @default(autoincrement())
-  user          User      @relation(fields: [userId], references: [oauthId])
-  userId        String    @unique
-  wins          Int       @default(0)
-  losses        Int       @default(0)
-  level         Int       @default(0)
-  achievements  Achievement[]
+  id           Int           @id @default(autoincrement())
+  user         User          @relation(fields: [userId], references: [oauthId])
+  userId       String        @unique
+  wins         Int           @default(0)
+  losses       Int           @default(0)
+  level        Int           @default(0)
+  achievements Achievement[]
 }
 
 model Achievement {
-  id          Int       @id @default(autoincrement())
+  id          Int             @id @default(autoincrement())
   name        AchievementName
   description String
   icon        String
-  stats       Stats     @relation(fields: [statsId], references: [id])
+  stats       Stats           @relation(fields: [statsId], references: [id])
   statsId     Int
 }
 
 enum AchievementName {
   LEVEL_10
-  LEVEL_20
-  LEVEL_30
-  LEVEL_40
   LEVEL_50
-  LEVEL_60
-  LEVEL_70
-  LEVEL_80
-  LEVEL_90
   LEVEL_100
+  WIN_1_GAMES
   WIN_5_GAMES
   WIN_10_GAMES
-  WIN_20_GAMES
-  WIN_50_GAMES
-  WIN_100_GAMES
-  FIRST_WIN
   FIRST_LOSS
-  FIRST_FRIEND
-  Perfect
+  PERFECT_WIN
 }

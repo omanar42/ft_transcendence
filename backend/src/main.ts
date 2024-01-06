@@ -15,14 +15,14 @@ async function bootstrap() {
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-  
+
   const Config = new DocumentBuilder()
-  .setTitle('ft_transcendence')
-  .setDescription('The ft_transcendence API')
-  .setVersion('1.0')
-  .addTag('ft_transcendence')
-  .build();
-  
+    .setTitle('ft_transcendence')
+    .setDescription('The ft_transcendence API')
+    .setVersion('1.0')
+    .addTag('ft_transcendence')
+    .build();
+
   const document = SwaggerModule.createDocument(app, Config);
   SwaggerModule.setup('api', app, document);
 
@@ -33,4 +33,5 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
 bootstrap();
