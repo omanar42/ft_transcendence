@@ -49,7 +49,6 @@ enum FriendActions {
 model User {
   oauthId   String    @unique
   username  String    @unique
-  socketId  String?
   fullname  String
   email     String   @unique
   avatar    String?
