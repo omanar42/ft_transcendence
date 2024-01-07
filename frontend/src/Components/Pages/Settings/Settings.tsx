@@ -121,6 +121,8 @@ function Settings() {
                   className="bg-white bg-opacity-10 h-[4rem] rounded-full pl-4 outline-none"
                   value={Username}
                 />
+                <h1 className="text-4xl tracking-4">Enable (2FA)</h1>
+                <input type="checkbox" className="h-10 w-10 outline-none" />
               </div>
             </div>
             <div className="flex justify-around w-2/4 text-3xl font-bold">
@@ -130,10 +132,10 @@ function Settings() {
               >
                 Apply
               </button>
-              <button 
+              <button
                 className="border-[1px] border-white rounded-xl border-opacity-20 hover:bg-white hover:text-black hover:duration-[0.2s] pl-2 pr-2"
-                onClick={()=>window.location.reload()}
-                >
+                onClick={() => window.location.reload()}
+              >
                 Cancel
               </button>
             </div>

@@ -7,13 +7,15 @@ import Avatar from "../assets/avatar.jpeg";
 import { useContext, useState } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 
-function DropDwonMenu() {
+function DropDwonMenu({CloseDropMenu}) {
+  const { Logout }: any = useContext(LoginInfo);
   return (
     <div className="transition-all duration-[0.3s] absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[13rem]">
       <ul className="flex flex-col items-center justify-center gap-4 font-bold text-2xl">
-        <NavigationLink to="Profile/me">Profile</NavigationLink>
-        <NavigationLink to="Settings">Settings</NavigationLink>
-        <NavigationLink to="logout">Logout</NavigationLink>
+        <NavigationLink onClick={CloseDropMenu} to="Profile/me">Profile</NavigationLink>
+        <NavigationLink onClick={CloseDropMenu} to="Settings">Settings</NavigationLink>
+      
+        <a onClick={Logout} className="hover:bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl cursor-pointer" >Log Out</a>
       </ul>
     </div>
   );
@@ -21,7 +23,7 @@ function DropDwonMenu() {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-  const {userInfo}:any = useContext(LoginInfo);
+  const { userInfo }: any = useContext(LoginInfo);
   const CloseDropMenu = () => setisDropDown(false);
   return (
     <div>
@@ -36,7 +38,7 @@ function MainLayout() {
               <NavigationLink to="/home" onClick={CloseDropMenu}>
                 Home
               </NavigationLink>
-              <NavigationLink to="/Game" onClick={CloseDropMenu}>
+              <NavigationLink to="/game" onClick={CloseDropMenu}>
                 Game
               </NavigationLink>
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
@@ -51,9 +53,9 @@ function MainLayout() {
           <ProfileAvatar
             src={userInfo.avatar}
             className="h-[6rem] w-[6rem] cursor-pointer rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
-            onClick={()=>setisDropDown(!isDropDown)}
+            onClick={() => setisDropDown(!isDropDown)}
           />
-          {isDropDown && <DropDwonMenu />}
+          {isDropDown && <DropDwonMenu  CloseDropMenu={CloseDropMenu}/>}
         </div>
       </div>
       <main>

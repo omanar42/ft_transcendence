@@ -71,7 +71,7 @@ function MessageInput() {
   return (
   <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
   {currentRoom ? <>
-  <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
+  <div className=" bg-dark  chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
     <p className="text-3xl">{roomName}</p>
     <IoLogOutSharp onClick={()=>setIsOpen(true)} className="text-5xl text-red-600 cursor-pointer" />

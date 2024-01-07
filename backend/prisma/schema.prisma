@@ -21,6 +21,7 @@ enum UserStatusInRoom {
   OWNER
   ADMIN
   MEMBER
+  DM
   BANNED
 }
 

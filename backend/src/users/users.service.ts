@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserFriends } from './entities/UserFriends.entity';
-import { FriendActions, FriendStatus, RoomType, Status, User } from '@prisma/client';
+import {
+  FriendActions,
+  FriendStatus,
+  RoomType,
+  Status,
+  User,
+  UserStatusInRoom,
+} from '@prisma/client';
 import * as otplib from 'otplib';
 
 @Injectable()
 export class UsersService {
-  findUnique(arg0: { where: { id: any; }; include: { rooms: boolean; }; }) {
+  findUnique(arg0: { where: { id: any }; include: { rooms: boolean } }) {
     throw new Error('Method not implemented.');
   }
   constructor(private prisma: PrismaService) {}
@@ -289,7 +296,10 @@ export class UsersService {
         type: RoomType['DIRECT_MESSAGE'],
         ownerId: user_1.oauthId,
         roomuser: {
-          create: [{ userId: user_1.oauthId }, { userId: user_2.oauthId }],
+          create: [
+            { userId: user_1.oauthId, status: UserStatusInRoom['DM'] },
+            { userId: user_2.oauthId, status: UserStatusInRoom['DM'] },
+          ],
         },
       },
     });

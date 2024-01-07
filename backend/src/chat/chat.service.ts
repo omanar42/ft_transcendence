@@ -72,6 +72,18 @@ export class ChatService {
 
     return room_Front;
   }
+  async DMsToDMs_Front(DM: any, roomUser: string) {
+    if (DM) {
+      return null;
+    }
+    const user = await this.GetUserByOauthId(roomUser);
+    const DM_front = new Room_Front_Dto();
+    DM_front.Avatar = DM.avatar;
+    DM_front.roomName = user.username;
+    DM_front.roomType = DM.type;
+    DM_front.roomId = DM.id;
+    return DM_front;
+  }
 
   async Socket_Front_Dto(Message: any) {
     const Message_sock_front = new Message_Front_Dto();
@@ -539,34 +551,34 @@ export class ChatService {
     );
     return isUserInRoom;
   }
-  async directMessage(userName: string, username_target: string) {
-    // use this function directly after accept friend request
-    const user_1 = await this.GetUserByUsername(userName);
-    const user_2 = await this.GetUserByUsername(username_target);
-    const existingRoom = await this.prisma.room.findFirst({
-      where: {
-        AND: [
-          { roomuser: { some: { userId: user_1.oauthId } } },
-          { roomuser: { some: { userId: user_2.oauthId } } },
-          { type: RoomType['DIRECT_MESSAGE'] },
-        ],
-      },
-    });
-    if (existingRoom) {
-      return existingRoom;
-    }
-    const room = await this.prisma.room.create({
-      data: {
-        name: 'direct_message' + user_1.username + user_2.username,
-        type: RoomType['DIRECT_MESSAGE'],
-        ownerId: user_1.oauthId,
-        roomuser: {
-          create: [{ userId: user_1.oauthId }, { userId: user_2.oauthId }],
-        },
-      },
-    });
-    return room;
-  }
+  // async directMessage(userName: string, username_target: string) {
+  //   // use this function directly after accept friend request
+  //   const user_1 = await this.GetUserByUsername(userName);
+  //   const user_2 = await this.GetUserByUsername(username_target);
+  //   const existingRoom = await this.prisma.room.findFirst({
+  //     where: {
+  //       AND: [
+  //         { roomuser: { some: { userId: user_1.oauthId } } },
+  //         { roomuser: { some: { userId: user_2.oauthId } } },
+  //         { type: RoomType['DIRECT_MESSAGE'] },
+  //       ],
+  //     },
+  //   });
+  //   if (existingRoom) {
+  //     return existingRoom;
+  //   }
+  //   const room = await this.prisma.room.create({
+  //     data: {
+  //       name: 'direct_message' + user_1.username + user_2.username,
+  //       type: RoomType['DIRECT_MESSAGE'],
+  //       ownerId: user_1.oauthId,
+  //       roomuser: {
+  //         create: [{ userId: user_1.oauthId }, { userId: user_2.oauthId }],
+  //       },
+  //     },
+  //   });
+  //   return room;
+  // }
   async createRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody() createRoomDto: CreateRoomDto,
@@ -651,7 +663,24 @@ export class ChatService {
   }
 
   async getDms(oauthId: string) {
-    
+    const user = await this.GetUserByOauthId(oauthId);
+    const rooms_user = user.roomsuser;
+    const rooms_front = [];
+    if (!rooms_user) {
+      return [];
+    }
+    for (const roomuser of rooms_user) {
+      const room = await this.GetRoomById(roomuser.roomId);
+      if (room.type === RoomType['DIRECT_MESSAGE']) {
+        for (const roomuser_ of room.roomuser) {
+          if (roomuser_.userId !== oauthId) {
+            const DM_front = await this.DMsToDMs_Front(room, roomuser_.userId);
+            rooms_front.push(DM_front);
+          }
+        }
+      }
+    }
+    return rooms_front;
   }
   async findRoomMessages(roomId: number) {
     return await this.prisma.message.findMany({
