@@ -78,7 +78,7 @@ export class ChatService {
     }
     const user = await this.GetUserByOauthId(roomUser);
     const DM_front = new Room_Front_Dto();
-    DM_front.Avatar = DM.avatar;
+    DM_front.Avatar = user.avatar;
     DM_front.roomName = user.username;
     DM_front.roomType = DM.type;
     DM_front.roomId = DM.id;
