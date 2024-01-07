@@ -6,7 +6,7 @@ import * as otplib from 'otplib';
 
 @Injectable()
 export class UsersService {
-  findUnique(arg0: { where: { id: any; }; include: { rooms: boolean; }; }) {
+  findUnique(arg0: { where: { id: any }; include: { rooms: boolean } }) {
     throw new Error('Method not implemented.');
   }
   constructor(private prisma: PrismaService) {}
