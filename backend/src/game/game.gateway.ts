@@ -16,6 +16,7 @@ import { AuthService } from 'src/auth/auth.service';
 import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
 import { GameState } from './gameState';
+import { stat } from 'fs';
 
 @WebSocketGateway({
   port: 3000,
@@ -58,23 +59,33 @@ export class GameGateway
   afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
+  @SubscribeMessage('addToRoom')
+  async handleAddToRoom(@ConnectedSocket() client: Socket){
+    try {
+      const oauthId = this.gameService.GetoauthId(client);
+      this.gameService.PushOnWaitingList(oauthId);
+    } catch (error) {
+      this.logger.log(error);
+    }
+  }
   // @SubscribeMessage('startgame')
   @SubscribeMessage('playrandom')
   async handlePlayRandom(@ConnectedSocket() client: Socket) {
     try {
-      const oauthId = this.gameService.GetoauthId(client);
-      this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
         this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
-        const gamestate = this.gameService.GetRoom(
-          `room:${randomPlayers[0]}${randomPlayers[1]}`,
-        );
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
         const client_2 = this.gameService.GetSocket(randomPlayers[1]);
         client_2.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
-        this.server.to(gamestate.roomId).emit('startgame', gamestate);
+        const data = {
+          status: 'start',
+          roomId: `room:${randomPlayers[0]}${randomPlayers[1]}`,
+        };
+        this.server
+          .to(`room:${randomPlayers[0]}${randomPlayers[1]}`)
+          .emit('start', data);
       }
     } catch (error) {
       this.logger.log(error);
