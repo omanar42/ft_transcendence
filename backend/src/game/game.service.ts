@@ -57,12 +57,12 @@ export class GameService {
     };
     this.gameMapService.set(key, value);
   };
-  GetRoom = (oauthId1: string, oauthId2: string) => {
-    const key = `room:${oauthId1}${oauthId2}`;
+  GetRoom = (roomId: string) => {
+    const key = roomId;
     return this.gameMapService.get(key);
   };
-  DeleteRoom = (oauthId1: string, oauthId2: string) => {
-    const key = `room:${oauthId1}${oauthId2}`;
+  DeleteRoom = (roomId: string) => {
+    const key = roomId;
     this.gameMapService.delete(key);
   };
 }
