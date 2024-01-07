@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserFriends } from './entities/UserFriends.entity';
-import { FriendActions, FriendStatus, Status, User } from '@prisma/client';
+import { FriendActions, FriendStatus, RoomType, Status, User } from '@prisma/client';
 import * as otplib from 'otplib';
 
 @Injectable()
@@ -246,6 +246,56 @@ export class UsersService {
     return 'Friend removed';
   }
 
+  async GetUserByUsername(username: string) {
+    // const cacheKey = `user:${username}`;
+    // const cachedUser = this.cacheService.get(cacheKey);
+    // if (cachedUser) {
+    //   return cachedUser;
+    // }
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+      include: {
+        rooms: true,
+      },
+    });
+    if (!user) {
+      throw new Error('User not found');
+    }
+    // this.cacheService.set(cacheKey, user);
+    return user;
+  }
+
+  async directMessage(userName: string, username_target: string) {
+    // use this function directly after accept friend request
+    const user_1 = await this.GetUserByUsername(userName);
+    const user_2 = await this.GetUserByUsername(username_target);
+    const existingRoom = await this.prisma.room.findFirst({
+      where: {
+        AND: [
+          { roomuser: { some: { userId: user_1.oauthId } } },
+          { roomuser: { some: { userId: user_2.oauthId } } },
+          { type: RoomType['DIRECT_MESSAGE'] },
+        ],
+      },
+    });
+    if (existingRoom) {
+      return existingRoom;
+    }
+    const room = await this.prisma.room.create({
+      data: {
+        name: 'direct_message' + user_1.username + user_2.username,
+        type: RoomType['DIRECT_MESSAGE'],
+        ownerId: user_1.oauthId,
+        roomuser: {
+          create: [{ userId: user_1.oauthId }, { userId: user_2.oauthId }],
+        },
+      },
+    });
+    return room;
+  }
+
   async acceptFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
@@ -290,6 +340,7 @@ export class UsersService {
       },
     });
 
+    this.directMessage(user.username, friend.username);
     return 'Friend accepted';
   }
 
