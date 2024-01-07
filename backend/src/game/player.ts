@@ -1,5 +1,6 @@
 export class Player {
   id: string;
+  num: number;
   x: number;
   y: number;
   width: number;
@@ -7,13 +8,14 @@ export class Player {
   color: string;
   score: number;
 
-  constructor(id) {
+  constructor(id: string, num: number) {
     this.id = id;
+    this.num = num;
     this.y = 700 / 2 - 100 / 2;
     this.width = 16;
     this.height = 128;
     this.score = 0;
-    if (id === 1) {
+    if (this.num === 1) {
       this.x = 4;
       this.color = '#41a5fc';
     } else {
@@ -35,7 +37,7 @@ export class Player {
     this.width = 16;
     this.height = 128;
     this.score = 0;
-    if (this.id === 1) {
+    if (this.num === 1) {
       this.x = 4;
       this.color = '#41a5fc';
     } else {
