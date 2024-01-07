@@ -22,20 +22,23 @@ import LoginInfo from "../Contexts/LoginContext";
 
 const ProtectedRoutes = () => {
   const { token, isLoading } = useContext(LoginInfo);
-  // const token = true;
+
   if (isLoading) return <div>Loading...</div>;
   console.log("is Logged is", token);
   return token ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
-const LoginRoute = () => {
-  const { token } = useContext(LoginInfo);
-  return token ? <Navigate to="/home" replace /> : <Outlet />;
+const ProtectLogin = () => {
+  const { token, isLoading } = useContext(LoginInfo);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return !token ? <Outlet /> : <Navigate to="/home" replace />;
 };
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route element={<LoginRoute />}>
+      <Route element={<ProtectLogin />}>
         <Route path="/login" element={<Login />} />
       </Route>
       <Route element={<ProtectedRoutes />}>

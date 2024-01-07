@@ -15,7 +15,7 @@ import io from 'socket.io-client';
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, isLoading, setIsLoading, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
+  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
   useEffect(()=>{
   fetchData();
   console.log("App mounting...");
@@ -33,10 +33,6 @@ function App() {
         status:response.data.status,
         username:response.data.username,
       }))
-      if (userInfo.username){
-        setIsLogged(true);
-        <Navigate to="/home" replace />;
-      }
       const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
       setToken(newtoken.data);
       setIsLoading(false);
@@ -50,7 +46,8 @@ function App() {
       console.log(newtoken.data)
     }
     catch(error){
-      console.error(error);
+      // console.error(error);
+      setIsLoading(false);
     }
 
   }
