@@ -15,6 +15,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
+import { GameState } from './gameState';
 
 @WebSocketGateway({
   port: 3000,
@@ -67,8 +68,7 @@ export class ChatGateway
       if (randomPlayers) {
         this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
         const gamestate = this.gameService.GetRoom(
-          randomPlayers[0],
-          randomPlayers[1],
+          `room:${randomPlayers[0]}${randomPlayers[1]}`,
         );
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
@@ -83,10 +83,11 @@ export class ChatGateway
   @SubscribeMessage('paddlemove')
   async handleMessage(@ConnectedSocket() client: Socket, data: any) {
     try {
-      data.Roomid;
-      data.Paddley;
-      // this.gameService.update();
-      // await this.messagesService.createMessage(this.server, createMessageDto);
+      const roomId = data.roomId;
+      const oauthId = this.gameService.GetoauthId(client);
+      const gamestate = this.gameService.GetRoom(roomId);
+      gamestate.paddleMove(oauthId, data.position);
+      this.server.to(roomId).emit('paddlemove', gamestate);
     } catch (error) {
       this.logger.log(error);
     }
