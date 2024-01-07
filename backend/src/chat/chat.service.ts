@@ -73,9 +73,6 @@ export class ChatService {
     return room_Front;
   }
   async DMsToDMs_Front(DM: any, roomUser: string) {
-    if (DM) {
-      return null;
-    }
     const user = await this.GetUserByOauthId(roomUser);
     const DM_front = new Room_Front_Dto();
     DM_front.Avatar = user.avatar;
