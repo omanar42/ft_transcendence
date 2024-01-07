@@ -55,7 +55,7 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
     }
 }
   return (
-    <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-slate-600 hover:duration-[0.2s] rounded-xl  ">
+    <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-blue-600 hover:duration-[0.2s] rounded-xl  ">
       <div className="flex flex-col items-start gap-3">
         <h1 className="text-xl font-bold tracking-2">{username}</h1>
         {status !== "OWNER" ? <div className="flex gap-4 items-center">
