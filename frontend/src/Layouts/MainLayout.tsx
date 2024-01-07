@@ -36,7 +36,7 @@ function MainLayout() {
               <NavigationLink to="/home" onClick={CloseDropMenu}>
                 Home
               </NavigationLink>
-              <NavigationLink to="/Game" onClick={CloseDropMenu}>
+              <NavigationLink to="/game" onClick={CloseDropMenu}>
                 Game
               </NavigationLink>
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
