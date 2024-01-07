@@ -26,6 +26,7 @@ export const LoginInfoContext = ({children}:any)=>{
     const [name, setName] = useState("");
     const [token, setToken] = useState<string | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [gamesocket, setGameSocket] = useState<Socket | null>(null);
 
     const value = {
         isLogged, 
@@ -37,6 +38,8 @@ export const LoginInfoContext = ({children}:any)=>{
         token,
         setToken,
         setSocket,
+        setGameSocket,
+        gamesocket,
         socket
     }
 
