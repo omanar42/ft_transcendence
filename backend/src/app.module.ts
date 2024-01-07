@@ -7,9 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { ChatModule } from './chat/chat.module';
 
-
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, ProfileModule,ChatModule ],
+  imports: [PrismaModule, UsersModule, AuthModule, ProfileModule, ChatModule],
   controllers: [AppController],
   providers: [AppService],
 })
