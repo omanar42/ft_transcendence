@@ -25,7 +25,7 @@ import { GameState } from './gameState';
   },
   namespace: 'game',
 })
-export class ChatGateway
+export class GameGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
   @WebSocketServer()

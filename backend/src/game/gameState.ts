@@ -8,14 +8,21 @@ export class GameState {
   running: boolean;
   roomId: string;
 
-  constructor(_playerOne: Player, _playerTwo: Player) {
-    this.playerOne = _playerOne;
-    this.playerTwo = _playerTwo;
+  constructor() {
+    this.playerOne = null;
+    this.playerTwo = null;
+    this.ball = null;
+    this.running = false;
+    this.roomId = '';
+    // this.roomId = `room:${this.playerOne.id}${this.playerTwo.id}`;
+  }
+  init = (_playerOne: string, _playerTwo: string) => {
+    this.playerOne = new Player(_playerOne, 1);
+    this.playerTwo = new Player(_playerTwo, 2);
     this.ball = new Ball();
     this.running = false;
-    this.roomId = `room:${_playerOne.id}${_playerTwo.id}`;
-  }
-
+    this.roomId = `room:${this.playerOne.id}${this.playerTwo.id}`;
+  };
   paddleMove = (playerId: string, position: number) => {
     if (playerId === this.playerOne.id) {
       this.playerOne.y = position;

@@ -122,11 +122,11 @@ export class AuthService {
     }
 
     let found = await this.usersService.findOneByEmail(user.email);
-    redirectUrl = '/home';
+    redirectUrl = process.env.CLIENT_URL + '/home';
 
     if (!found) {
       found = await this.registerUser(user);
-      redirectUrl = '/welcome';
+      redirectUrl = process.env.CLIENT_URL + '/welcome';
     }
 
     const tokens = await this.getTokens(found.oauthId, found.email);
@@ -143,12 +143,9 @@ export class AuthService {
 
     this.usersService.setStatus(found.oauthId, Status['ONLINE']);
 
-    if (found.twoFactor) redirectUrl = '/two-factor';
+    if (found.twoFactor) redirectUrl = process.env.CLIENT_URL + '/two-factor';
 
-    return res.status(HttpStatus.OK).json({
-      redirectUrl: redirectUrl,
-      tokens: tokens,
-    });
+    return res.redirect(redirectUrl);
   }
 
   async logout(oauthId: string) {
