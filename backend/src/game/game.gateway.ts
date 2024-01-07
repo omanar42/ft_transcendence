@@ -80,14 +80,14 @@ export class GameGateway
       this.logger.log(error);
     }
   }
-  @SubscribeMessage('paddlemove')
+  @SubscribeMessage('paddlePosition')
   async handleMessage(@ConnectedSocket() client: Socket, data: any) {
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
       const gamestate = this.gameService.GetRoom(roomId);
       gamestate.paddleMove(oauthId, data.position);
-      this.server.to(roomId).emit('paddlemove', gamestate);
+      this.server.to(roomId).emit('paddlePosition', gamestate);
     } catch (error) {
       this.logger.log(error);
     }

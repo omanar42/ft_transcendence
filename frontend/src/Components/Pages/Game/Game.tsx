@@ -36,20 +36,21 @@ interface GameState {
   ball: Ball;
 }
 
-const emitPaddlePosition = (paddlePosition) => {
-  gameSocket.emit('paddlePosition', paddlePosition);
-};
-const Game = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isUpPressed = useRef(false);
-  const isDownPressed = useRef(false);
-  const paddleSpeed = 5;
-  const gameState = useRef<GameState>({
-    user: {
-      x: 4,
-      y: 700 / 2 - 100 / 2,
-      width: 16,
-      height: 128,
+// const emitPaddlePosition = (paddlePosition) => {
+  //   gameSocket.emit('paddlePosition', paddlePosition);
+  // };
+  const Game = () => {
+    const {userInfo, gamesocket}:any = useContext(LoginInfo);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const isUpPressed = useRef(false);
+    const isDownPressed = useRef(false);
+    const paddleSpeed = 5;
+    const gameState = useRef<GameState>({
+      user: {
+        x: 4,
+        y: 700 / 2 - 100 / 2,
+        width: 16,
+        height: 128,
       color: "#41a5fc",
       score: 0,
     },
@@ -78,6 +79,8 @@ const Game = () => {
       color: "#6574cd",
     },
   });
+  
+  gamesocket?.emit('playrandom');
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     e.preventDefault();
@@ -180,8 +183,7 @@ const Game = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    const {userInfo, gamesocket}:any = useContext(LoginInfo);
-
+    
     if (ctx && canvas) {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
@@ -190,7 +192,14 @@ const Game = () => {
         draw(ctx);
         requestAnimationFrame(render);
       };
+      
       render();
+
+      gamesocket?.emit('paddlePosition', gameState.current.user.y);
+
+      gamesocket?.on('paddlePosition', (gameStateUpdate) => {
+        gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
+      });
 
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
