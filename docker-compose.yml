@@ -22,7 +22,7 @@ services:
     depends_on:
       - postgres
     env_file:
-      - ./backend/.env
+      - .env
     volumes:
       - ./backend/src:/usr/src/app/src:ro
       - ./backend/uploads:/usr/src/app/uploads
