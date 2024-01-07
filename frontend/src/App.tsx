@@ -15,7 +15,7 @@ import io from 'socket.io-client';
 
 
 function App() {
-  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
+  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket,setGameSocket, socket,gamesocket, token}:any = useContext(LoginInfo);
 
   useEffect(()=>{
   fetchData();
@@ -43,7 +43,11 @@ function App() {
         const newSocket =  io("127.0.0.1:3000/chat", {
           query: {token:newtoken.data},
         })
+        const gameSocket = io("127.0.0.1:3000/game", {
+          query: {token:newtoken.data},
+        })
         setSocket(newSocket);
+        setGameSocket(gameSocket);
 
       }
       console.log(newtoken.data)
