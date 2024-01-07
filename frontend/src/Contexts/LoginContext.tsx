@@ -26,7 +26,7 @@ export const LoginInfoContext = ({children}:any)=>{
     const [name, setName] = useState("");
     const [token, setToken] = useState<string | null>(null);
     const [socket, setSocket] = useState<Socket | null>(null);
-
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const value = {
         isLogged, 
         setIsLogged,
@@ -37,7 +37,9 @@ export const LoginInfoContext = ({children}:any)=>{
         token,
         setToken,
         setSocket,
-        socket
+        socket,
+        isLoading,
+        setIsLoading
     }
 
     return(<LoginInfo.Provider value={value}>{children}</LoginInfo.Provider >)

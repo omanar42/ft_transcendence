@@ -12,11 +12,10 @@ import LoginInfo, { LoginInfoContext } from "./Contexts/LoginContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
 import io from 'socket.io-client';
-
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, isLogged, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
-
+  const {setuserInfo, userInfo, isLoading, setIsLoading, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
   useEffect(()=>{
   fetchData();
   console.log("App mounting...");
@@ -26,6 +25,7 @@ function App() {
   const fetchData = async ()=>{
     try{
       const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+     
       setuserInfo((prevstate: any)=>({
         ...prevstate,
         avatar:response.data.avatar,
@@ -35,10 +35,11 @@ function App() {
       }))
       if (userInfo.username){
         setIsLogged(true);
-        // <Navigate to="/home" />
+        <Navigate to="/home" replace />;
       }
       const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
       setToken(newtoken.data);
+      setIsLoading(false);
       if (newtoken.data){
         const newSocket =  io("127.0.0.1:3000/chat", {
           query: {token:newtoken.data},
