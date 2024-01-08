@@ -107,12 +107,12 @@ export class SettingController {
     return await this.settingService.updateProfile(req.user.sub, body, res);
   }
 
-  @Post('enable2FA')
+  @Get('enable2FA')
   async enable2FA(@Req() req: any, @Res() res: Response) {
     return await this.settingService.enable2FA(req.user.sub, res);
   }
 
-  @Post('disable2FA')
+  @Get('disable2FA')
   async disable2FA(@Req() req: any, @Res() res: Response) {
     return await this.settingService.disable2FA(req.user.sub, res);
   }

@@ -5,20 +5,21 @@ import { Socket } from "socket.io-client";
 
 const LoginInfo = createContext({});
 
-export interface userInfo {
-  avatar: string;
-  fullname: string;
-  status: string;
-  username: string;
-}
+export interface userInfo{
+    avatar:string;
+    fullname:string;
+    status:string;
+    username:string;
+  }
+  
+  const userLoginInfo:userInfo = {
+    avatar:"",
+    fullname:"",
+    status:"",
+    username:"",
+  };
 
-const userLoginInfo: userInfo = {
-  avatar: "",
-  fullname: "",
-  status: "",
-  username: "",
-};
-
+  
 const Logout = () => {
   axios
     .get("http://127.0.0.1:3000/auth/logout", { withCredentials: true })
@@ -40,6 +41,8 @@ export const LoginInfoContext = ({ children }: any) => {
   const [token, setToken] = useState<string | null>(null);
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [gamesocket, setGameSocket] = useState<Socket | null>(null);
+
   const value = {
     isLogged,
     setIsLogged,
@@ -54,6 +57,8 @@ export const LoginInfoContext = ({ children }: any) => {
     isLoading,
     setIsLoading,
     Logout,
+    setGameSocket,
+    gamesocket,
   };
 
   return <LoginInfo.Provider value={value}>{children}</LoginInfo.Provider>;

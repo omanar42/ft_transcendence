@@ -75,7 +75,6 @@ export class SettingService {
     await this.prisma.user.update({
       where: { oauthId: id },
       data: {
-        twoFactor: true,
         twoFaSec: secret,
       },
     });
