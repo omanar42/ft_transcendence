@@ -15,7 +15,8 @@ import io from 'socket.io-client';
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token}:any = useContext(LoginInfo);
+  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket}:any = useContext(LoginInfo);
+
   useEffect(()=>{
   fetchData();
   console.log("App mounting...");
@@ -40,7 +41,11 @@ function App() {
         const newSocket =  io("127.0.0.1:3000/chat", {
           query: {token:newtoken.data},
         })
+        const gameSocket = io("127.0.0.1:3000/game", {
+          query: {token:newtoken.data},
+        })
         setSocket(newSocket);
+        setGameSocket(gameSocket);
 
       }
       console.log(newtoken.data)

@@ -529,10 +529,17 @@ export class UsersService {
   async verify2FA(id: string, token: string) {
     const user = await this.findOneById(id);
     if (!user) return 'User not found';
-    if (!user.twoFactor) return '2FA not enabled';
+    if (!user.twoFaSec) return '2FA not enabled';
 
     const isValid = otplib.authenticator.check(token, user.twoFaSec);
     if (!isValid) return 'Invalid code';
+
+    await this.prisma.user.update({
+      where: { oauthId: id },
+      data: {
+        twoFactor: true,
+      },
+    });
 
     return '2FA verified successfully';
   }
