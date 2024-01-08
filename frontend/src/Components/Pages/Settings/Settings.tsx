@@ -4,6 +4,51 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import "./settings.css";
+
+function TwoFa({ isOPen, setIsOpen}:any) {
+  const [qrCode, setQrCode] = useState("");
+
+  useEffect(() => {
+    const getQrCode = async () => {
+      try{
+        const qrCode = await axios.post("http://127.0.0.1:3000/setting/enable2FA", {
+          withCredentials: true,
+        });
+        console.log(qrCode);
+      }catch(err){
+        console.log(err);
+      }
+    }
+    if(isOPen){
+      getQrCode();
+    }
+
+  }, []);
+  return (
+    <div className="modal flex justify-center items-center text-white font-bold">
+      <div className="flex p-[2rem] bg-black relative border-white border-2 border-opacity-20 rounded-2xl w-[95rem] h-[50rem] flex-col items-center justify-center gap-[5rem]">
+        <img className="w-[20rem] h-[20rem]" src={qrCode} />
+        <input className="w-2/6 h-[4rem] pl-4 outline-none bg-dark-100 text-3xl border-2 border-white border-opacity-20 rounded-2xl bg-opacity-" />
+        <div className="flex w-1/2 justify-around text-4xl">
+          <button className="bg-pink-600 p-3 rounded-2xl hover:bg-white hover:text-black hover:duration-[0.2s]">Confirm</button>
+          <button
+            className="hover:bg-white hover:text-black rounded-2xl p-4 hover:duration-[0.2s]"
+            onClick={() => setIsOpen(!isOPen)}
+          >
+            Cancel
+          </button>
+        </div>
+        <button
+          className="absolute top-2 right-2 text-4xl hover:text-black hover:bg-white rounded-full p-2 hover:duration-[0.2s]"
+          onClick={() => setIsOpen(!isOPen)}
+        >
+          X
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function Settings() {
   const { userInfo }: any = useContext(LoginInfo);
@@ -11,6 +56,9 @@ function Settings() {
   const [imageUrl, setImageUrl] = useState("");
   const [Fullname, setFullname] = useState(userInfo.fullname);
   const [Username, setUsername] = useState(userInfo.username);
+
+  const [twoFa, setTwoFa] = useState(false);
+  const [isOPen, setIsOpen] = useState(false);
 
   const imageRef = useRef(null);
 
@@ -39,6 +87,7 @@ function Settings() {
     setUsername(userInfo.username);
   }, [userInfo.avatar, userInfo.name, userInfo.username]);
 
+  useEffect(() => {}, [twoFa]);
   const handelapply = async () => {
     try {
       if (image !== "") {
@@ -90,6 +139,9 @@ function Settings() {
         theme="dark"
         className="text-4xl"
       />
+      {isOPen && (
+        <TwoFa isOPen={isOPen} setIsOpen={setIsOpen} />
+      )}
       <div className="text-white text-opacity-50  border-[1px] border-pink-600 w-140 h-[62rem] bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center">
         <div className="w-2/3 h-5/6">
           <h1 className="text-7xl mb-6">Acount Settings</h1>
@@ -122,7 +174,23 @@ function Settings() {
                   value={Username}
                 />
                 <h1 className="text-4xl tracking-4">Enable (2FA)</h1>
-                <input type="checkbox" className="h-10 w-10 outline-none" />
+                <label className="flex items-center relative w-max outline-none cursor-pointer select-none">
+                  <span className="text-lg font-bold mr-3">Enabled</span>
+                  <input
+                    onChange={() => setIsOpen(!isOPen)}
+                    type="checkbox"
+                    className="appearance-none transition-colors cursor-pointer outline-none w-14 h-7 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-blue-500 bg-red-500"
+                  />
+                  <span className="absolute font-medium text-xs uppercase right-1 text-white">
+                    {" "}
+                    OFF{" "}
+                  </span>
+                  <span className="absolute font-medium text-xs uppercase right-8 text-white">
+                    {" "}
+                    ON{" "}
+                  </span>
+                  <span className="w-7 h-7 right-7 absolute rounded-full transform transition-transform bg-gray-200" />
+                </label>
               </div>
             </div>
             <div className="flex justify-around w-2/4 text-3xl font-bold">

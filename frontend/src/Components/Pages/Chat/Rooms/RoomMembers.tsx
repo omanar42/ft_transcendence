@@ -12,7 +12,7 @@ interface RoomMembers{
   status:string;
 }
 
-function RenderMembers({ avatar, username, currentRoom, status}) {
+function RenderMembers({ avatar, username, currentRoom, status}:any) {
 
   const BanUser = ()=>{
       try{
@@ -34,20 +34,20 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
         console.error(error);
       }
   }
-  const KickUser = ()=>{
+  const KickUser = async()=>{
     try{
       const user = 
       {
         roomid: currentRoom,
         target_username: username
       }
-      axios.post("http://127.0.0.1:3000/chat/kick_user", user, {
+     const response = await  axios.post("http://127.0.0.1:3000/chat/kick_user", user, {
         headers: {
           'Content-Type': 'application/json'
         },
         withCredentials: true
       });
-      console.log('Kick user', user);
+      console.log('Kick user', response);
 
     }
     catch(error){

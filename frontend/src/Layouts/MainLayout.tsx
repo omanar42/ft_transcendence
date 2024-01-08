@@ -7,7 +7,7 @@ import Avatar from "../assets/avatar.jpeg";
 import { useContext, useState } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 
-function DropDwonMenu({CloseDropMenu}) {
+function DropDwonMenu({CloseDropMenu}:any) {
   const { Logout }: any = useContext(LoginInfo);
   return (
     <div className="transition-all duration-[0.3s] absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[13rem]">
