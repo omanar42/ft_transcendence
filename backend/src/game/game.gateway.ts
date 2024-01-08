@@ -59,21 +59,25 @@ export class GameGateway
   afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
-  @SubscribeMessage('addToRoom')
-  async handleAddToRoom(@ConnectedSocket() client: Socket){
-    try {
-      const oauthId = this.gameService.GetoauthId(client);
-      this.gameService.PushOnWaitingList(oauthId);
-    } catch (error) {
-      this.logger.log(error);
-    }
-  }
+  // @SubscribeMessage('addToRoom')
+  // async handleAddToRoom(@ConnectedSocket() client: Socket){
+  //   console.log('add to room');
+  //   try {
+  //   } catch (error) {
+  //     this.logger.log(error);
+  //   }
+  // }
   // @SubscribeMessage('startgame')
-  @SubscribeMessage('playrandom')
+  // @SubscribeMessage('playrandom')
+  @SubscribeMessage('addToRoom')
   async handlePlayRandom(@ConnectedSocket() client: Socket) {
     try {
+      console.log('addToRoom');
+      const oauthId = this.gameService.GetoauthId(client);
+      this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
+        console.log('randomPlayers');
         this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
@@ -92,14 +96,18 @@ export class GameGateway
     }
   }
   @SubscribeMessage('paddlePosition')
-  async handleMessage(@ConnectedSocket() client: Socket, data: any) {
+  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data) {
+    console.log('paddlePosition update');
+    console.log(data);
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
-      const gamestate = this.gameService.GetRoom(roomId);
+      const gamestate = await this.gameService.GetRoom(roomId);
+      console.log(gamestate);
       gamestate.paddleMove(oauthId, data.position);
-      this.server.to(roomId).emit('paddlePosition', gamestate);
+      this.server.to(roomId).emit('gameState', gamestate);
     } catch (error) {
+      console.log(error);
       this.logger.log(error);
     }
   }
