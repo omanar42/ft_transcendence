@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { GameState } from './gameState';
 import { Player } from './player';
 import { GameMapService } from './gamemap.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class GameService {
   constructor(
     private gameMapService: GameMapService,
     private gameState: GameState,
+    private prisma: PrismaService,
   ) {}
 
   update = (gameState: GameState) => {
@@ -48,10 +50,10 @@ export class GameService {
     this.gameMapService.delete(`socket:${oauthId}`);
     this.gameMapService.delete(key);
   };
-  CreateRoom = (oauthId1: string, oauthId2: string) => {
-    const key = `room:${oauthId1}${oauthId2}`;
+  CreateRoom = (username1: string, username2: string) => {
+    const key = `room:${username1}${username2}`;
     const value = new GameState();
-    value.init(oauthId1, oauthId2);
+    value.init(username1, username2);
     this.gameMapService.set(key, value);
   };
   GetRoom = (roomId: string) => {
@@ -61,5 +63,11 @@ export class GameService {
   DeleteRoom = (roomId: string) => {
     const key = roomId;
     this.gameMapService.delete(key);
+  };
+  GetUserName_Prisma = async (oauthId: string) => {
+    const user = await this.prisma.user.findUnique({
+      where: { oauthId: oauthId },
+    });
+    return user.username;
   };
 }
