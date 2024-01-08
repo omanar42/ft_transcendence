@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback, useContext} from "react";
+import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 
@@ -37,20 +37,22 @@ interface GameState {
 }
 
 // const emitPaddlePosition = (paddlePosition) => {
-  //   gameSocket.emit('paddlePosition', paddlePosition);
-  // };
-  const Game = () => {
-    const {userInfo, gamesocket}:any = useContext(LoginInfo);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const isUpPressed = useRef(false);
-    const isDownPressed = useRef(false);
-    const paddleSpeed = 5;
-    const gameState = useRef<GameState>({
-      user: {
-        x: 4,
-        y: 700 / 2 - 100 / 2,
-        width: 16,
-        height: 128,
+//   gameSocket.emit('paddlePosition', paddlePosition);
+// };
+const Game = () => {
+  const { userInfo, gamesocket }: any = useContext(LoginInfo);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isUpPressed = useRef(false);
+  const isDownPressed = useRef(false);
+  const paddleSpeed = 5;
+  const [status, setStatus] = useState("waiting");
+  const [roomId, setRoomId] = useState("");
+  const gameState = useRef<GameState>({
+    user: {
+      x: 4,
+      y: 700 / 2 - 100 / 2,
+      width: 16,
+      height: 128,
       color: "#41a5fc",
       score: 0,
     },
@@ -79,8 +81,47 @@ interface GameState {
       color: "#6574cd",
     },
   });
-  
-  gamesocket?.emit('playrandom');
+
+  gamesocket?.emit("addToRoom");
+
+  useEffect(() => {
+    if (gamesocket) {
+      gamesocket.on("start", handleStart);
+      gamesocket.on("gameState", handleGameState);
+
+      return () => {
+        gamesocket.off("start", handleStart);
+        gamesocket.off("gameState", handleGameState);
+      };
+    }
+  }, [gamesocket]);
+
+  const handleStart = (data: any) => {
+    console.log("game started");
+    setStatus(data.status);
+    setRoomId(data.roomId);
+  };
+
+  const handleGameState = (gameStateUpdate: any) => {
+    console.log("game state updated");
+    gameState.current.ball.x = gameStateUpdate.ball.x;
+    gameState.current.ball.y = gameStateUpdate.ball.y;
+    gameState.current.ball.velocityX = gameStateUpdate.ball.velocityX;
+    gameState.current.ball.velocityY = gameStateUpdate.ball.velocityY;
+    // gameState.current.user.score = gameStateUpdate.playerOne.score;
+    // gameState.current.enemy.score = gameStateUpdate.playerTwo.score;
+    // gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
+    if (userInfo.username === gameStateUpdate.playerOne.username) {
+      gameState.current.user.score = gameStateUpdate.playerOne.score;
+      gameState.current.enemy.score = gameStateUpdate.playerTwo.score;
+      gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
+    } else {
+      gameState.current.user.score = gameStateUpdate.playerTwo.score;
+      gameState.current.enemy.score = gameStateUpdate.playerOne.score;
+      gameState.current.enemy.y = gameStateUpdate.playerOne.y;
+    }
+    console.log(gameStateUpdate);
+  };
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     e.preventDefault();
@@ -150,6 +191,18 @@ interface GameState {
     ctx.fill();
   };
 
+  const drawText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    color: string
+  ) => {
+    ctx.fillStyle = color;
+    ctx.font = "75px fantasy";
+    ctx.fillText(text, x, y);
+  };
+
   const draw = (ctx: CanvasRenderingContext2D) => {
     drawRect(ctx, 0, 0, ctx.canvas.width, ctx.canvas.height, "#000");
     drawNet(ctx);
@@ -178,13 +231,25 @@ interface GameState {
         gameState.current.user.y + paddleSpeed
       );
     }
+    const dataToSend = {
+      roomId: roomId,
+      position: gameState.current.user.y,
+    };
+    // gamesocket.off("paddlePosition");
+    // gamesocket?.on("paddlePosition");
+    gamesocket?.emit("paddlePosition", dataToSend);
+    // console.log(dataToSend);
   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
-    
-    if (ctx && canvas) {
+
+    if (status != "start") {
+      drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
+    }
+
+    if (ctx && canvas && status === "start") {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
       const render = () => {
@@ -192,21 +257,15 @@ interface GameState {
         draw(ctx);
         requestAnimationFrame(render);
       };
-      
+
       render();
-
-      gamesocket?.emit('paddlePosition', gameState.current.user.y);
-
-      gamesocket?.on('paddlePosition', (gameStateUpdate) => {
-        gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
-      });
 
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);
       };
     }
-  }, [handleKeyDown, handleKeyUp]);
+  }, [handleKeyDown, handleKeyUp, status]);
 
   return (
     <div className="h-screen flex justify-center items-center">

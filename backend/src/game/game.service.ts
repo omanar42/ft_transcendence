@@ -50,10 +50,8 @@ export class GameService {
   };
   CreateRoom = (oauthId1: string, oauthId2: string) => {
     const key = `room:${oauthId1}${oauthId2}`;
-    const value = {
-      gameState: new GameState(),
-    };
-    this.gameState.init(oauthId1, oauthId2);
+    const value = new GameState();
+    value.init(oauthId1, oauthId2);
     this.gameMapService.set(key, value);
   };
   GetRoom = (roomId: string) => {
