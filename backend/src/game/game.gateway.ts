@@ -77,10 +77,7 @@ export class GameGateway
       this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
-        this.gameService.CreateRoom(
-          await this.gameService.GetUserName_Prisma(randomPlayers[0]),
-          await this.gameService.GetUserName_Prisma(randomPlayers[1]),
-        );
+        await this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
         const client_2 = this.gameService.GetSocket(randomPlayers[1]);
