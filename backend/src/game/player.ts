@@ -1,5 +1,6 @@
 export class Player {
   id: string;
+  username: string;
   num: number;
   x: number;
   y: number;
@@ -10,6 +11,7 @@ export class Player {
 
   constructor(id: string, num: number) {
     this.id = id;
+    this.username = '';
     this.num = num;
     this.y = 700 / 2 - 100 / 2;
     this.width = 16;
