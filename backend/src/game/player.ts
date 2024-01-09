@@ -51,6 +51,7 @@ export class Player {
   toJSON() {
     return {
       id: this.id,
+      username: this.username,
       x: this.x,
       y: this.y,
       width: this.width,
