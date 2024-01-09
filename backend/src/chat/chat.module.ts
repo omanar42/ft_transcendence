@@ -11,5 +11,6 @@ import { AuthModule } from 'src/auth/auth.module';
   imports: [PrismaModule, UsersModule, AuthModule],
   controllers: [ChatController],
   providers: [ChatGateway, ChatService, CacheService],
+  exports: [ChatService],
 })
 export class ChatModule {}

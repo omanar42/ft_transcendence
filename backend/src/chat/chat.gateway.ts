@@ -119,8 +119,8 @@ export class ChatGateway
         createRoomDto.userName,
       );
       const _client = await this.messagesService.GetOauthIdSocket(user.oauthId);
-      this.cacheService.delete(`user:${user.oauthId}`);
-      this.cacheService.delete(`user:${user.username}`);
+      // this.cacheService.delete(`user:${user.oauthId}`);
+      // this.cacheService.delete(`user:${user.username}`);
       this.server
         .to(_client.id)
         .emit(

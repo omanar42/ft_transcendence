@@ -141,6 +141,14 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Get('dms')
+  async GetDms(@Req() req) {
+    try {
+      return await this.chatService.getDms(req.user.sub.toString());
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Get('rooms')
   async getRooms(@Req() req) {
     try {
