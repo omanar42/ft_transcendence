@@ -12,7 +12,7 @@ interface RoomMembers{
   status:string;
 }
 
-function RenderMembers({ avatar, username, currentRoom, status}) {
+function RenderMembers({ avatar, username, currentRoom, status}:any) {
 
   const BanUser = ()=>{
       try{
@@ -34,20 +34,20 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
         console.error(error);
       }
   }
-  const KickUser = ()=>{
+  const KickUser = async()=>{
     try{
       const user = 
       {
         roomid: currentRoom,
         target_username: username
       }
-      axios.post("http://127.0.0.1:3000/chat/kick_user", user, {
+     const response = await  axios.post("http://127.0.0.1:3000/chat/kick_user", user, {
         headers: {
           'Content-Type': 'application/json'
         },
         withCredentials: true
       });
-      console.log('Kick user', user);
+      console.log('Kick user', response);
 
     }
     catch(error){
@@ -55,7 +55,7 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
     }
 }
   return (
-    <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-slate-600 hover:duration-[0.2s] rounded-xl  ">
+    <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-blue-600 hover:duration-[0.2s] rounded-xl  ">
       <div className="flex flex-col items-start gap-3">
         <h1 className="text-xl font-bold tracking-2">{username}</h1>
         {status !== "OWNER" ? <div className="flex gap-4 items-center">
@@ -63,7 +63,7 @@ function RenderMembers({ avatar, username, currentRoom, status}) {
           <GiBootKick onClick={KickUser} className='text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full'  />
         </div> : <h1>OWNER</h1>}
       </div>
-      <img className="w-[6rem] rounded-full status" src={avatar} alt="avatar" />
+      <img className="w-[6rem] h-[6rem] rounded-full status" src={avatar} alt="avatar" />
 
     </li>
   );
