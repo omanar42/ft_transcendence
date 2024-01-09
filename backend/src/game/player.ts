@@ -1,5 +1,5 @@
 export class Player {
-  id: string;
+  id: number;
   username: string;
   num: number;
   x: number;
@@ -9,7 +9,7 @@ export class Player {
   color: string;
   score: number;
 
-  constructor(id: string, num: number) {
+  constructor(id: number, num: number) {
     this.id = id;
     this.username = '';
     this.num = num;
@@ -51,6 +51,7 @@ export class Player {
   toJSON() {
     return {
       id: this.id,
+      num: this.num,
       username: this.username,
       x: this.x,
       y: this.y,

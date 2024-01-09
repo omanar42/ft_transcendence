@@ -75,6 +75,7 @@ export const routermin = createBrowserRouter(
             </Route>
             // Other Routes
             <Route path="/home" element={<Home />} />
+            <Route path="/game" element={<Game />} />
             <Route path="/Welcome" element={<Welcome />} />
             <Route path="/Settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />

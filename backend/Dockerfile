@@ -13,4 +13,3 @@ RUN npx prisma generate
 EXPOSE 3000
 
 CMD npm run migrate:dev && npm run start:dev
-

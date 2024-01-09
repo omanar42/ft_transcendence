@@ -64,10 +64,10 @@ export class GameState {
       this.ball.speed += 0.1;
     }
 
-    if (this.ball.x - this.ball.radius < 0) {
+    if (this.ball.x - this.ball.radius <= 0) {
       this.playerTwo.updateScore();
       this.ball.resetBall();
-    } else if (this.ball.x + this.ball.radius > 800) {
+    } else if (this.ball.x + this.ball.radius >= 1300) {
       this.playerOne.updateScore();
       this.ball.resetBall();
     }
