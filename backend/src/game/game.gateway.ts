@@ -85,6 +85,9 @@ export class GameGateway
         const data = {
           status: 'start',
           roomId: `room:${randomPlayers[0]}${randomPlayers[1]}`,
+          gameState: await this.gameService.GetRoom(
+            `room:${randomPlayers[0]}${randomPlayers[1]}`,
+          ),
         };
         this.server
           .to(`room:${randomPlayers[0]}${randomPlayers[1]}`)
@@ -96,15 +99,16 @@ export class GameGateway
   }
   @SubscribeMessage('paddlePosition')
   async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data) {
-    console.log('paddlePosition update');
-    console.log(data);
+    // console.log('paddlePosition update');
+    // console.log(data);
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
       const gamestate = await this.gameService.GetRoom(roomId);
-      console.log(gamestate);
+      // console.log(gamestate);
       gamestate.paddleMove(oauthId, data.position);
-      this.server.to(roomId).emit('gameState', gamestate);
+      // gamestate.update();
+      this.server.to(roomId).emit('gameState', gamestate.toJSON());
     } catch (error) {
       console.log(error);
       this.logger.log(error);
