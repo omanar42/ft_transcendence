@@ -15,7 +15,7 @@ import io from 'socket.io-client';
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket}:any = useContext(LoginInfo);
+  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked}:any = useContext(LoginInfo);
 
   useEffect(()=>{
   fetchData();
@@ -33,6 +33,7 @@ function App() {
         fullname:response.data.fullname,
         status:response.data.status,
         username:response.data.username,
+        twoFactor:response.data.twoFactor
       }))
       const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
       setToken(newtoken.data);
@@ -48,7 +49,6 @@ function App() {
         setGameSocket(gameSocket);
 
       }
-      console.log(newtoken.data)
     }
     catch(error){
       // console.error(error);

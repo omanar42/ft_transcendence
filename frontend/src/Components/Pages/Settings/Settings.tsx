@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./settings.css";
 
-function TwoFa({ isOPen, setIsOpen, isCheked, setIsCheked }: any) {
+function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
   const [qrCode, setQrCode] = useState("");
   const [code, setCode] = useState("");
   const Success = () => toast.success("2FA Verified successfully");
@@ -88,14 +88,10 @@ function Settings() {
   const [imageUrl, setImageUrl] = useState("");
   const [Fullname, setFullname] = useState(userInfo.fullname);
   const [Username, setUsername] = useState(userInfo.username);
-
-  const [twoFa, setTwoFa] = useState(false);
   const [isOPen, setIsOpen] = useState(false);
-  const [isCheked, setIsCheked] = useState(false);
   const imageRef = useRef(null);
-
+  const [isCheked, setIsCheked] = useState<boolean>(userInfo.twoFactor);
   const Worning = () => toast.error("Images only");
-
   const handelImageClick = () => {
     imageRef.current?.click();
   };
@@ -119,7 +115,6 @@ function Settings() {
     setUsername(userInfo.username);
   }, [userInfo.avatar, userInfo.name, userInfo.username]);
 
-  useEffect(() => {}, [twoFa]);
   const handelapply = async () => {
     try {
       if (image !== "") {

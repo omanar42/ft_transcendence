@@ -10,6 +10,7 @@ export interface userInfo{
     fullname:string;
     status:string;
     username:string;
+    twoFactor:boolean;
   }
   
   const userLoginInfo:userInfo = {
@@ -17,6 +18,7 @@ export interface userInfo{
     fullname:"",
     status:"",
     username:"",
+    twoFactor:false
   };
 
   
