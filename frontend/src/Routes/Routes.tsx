@@ -19,9 +19,11 @@ import Friends from "../Components/Friends/Friends";
 import Profile from "../Components/Pages/Profile/Profile";
 import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
+import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
+import { MdVerified } from "react-icons/md";
 
 const ProtectedRoutes = () => {
-  const { token, isLoading } = useContext(LoginInfo);
+  const { token, isLoading }: any = useContext(LoginInfo);
 
   if (isLoading) return <div>Loading...</div>;
   console.log("is Logged is", token);
@@ -29,37 +31,57 @@ const ProtectedRoutes = () => {
 };
 
 const ProtectLogin = () => {
-  const { token, isLoading } = useContext(LoginInfo);
+  const { token, isLoading }: any = useContext(LoginInfo);
 
   if (isLoading) return <div>Loading...</div>;
 
   return !token ? <Outlet /> : <Navigate to="/home" replace />;
 };
+
+const Protect2fa = () => {
+  const { verifed, userInfo }: any = useContext(LoginInfo);
+  if (userInfo.twoFactor && !verifed) {
+    return <Navigate to="/two-factor" replace />;
+  }
+  return <Outlet />;
+};
+
+const Reverse2fa = () => {
+  const { verifed}: any = useContext(LoginInfo);
+  
+  return !verifed ? <Outlet /> : <Navigate to="/home" replace />;
+}
+
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
     <Route>
+      <Route element={<Reverse2fa />}>
+        <Route path="/two-factor" element={<TwoFaVerfication />} />
+      </Route>
       <Route element={<ProtectLogin />}>
         <Route path="/login" element={<Login />} />
       </Route>
       <Route element={<ProtectedRoutes />}>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<Home />} />
-          // Chat Routes
-          <Route path="/chat" element={<ChatLayout />}>
-            <Route index element={<Chat />} />
-            <Route path="rooms" element={<Rooms />} />
-            <Route path="chat" element={<Chat />} />
-            <Route path="explore" element={<Explore />} />
-            <Route path="friends" element={<Friends />} />
-          </Route>
-          // Other Routes
-          <Route path="/home" element={<Home />} />
-          <Route path="/Welcome" element={<Welcome />} />
-          <Route path="/Settings" element={<Settings />} />
-          <Route path="/friends" element={<Friends />} />
-          // Profile Route
-          <Route path="Profile" element={<Profile />}>
-            <Route path=":username" element={<Profile />} />
+        <Route element={<Protect2fa />}>
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            // Chat Routes
+            <Route path="/chat" element={<ChatLayout />}>
+              <Route index element={<Chat />} />
+              <Route path="rooms" element={<Rooms />} />
+              <Route path="chat" element={<Chat />} />
+              <Route path="explore" element={<Explore />} />
+              <Route path="friends" element={<Friends />} />
+            </Route>
+            // Other Routes
+            <Route path="/home" element={<Home />} />
+            <Route path="/Welcome" element={<Welcome />} />
+            <Route path="/Settings" element={<Settings />} />
+            <Route path="/friends" element={<Friends />} />
+            // Profile Route
+            <Route path="Profile" element={<Profile />}>
+              <Route path=":username" element={<Profile />} />
+            </Route>
           </Route>
         </Route>
       </Route>
