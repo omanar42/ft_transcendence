@@ -49,6 +49,7 @@ const Game = () => {
   const [roomId, setRoomId] = useState("");
   const gameState = useRef<GameState>({
     user: {
+      id: 0,
       x: 4,
       y: 700 / 2 - 100 / 2,
       width: 16,
@@ -113,10 +114,12 @@ const Game = () => {
     // gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
       gameState.current.user.score = gameStateUpdate.playerOne.score;
+      gameState.current.user.id = gameStateUpdate.playerOne.num;
       gameState.current.enemy.score = gameStateUpdate.playerTwo.score;
       gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
     } else {
       gameState.current.user.score = gameStateUpdate.playerTwo.score;
+      gameState.current.user.id = gameStateUpdate.playerTwo.num;
       gameState.current.enemy.score = gameStateUpdate.playerOne.score;
       gameState.current.enemy.y = gameStateUpdate.playerOne.y;
     }
@@ -182,13 +185,19 @@ const Game = () => {
     x: number,
     y: number,
     r: number,
-    color: string
+    color: string,
+    num: number
   ) => {
+    const canvasMidPoint = 1300 / 2;
+
+    if (num === 2) x = canvasMidPoint - (x - canvasMidPoint);
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI, false);
     ctx.closePath();
     ctx.fill();
+    console.log("here is the number");
+    console.log(num);
   };
 
   const drawText = (
@@ -213,7 +222,8 @@ const Game = () => {
       gameState.current.ball.x,
       gameState.current.ball.y,
       gameState.current.ball.radius,
-      gameState.current.ball.color
+      gameState.current.ball.color,
+      gameState.current.user.id
     );
   };
 

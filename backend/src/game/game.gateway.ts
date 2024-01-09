@@ -107,7 +107,7 @@ export class GameGateway
       const gamestate = await this.gameService.GetRoom(roomId);
       // console.log(gamestate);
       gamestate.paddleMove(oauthId, data.position);
-      // gamestate.update();
+      gamestate.update();
       this.server.to(roomId).emit('gameState', gamestate.toJSON());
     } catch (error) {
       console.log(error);
