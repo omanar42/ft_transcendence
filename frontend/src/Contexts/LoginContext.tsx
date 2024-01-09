@@ -29,6 +29,7 @@ const Logout = () => {
       console.log(res.data);
       if (res.data.message === "logout success") {
         window.location.href = "/login";
+        localStorage.removeItem("verifed");
       }
     })
     .catch((err) => {
@@ -44,6 +45,7 @@ export const LoginInfoContext = ({ children }: any) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [gamesocket, setGameSocket] = useState<Socket | null>(null);
+  const [verifed, setVerifed] = useState<boolean>(false);
 
   const value = {
     isLogged,
@@ -61,6 +63,8 @@ export const LoginInfoContext = ({ children }: any) => {
     Logout,
     setGameSocket,
     gamesocket,
+    setVerifed,
+    verifed
   };
 
   return <LoginInfo.Provider value={value}>{children}</LoginInfo.Provider>;

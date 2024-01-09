@@ -15,7 +15,7 @@ import io from 'socket.io-client';
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked}:any = useContext(LoginInfo);
+  const {setuserInfo, userInfo, setVerifed, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked}:any = useContext(LoginInfo);
 
   useEffect(()=>{
   fetchData();
@@ -47,6 +47,7 @@ function App() {
         })
         setSocket(newSocket);
         setGameSocket(gameSocket);
+        setVerifed(localStorage.getItem('verifed'));
 
       }
     }
