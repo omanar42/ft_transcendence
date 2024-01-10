@@ -101,14 +101,26 @@ const Game = () => {
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
       gameState.current.user.id = gameStateUpdate.playerOne.num;
-      gameState.current.user.score = gameStateUpdate.playerOne.score;
       gameState.current.opponent.y = gameStateUpdate.playerTwo.y;
-      gameState.current.opponent.score = gameStateUpdate.playerTwo.score;
+      if (
+        gameStateUpdate.playerOne.score !== gameState.current.user.score ||
+        gameStateUpdate.playerTwo.score !== gameState.current.opponent.score
+      ) {
+        gameState.current.user.score = gameStateUpdate.playerOne.score;
+        gameState.current.opponent.score = gameStateUpdate.playerTwo.score;
+        gameState.current.user.y = 700 / 2 - 100 / 2;
+      }
     } else {
       gameState.current.user.id = gameStateUpdate.playerTwo.num;
-      gameState.current.user.score = gameStateUpdate.playerTwo.score;
       gameState.current.opponent.y = gameStateUpdate.playerOne.y;
-      gameState.current.opponent.score = gameStateUpdate.playerOne.score;
+      if (
+        gameStateUpdate.playerOne.score !== gameState.current.opponent.score ||
+        gameStateUpdate.playerTwo.score !== gameState.current.user.score
+      ) {
+        gameState.current.opponent.score = gameStateUpdate.playerOne.score;
+        gameState.current.user.score = gameStateUpdate.playerTwo.score;
+        gameState.current.user.y = 700 / 2 - 100 / 2;
+      }
     }
   };
 
