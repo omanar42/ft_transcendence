@@ -194,7 +194,7 @@ function Settings() {
             <div className="flex justify-around items-center w-3/4">
               <div onClick={handelImageClick}>
                 <img
-                  className="w-[20rem] cursor-pointer  border-2 border-pink-600 h-[20rem] rounded-full"
+                  className="w-[20rem] cursor-pointer  border-4 border-pink-600 h-[20rem] rounded-full"
                   src={imageUrl}
                 />
                 <input
