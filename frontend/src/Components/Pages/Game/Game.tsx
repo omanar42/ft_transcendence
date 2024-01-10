@@ -35,7 +35,7 @@ interface GameState {
   ball: Ball;
 }
 
-const Game = () => {
+const Game = ({ setGameMode }: any) => {
   const { userInfo, gamesocket }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
@@ -77,7 +77,7 @@ const Game = () => {
     },
   });
 
-  gamesocket?.emit("addToRoom");
+  // Handlers for button clicks
 
   useEffect(() => {
     if (gamesocket) {
@@ -167,13 +167,43 @@ const Game = () => {
     ctx.fillRect(x, y, w, h);
   };
 
+  const drawRoundedRect = (
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number,
+    color: string
+  ) => {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(
+      x + width,
+      y + height,
+      x + width - radius,
+      y + height
+    );
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.fill();
+  };
+
   const drawPlayer = (ctx: CanvasRenderingContext2D, player: Player) => {
-    drawRect(
+    drawRoundedRect(
       ctx,
       player.x,
       player.y,
       player.width,
       player.height,
+      10,
       player.color
     );
   };
@@ -203,12 +233,13 @@ const Game = () => {
     color: string
   ) => {
     ctx.fillStyle = color;
-    ctx.font = "75px fantasy";
+    ctx.font = "75px orbitron";
     ctx.fillText(text, x, y);
   };
 
   const draw = (ctx: CanvasRenderingContext2D) => {
-    drawRect(ctx, 0, 0, ctx.canvas.width, ctx.canvas.height, "#000");
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    // drawRect(ctx, 0, 0, ctx.canvas.width, ctx.canvas.height, "#000");
     drawNet(ctx);
     drawPlayer(ctx, gameState.current.user);
     drawPlayer(ctx, gameState.current.opponent);
@@ -220,6 +251,12 @@ const Game = () => {
       gameState.current.ball.color,
       gameState.current.user.id
     );
+    // draw scoores
+    const canvasMidPoint = 1300 / 2;
+    const userScore = gameState.current.user.score;
+    const opponentScore = gameState.current.opponent.score;
+    drawText(ctx, userScore.toString(), canvasMidPoint - 190, 100, "#fff");
+    drawText(ctx, opponentScore.toString(), canvasMidPoint + 100, 100, "#fff");
   };
 
   const update = () => {
@@ -270,15 +307,41 @@ const Game = () => {
   }, [handleKeyDown, handleKeyUp, status]);
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <canvas
-        className="game"
-        width="1300"
-        height="700"
-        ref={canvasRef}
-      ></canvas>
-    </div>
+    <canvas
+      className="canvasStyle"
+      width="1300"
+      height="700"
+      ref={canvasRef}
+    ></canvas>
   );
 };
 
-export default Game;
+function LadingPage() {
+  const [gameMode, setGameMode] = useState(null);
+  const { gamesocket }: any = useContext(LoginInfo);
+
+  const handlePlayRandom = () => {
+    setGameMode("random");
+    gamesocket?.emit("addToRoom");
+  };
+
+  const handlePlayWithFriend = () => {
+    setGameMode("friend");
+    gamesocket?.emit("PlayWithFriend");
+  };
+
+  return (
+    <div className="h-screen flex justify-center items-center">
+      {!gameMode ? (
+        <div className="border-2 border-white w-[40rem] bg-white h-[10rem]">
+          <button onClick={handlePlayRandom}>Play Random</button>
+          <button onClick={handlePlayWithFriend}>Play with Friend</button>
+        </div>
+      ) : (
+        <Game setGameMode={setGameMode} />
+      )}
+    </div>
+  );
+}
+
+export default LadingPage;
