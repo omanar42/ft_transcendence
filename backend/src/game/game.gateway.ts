@@ -1,57 +1,95 @@
+import { Logger } from '@nestjs/common';
 import {
-  WebSocketGateway,
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  WebSocketServer,
+  OnGatewayInit,
   SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { PrismaService } from 'src/prisma/prisma.service';
+// import { verify } from 'jsonwebtoken';
+import { AuthService } from 'src/auth/auth.service';
+import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
 import { GameState } from './gameState';
 
-interface Player {
-  id: string;
-  paddlePosition: number;
-  score: number;
-}
-
-interface Room {
-  id: string;
-  players: Player[];
-  gameState: GameState;
-}
-
-@WebSocketGateway()
-export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer() server: Server;
-  private rooms: Map<string, Room> = new Map();
-
-  handleConnection(client: Socket, ...args: any[]) {
-    console.log(`Client connected: ${client.id}`);
-  }
-
+@WebSocketGateway({
+  port: 3000,
+  cors: {
+    origin: 'http://127.0.0.1:5173',
+    // method: ['GET', 'POST'],
+  },
+  namespace: 'game',
+})
+export class GameGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  @WebSocketServer()
+  server: Server;
+  constructor(private gameService: GameService) {}
+  private logger: Logger = new Logger('GameGateway');
   handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
+    this.logger.log(`Client disconnected: ${client.id}`);
+    try {
+      this.gameService.DeleteSocket(client);
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
-
-  @SubscribeMessage('joinRoom')
-  handleJoinRoom(client: Socket, roomId: string): void {
-    // logic to add player to room
-    // create room if it doesn't exist
-    // add player to the room's player list
-    // client.join(roomId);
-    console.log(`Client ${client.id} joined room ${roomId}`);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
+    this.logger.log(`Client connected: ${client.id}`);
+    try {
+      const id = await jwt.verify(
+        client.handshake.query.token.toString(),
+        process.env.AT_SECRET,
+      );
+      this.gameService.SaveSocket(id.sub.toString(), client);
+      // this.messagesService.SetOauthIdSocket(id.sub.toString(), client);
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
-
-  @SubscribeMessage('paddleMove')
-  handlepaddleMove(client: Socket, action: any) {
-    // Update game state based on the action
-    // For example, if action is a paddle move, update the player's paddle position
-    // Then, emit the updated game state to all clients in the room
-    // this.server.to(action.roomId).emit('gameStateUpdate', updatedGameState);
-
-    // this.rooms.get(action.roomId).gameState.updatePlayerPosition(client.id, action.position);
-
-    // this.server.to(action.roomId).emit('gameStateUpdate', this.rooms.get(action.roomId).gameState);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  afterInit(@ConnectedSocket() client: Socket) {
+    this.logger.log('Initialized!');
+  }
+  // @SubscribeMessage('startgame')
+  @SubscribeMessage('playrandom')
+  async handlePlayRandom(@ConnectedSocket() client: Socket) {
+    try {
+      const oauthId = this.gameService.GetoauthId(client);
+      this.gameService.PushOnWaitingList(oauthId);
+      const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
+      if (randomPlayers) {
+        this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
+        const gamestate = this.gameService.GetRoom(
+          `room:${randomPlayers[0]}${randomPlayers[1]}`,
+        );
+        const client_1 = this.gameService.GetSocket(randomPlayers[0]);
+        client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
+        const client_2 = this.gameService.GetSocket(randomPlayers[1]);
+        client_2.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
+        this.server.to(gamestate.roomId).emit('startgame', gamestate);
+      }
+    } catch (error) {
+      this.logger.log(error);
+    }
+  }
+  @SubscribeMessage('paddlePosition')
+  async handleMessage(@ConnectedSocket() client: Socket, data: any) {
+    try {
+      const roomId = data.roomId;
+      const oauthId = this.gameService.GetoauthId(client);
+      const gamestate = this.gameService.GetRoom(roomId);
+      gamestate.paddleMove(oauthId, data.position);
+      this.server.to(roomId).emit('paddlePosition', gamestate);
+    } catch (error) {
+      this.logger.log(error);
+    }
   }
 }
