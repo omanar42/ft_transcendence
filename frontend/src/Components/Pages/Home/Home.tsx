@@ -64,7 +64,7 @@ function Home() {
             narrative that uncovers the truth behind the corporate regime.
           </p>
           <div className="flex gap-[5rem]">
-            <button className="bg-pink-100 rounded-full text-3xl h-[6rem] w-[15rem] hover:bg-dark">
+            <button className="bg-pink-600 rounded-full text-3xl h-[6rem] w-[15rem] hover:bg-dark hover:duration-[0.2s]">
               Play Now
             </button>
             <button className="rounded-full border-[2px] text-3xl h-[6rem] w-[15rem] hover:bg-white hover:text-dark duration-[0.2s]">

@@ -35,7 +35,7 @@ export default function Rooms() {
   return (
     <div>
       <RoomContextProvider>
-      <div className="bg-dark-100 h-[62rem] grid  relative grid-cols-5 gap-x-2 mt-4">
+      <div className="bg-black bg-opacity-30 backdrop-blur-sm h-[62rem] grid  relative grid-cols-5 gap-x-2 mt-4">
         {toggelModal && (
           <CreateRoom
             AddChannelToList={AddChannelToList}

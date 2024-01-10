@@ -3,6 +3,7 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 
 interface Player {
+  id: number;
   x: number;
   y: number;
   width: number;
@@ -24,31 +25,27 @@ interface Ball {
   y: number;
   radius: number;
   speed: number;
-  velocityX: number;
-  velocityY: number;
   color: string;
 }
 
 interface GameState {
   user: Player;
-  enemy: Player;
+  opponent: Player;
   net: Net;
   ball: Ball;
 }
 
-// const emitPaddlePosition = (paddlePosition) => {
-//   gameSocket.emit('paddlePosition', paddlePosition);
-// };
 const Game = () => {
   const { userInfo, gamesocket }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
-  const paddleSpeed = 5;
+  const paddleSpeed = 8;
   const [status, setStatus] = useState("waiting");
   const [roomId, setRoomId] = useState("");
   const gameState = useRef<GameState>({
     user: {
+      id: 0,
       x: 4,
       y: 700 / 2 - 100 / 2,
       width: 16,
@@ -56,7 +53,7 @@ const Game = () => {
       color: "#41a5fc",
       score: 0,
     },
-    enemy: {
+    opponent: {
       x: 1300 - 5 - 16,
       y: 700 / 2 - 100 / 2,
       width: 16,
@@ -76,8 +73,6 @@ const Game = () => {
       y: 700 / 2,
       radius: 16,
       speed: 6,
-      velocityX: 5,
-      velocityY: 5,
       color: "#6574cd",
     },
   });
@@ -97,30 +92,36 @@ const Game = () => {
   }, [gamesocket]);
 
   const handleStart = (data: any) => {
-    console.log("game started");
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log("game state updated");
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
-    gameState.current.ball.velocityX = gameStateUpdate.ball.velocityX;
-    gameState.current.ball.velocityY = gameStateUpdate.ball.velocityY;
-    // gameState.current.user.score = gameStateUpdate.playerOne.score;
-    // gameState.current.enemy.score = gameStateUpdate.playerTwo.score;
-    // gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
-      gameState.current.user.score = gameStateUpdate.playerOne.score;
-      gameState.current.enemy.score = gameStateUpdate.playerTwo.score;
-      gameState.current.enemy.y = gameStateUpdate.playerTwo.y;
+      gameState.current.user.id = gameStateUpdate.playerOne.num;
+      gameState.current.opponent.y = gameStateUpdate.playerTwo.y;
+      if (
+        gameStateUpdate.playerOne.score !== gameState.current.user.score ||
+        gameStateUpdate.playerTwo.score !== gameState.current.opponent.score
+      ) {
+        gameState.current.user.score = gameStateUpdate.playerOne.score;
+        gameState.current.opponent.score = gameStateUpdate.playerTwo.score;
+        gameState.current.user.y = 700 / 2 - 100 / 2;
+      }
     } else {
-      gameState.current.user.score = gameStateUpdate.playerTwo.score;
-      gameState.current.enemy.score = gameStateUpdate.playerOne.score;
-      gameState.current.enemy.y = gameStateUpdate.playerOne.y;
+      gameState.current.user.id = gameStateUpdate.playerTwo.num;
+      gameState.current.opponent.y = gameStateUpdate.playerOne.y;
+      if (
+        gameStateUpdate.playerOne.score !== gameState.current.opponent.score ||
+        gameStateUpdate.playerTwo.score !== gameState.current.user.score
+      ) {
+        gameState.current.opponent.score = gameStateUpdate.playerOne.score;
+        gameState.current.user.score = gameStateUpdate.playerTwo.score;
+        gameState.current.user.y = 700 / 2 - 100 / 2;
+      }
     }
-    console.log(gameStateUpdate);
   };
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -182,8 +183,11 @@ const Game = () => {
     x: number,
     y: number,
     r: number,
-    color: string
+    color: string,
+    num: number
   ) => {
+    const canvasMidPoint = 1300 / 2;
+    if (num === 2) x = canvasMidPoint - (x - canvasMidPoint);
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI, false);
@@ -207,13 +211,14 @@ const Game = () => {
     drawRect(ctx, 0, 0, ctx.canvas.width, ctx.canvas.height, "#000");
     drawNet(ctx);
     drawPlayer(ctx, gameState.current.user);
-    drawPlayer(ctx, gameState.current.enemy);
+    drawPlayer(ctx, gameState.current.opponent);
     drawCircle(
       ctx,
       gameState.current.ball.x,
       gameState.current.ball.y,
       gameState.current.ball.radius,
-      gameState.current.ball.color
+      gameState.current.ball.color,
+      gameState.current.user.id
     );
   };
 
@@ -235,10 +240,7 @@ const Game = () => {
       roomId: roomId,
       position: gameState.current.user.y,
     };
-    // gamesocket.off("paddlePosition");
-    // gamesocket?.on("paddlePosition");
     gamesocket?.emit("paddlePosition", dataToSend);
-    // console.log(dataToSend);
   };
 
   useEffect(() => {

@@ -98,7 +98,7 @@ interface ListConversations {
 function ListConversations({ avatar, username, message, time }:ListConversations) {
   return (
     <li className="flex items-center gap-5 mb-6">
-      <img className="h-[5rem] rounded-full" src={avatar} alt="avatar" />
+      <img className="h-[6rem] w-[6rem] rounded-full" src={avatar} alt="avatar" />
       <div className="overflow-hidden">
         <h1 className="text-2xl pb-2 font-extrabold">{username}</h1>
         <p className="text-xl">{message}</p>
@@ -123,12 +123,10 @@ function ChatList({chatUser}) {
         </ul>
       </div>
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {chats.map((conv) => (
+        {chatUser.map((conv) => (
           <ListConversations
-            avatar={conv.avatar}
-            message={conv.message}
-            time={conv.time}
-            username={conv.username}
+            avatar={conv.Avatar}
+            username={conv.roomName}
           />
         ))}
       </ul>
