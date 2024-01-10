@@ -15,12 +15,14 @@ export class GameService {
   update = (gameState: GameState) => {
     gameState.update();
   };
+
   PushOnWaitingList = (oauthId: string) => {
     const key = 'waitingList';
     const value = this.gameMapService.get(key);
     value.push(oauthId);
     this.gameMapService.set(key, value);
   };
+
   GetTwoPlayersWaitingList = () => {
     const key = 'waitingList';
     const value = this.gameMapService.get(key);
@@ -31,25 +33,30 @@ export class GameService {
     }
     return null;
   };
+
   SaveSocket = (oauthId: string, socket: any) => {
     const key = `socket:${oauthId}`;
     this.gameMapService.set(key, socket);
     this.gameMapService.set(`socket:${socket.id}`, oauthId);
   };
+
   GetSocket = (oauthId: string) => {
     const key = `socket:${oauthId}`;
     return this.gameMapService.get(key);
   };
+
   GetoauthId = (socket: any) => {
     const key = `socket:${socket.id}`;
     return this.gameMapService.get(key);
   };
+
   DeleteSocket = (socket: any) => {
     const key = `socket:${socket.id}`;
     const oauthId = this.gameMapService.get(key);
     this.gameMapService.delete(`socket:${oauthId}`);
     this.gameMapService.delete(key);
   };
+
   CreateRoom = async (oauthId1: string, oauthId2: string) => {
     const key = `room:${oauthId1}${oauthId2}`;
     const value = new GameState();
@@ -60,10 +67,12 @@ export class GameService {
     value.playerTwo.username = user2.username;
     this.gameMapService.set(key, value);
   };
+
   GetRoom = (roomId: string) => {
     const key = roomId;
     return this.gameMapService.get(key);
   };
+
   DeleteRoom = (roomId: string) => {
     const key = roomId;
     this.gameMapService.delete(key);
