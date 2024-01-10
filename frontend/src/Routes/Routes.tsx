@@ -15,7 +15,7 @@ import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
 import Game from "../Components/Pages/Game/Game";
-import Friends from "../Components/Friends/Friends";
+import Friends from "../Components/Pages/Friends/Friends";
 import Profile from "../Components/Pages/Profile/Profile";
 import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
@@ -47,10 +47,10 @@ const Protect2fa = () => {
 };
 
 const Reverse2fa = () => {
-  const { verifed}: any = useContext(LoginInfo);
-  
+  const { verifed }: any = useContext(LoginInfo);
+
   return !verifed ? <Outlet /> : <Navigate to="/home" replace />;
-}
+};
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
