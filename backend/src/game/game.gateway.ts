@@ -17,6 +17,9 @@ import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
 import { GameState } from './gameState';
 import { stat } from 'fs';
+import { subscribe } from 'diagnostics_channel';
+import { UsersService } from 'src/users/users.service';
+import { emit } from 'process';
 
 @WebSocketGateway({
   port: 3000,
@@ -31,7 +34,10 @@ export class GameGateway
 {
   @WebSocketServer()
   server: Server;
-  constructor(private gameService: GameService) {}
+  constructor(
+    private gameService: GameService,
+    private userService: UsersService,
+  ) {}
   private logger: Logger = new Logger('GameGateway');
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
@@ -69,10 +75,38 @@ export class GameGateway
   // }
   // @SubscribeMessage('startgame')
   // @SubscribeMessage('playrandom')
+  @SubscribeMessage('PlayWithFriend')
+  async handlePlayWithFriend(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data_in,
+  ) {
+    try {
+      await this.gameService.invatefriend(client, data_in.friend);
+      const oauthId = this.gameService.GetoauthId(client);
+      const friend_user = await this.userService.findOneByUsername(
+        data_in.friend,
+      );
+      const friendSocket = this.gameService.GetSocket(friend_user.oauthId);
+      this.gameService.CreateRoom(oauthId, friend_user.oauthId);
+      client.join(`room:${oauthId}${friend_user.oauthId}`);
+      friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
+      // const data = {
+      //   status: 'waiting',
+      //   roomId: `room:${oauthId}${friend_user.oauthId}`,
+      //   gameState: this.gameService.GetRoom(
+      //     `room:${oauthId}${friend_user.oauthId}`,
+      //   ),
+      // };
+      // this.server
+      //   .to(`room:${oauthId}${friend_user.oauthId}`)
+      //   .emit('start', data);
+    } catch (error) {
+      this.logger.log(error);
+    }
+  }
   @SubscribeMessage('addToRoom')
   async handlePlayRandom(@ConnectedSocket() client: Socket) {
     try {
-      console.log('addToRoom');
       const oauthId = this.gameService.GetoauthId(client);
       this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
@@ -105,10 +139,11 @@ export class GameGateway
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
       const gamestate = await this.gameService.GetRoom(roomId);
-      // console.log(gamestate);
-      gamestate.paddleMove(oauthId, data.position);
-      // gamestate.update();
-      this.server.to(roomId).emit('gameState', gamestate.toJSON());
+      if (gamestate) {
+        gamestate.paddleMove(oauthId, data.position);
+        gamestate.update();
+        this.server.to(roomId).emit('gameState', gamestate.toJSON());
+      }
     } catch (error) {
       console.log(error);
       this.logger.log(error);

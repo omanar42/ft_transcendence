@@ -61,13 +61,13 @@ export class GameState {
       this.ball.velocityX = direction * this.ball.speed * Math.cos(angleRad);
       this.ball.velocityY = this.ball.speed * Math.sin(angleRad);
 
-      this.ball.speed += 0.1;
+      // this.ball.speed += 0.1;
     }
 
-    if (this.ball.x - this.ball.radius < 0) {
+    if (this.ball.x < 0) {
       this.playerTwo.updateScore();
       this.ball.resetBall();
-    } else if (this.ball.x + this.ball.radius > 800) {
+    } else if (this.ball.x > 1300) {
       this.playerOne.updateScore();
       this.ball.resetBall();
     }
