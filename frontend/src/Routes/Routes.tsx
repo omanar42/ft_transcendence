@@ -14,7 +14,7 @@ import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
-import Game from "../Components/Pages/Game/Game";
+import LadingPage from "../Components/Pages/Game/Game";
 import Friends from "../Components/Friends/Friends";
 import Profile from "../Components/Pages/Profile/Profile";
 import { useContext } from "react";
@@ -75,7 +75,7 @@ export const routermin = createBrowserRouter(
             </Route>
             // Other Routes
             <Route path="/home" element={<Home />} />
-            <Route path="/game" element={<Game />} />
+            <Route path="/game" element={<LadingPage />} />
             <Route path="/Welcome" element={<Welcome />} />
             <Route path="/Settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />
