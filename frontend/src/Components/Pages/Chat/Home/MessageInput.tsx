@@ -71,7 +71,7 @@ function MessageInput() {
   return (
   <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
   {currentRoom ? <>
-  <div className=" bg-dark chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
+  <div className=" bg-dark  chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
     <p className="text-3xl">{roomName}</p>
     <IoLogOutSharp onClick={()=>setIsOpen(true)} className="text-5xl text-red-600 cursor-pointer" />
@@ -88,7 +88,7 @@ function MessageInput() {
   <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll">
     {messageList.map((message, i)=> {
       return(<div className={`text-white text-2xl flex flex-col gap-[0.5rem] ${userInfo.username === message.userName ? "" : "self-end"} `} key={i}>
-        <div className={`p-[1rem] rounded-lg f ${userInfo.username === message.userName ? "bg-pink-800 " : "bg-blue-600"}`}>
+        <div className={`p-[1rem] rounded-lg f ${userInfo.username === message.userName ? "bg-blue-600" : "bg-pink-600"}`}>
           <p>{message.message}</p>
         </div>
         <p className={`text-[1rem]  ${userInfo.username === message.userName ? "self-start" : "self-end"} font-bold`}>{message.userName}</p>
@@ -100,7 +100,7 @@ function MessageInput() {
   </div>
   <div className="h-[6rem] pl-10 pr-10 border-t-2 border-opacity-20 border-white flex justify-between items-center gap-3">
     <input
-      className="h-14 flex-1 outline-none rounded-3xl pl-10 text-black"
+      className="h-14 flex-1 outline-none rounded-3xl pl-10 text-white bg-black bg-opacity-50 text-2xl"
       type="text"
       placeholder="Write message"
       onChange={(event) => setcurrentMessage(event.target.value)}
@@ -111,7 +111,7 @@ function MessageInput() {
     />
     <IoIosSend
       onClick={sendMessage}
-      className="text-6xl text-pink-100 cursor-pointer"
+      className="text-6xl text-pink-600 cursor-pointer"
 
     />
   </div>

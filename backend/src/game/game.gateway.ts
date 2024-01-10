@@ -11,8 +11,6 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
-// import { verify } from 'jsonwebtoken';
-import { AuthService } from 'src/auth/auth.service';
 import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
 import { GameState } from './gameState';
@@ -25,7 +23,7 @@ import { emit } from 'process';
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    // method: ['GET', 'POST'],
+    method: ['GET', 'POST'],
   },
   namespace: 'game',
 })
@@ -37,8 +35,10 @@ export class GameGateway
   constructor(
     private gameService: GameService,
     private userService: UsersService,
+    private prismaService: PrismaService,
   ) {}
   private logger: Logger = new Logger('GameGateway');
+
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
@@ -47,7 +47,7 @@ export class GameGateway
       this.logger.log(error);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
     try {
@@ -56,12 +56,11 @@ export class GameGateway
         process.env.AT_SECRET,
       );
       this.gameService.SaveSocket(id.sub.toString(), client);
-      // this.messagesService.SetOauthIdSocket(id.sub.toString(), client);
     } catch (error) {
       this.logger.log(error);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
@@ -131,13 +130,19 @@ export class GameGateway
       this.logger.log(error);
     }
   }
+
   @SubscribeMessage('paddlePosition')
-  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data) {
-    // console.log('paddlePosition update');
-    // console.log(data);
+  async handleMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: any,
+  ) {
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
+      await this.prismaService.user.update({
+        where: { oauthId: oauthId },
+        data: { status: 'INGAME' },
+      });
       const gamestate = await this.gameService.GetRoom(roomId);
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);
