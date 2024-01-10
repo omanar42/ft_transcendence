@@ -236,26 +236,66 @@ export class ChatService {
     }
     return rooms_explore;
   }
-  // async GetRoomUsers(roomId: number) {
-  //   const cacheKey = `roomusers:${roomId}`;
-  //   const cachedRoomUsers = this.cacheService.get(cacheKey);
-  //   if (cachedRoomUsers) {
-  //     return cachedRoomUsers;
-  //   }
-  //   const room = await this.prisma.room.findUnique({
-  //     where: {
-  //       id: roomId,
-  //     },
-  //     include: {
-  //       roomuser: true,
-  //     },
-  //   });
-  //   if (!room) {
-  //     throw new Error('Room not found');
-  //   }
-  //   this.cacheService.set(cacheKey, room.roomuser);
-  //   return room.roomuser;
-  // }
+  async AddUserToPrivateRoom(seter: string, target: string, roomId: number) {
+    const room = await this.GetRoomById(roomId);
+    const target_user_model = await this.GetUserByUsername(target);
+    const seter_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === seter,
+    );
+    const target_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === target,
+    );
+    if (!room || !seter_user || !target_user) {
+      throw new Error('User or Room not found');
+    }
+    if (seter_user.status !== UserStatusInRoom['OWNER']) {
+      throw new Error('You are not the owner of this room');
+    }
+    if (target_user.status === UserStatusInRoom['MEMBER']) {
+      throw new Error('User is already a member');
+    }
+    // await this.prisma.roomUser.create({
+  }
+  async UpdateRoom(RoomId: number, data: any) {
+    const roomTypes = ['public', 'private', 'protected'];
+    const room = await this.GetRoomById(RoomId);
+    if (!room) {
+      throw new Error('Room not found');
+    }
+    const user = await this.GetUserByUsername(data.username);
+    const roomuser = room.roomuser.find(
+      (roomuser) => roomuser.userId === user.oauthId,
+    );
+    if (!roomuser) {
+      throw new Error('User not found');
+    }
+    if (roomuser.status !== UserStatusInRoom['OWNER']) {
+      throw new Error('You are not the owner of this room');
+    }
+    if (!roomTypes.includes(data.roomType.toLocaleLowerCase())) {
+      throw new Error('Room type not correct');
+    }
+    await this.prisma.room.update({
+      where: {
+        id: RoomId,
+      },
+      data: {
+        name: data.roomName,
+        type: RoomType[data.roomType.toUpperCase()],
+      },
+    });
+    if (data.roomType.toLowerCase() === 'protected') {
+      const hashedPass_ = await bcrypt.hash(data.roomPassword, 10);
+      await this.prisma.room.update({
+        where: {
+          id: RoomId,
+        },
+        data: {
+          hashedPass: hashedPass_,
+        },
+      });
+    }
+  }
   async GetRoomById(roomId: number) {
     // const cacheKey = `room:${roomId}`;
     // const cachedRoom = this.cacheService.get(cacheKey);
@@ -345,6 +385,7 @@ export class ChatService {
         id: target_user.id,
       },
     });
+    return this.GetRoomUsers(roomId);
   }
   // the seter is oauthId of the user
   async setAdminForRoom(roomId: number, seter: string, target: string) {
@@ -669,6 +710,7 @@ export class ChatService {
     for (const roomuser of rooms_user) {
       const room = await this.GetRoomById(roomuser.roomId);
       if (room.type === RoomType['DIRECT_MESSAGE']) {
+        // const last_message = this.GetMessagesByRoomId(room.id, oauthId);
         for (const roomuser_ of room.roomuser) {
           if (roomuser_.userId !== oauthId) {
             const DM_front = await this.DMsToDMs_Front(room, roomuser_.userId);
