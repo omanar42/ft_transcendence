@@ -11,18 +11,14 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
-// import { verify } from 'jsonwebtoken';
-import { AuthService } from 'src/auth/auth.service';
 import * as jwt from 'jsonwebtoken';
 import { GameService } from './game.service';
-import { GameState } from './gameState';
-import { stat } from 'fs';
 
 @WebSocketGateway({
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    // method: ['GET', 'POST'],
+    method: ['GET', 'POST'],
   },
   namespace: 'game',
 })
@@ -33,6 +29,7 @@ export class GameGateway
   server: Server;
   constructor(private gameService: GameService) {}
   private logger: Logger = new Logger('GameGateway');
+
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
@@ -41,7 +38,7 @@ export class GameGateway
       this.logger.log(error);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async handleConnection(@ConnectedSocket() client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
     try {
@@ -50,25 +47,15 @@ export class GameGateway
         process.env.AT_SECRET,
       );
       this.gameService.SaveSocket(id.sub.toString(), client);
-      // this.messagesService.SetOauthIdSocket(id.sub.toString(), client);
     } catch (error) {
       this.logger.log(error);
     }
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
-  // @SubscribeMessage('addToRoom')
-  // async handleAddToRoom(@ConnectedSocket() client: Socket){
-  //   console.log('add to room');
-  //   try {
-  //   } catch (error) {
-  //     this.logger.log(error);
-  //   }
-  // }
-  // @SubscribeMessage('startgame')
-  // @SubscribeMessage('playrandom')
+
   @SubscribeMessage('addToRoom')
   async handlePlayRandom(@ConnectedSocket() client: Socket) {
     try {
@@ -97,15 +84,13 @@ export class GameGateway
       this.logger.log(error);
     }
   }
+
   @SubscribeMessage('paddlePosition')
-  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data) {
-    // console.log('paddlePosition update');
-    // console.log(data);
+  async handleMessage(@ConnectedSocket() client: Socket, @MessageBody() data: any) {
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
       const gamestate = await this.gameService.GetRoom(roomId);
-      // console.log(gamestate);
       gamestate.paddleMove(oauthId, data.position);
       gamestate.update();
       this.server.to(roomId).emit('gameState', gamestate.toJSON());
