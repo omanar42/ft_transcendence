@@ -161,7 +161,7 @@ export class ChatService {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 50,
+          // take: 50,
         },
       },
     });
@@ -175,6 +175,14 @@ export class ChatService {
       { oauthId: oauthId },
       room_users.roomuser,
     );
+    if (room_users.type === RoomType['DIRECT_MESSAGE']) {
+      const friendId = room_users.roomuser.find(
+        (roomuser) => roomuser.userId !== oauthId,
+      );
+      const friendUser = await this.GetUserByOauthId(friendId.userId);
+      Messages_Front.roomName = friendUser.username;
+      Messages_Front.Avatar = friendUser.avatar;
+    }
     for (const message of messages) {
       const message_front = new Message_Front_Dto();
       message_front.message = message.content;
