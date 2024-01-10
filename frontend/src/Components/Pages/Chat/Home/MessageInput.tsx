@@ -25,6 +25,7 @@ function MessageInput() {
   const {currentRoom, setCurrentRoom}:any = useContext(RoomContext);
   const {userInfo, socket}:any = useContext(LoginInfo);
   const [isOpen, setIsOpen] = useState(false);
+  const [roomType, setRoomType] = useState("");
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData:messageData = {
@@ -62,6 +63,8 @@ function MessageInput() {
       console.log('all messagaes', messages.data);
       setMessageList(messages.data.messages);
       setRoomName(messages.data.roomName);
+      setRoomType(messages.data.roomType);
+      console.log('room name',messages.data)
     }
     if (currentRoom){
       fetchMessages();
@@ -73,8 +76,8 @@ function MessageInput() {
   {currentRoom ? <>
   <div className=" bg-dark  chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
     <img className="h-[6rem] rounded-full"  src={avatar} alt="avatar" />
-    <p className="text-3xl">{roomName}</p>
-    <IoLogOutSharp onClick={()=>setIsOpen(true)} className="text-5xl text-red-600 cursor-pointer" />
+    <p className="text-3xl font-bold tracking-3">{roomName}</p>
+    {roomType !== "DIRECT_MESSAGE" && <IoLogOutSharp onClick={()=>setIsOpen(true)} className="text-5xl text-red-600 cursor-pointer" />}
    {isOpen && <div className="modal flex items-center justify-center text-black ">
       <div className="w-[60rem] bg-white h-[20rem] bg-opacity-80 flex flex-col justify-around items-center rounded-2xl">
         <h1 className="uppercase text-4xl font-extrabold">Are you sure you want to leave?</h1>

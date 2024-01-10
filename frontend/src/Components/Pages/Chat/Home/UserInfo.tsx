@@ -4,7 +4,7 @@ import { FaShare } from "react-icons/fa";
 
 function UserInfo() {
   return (
-    <div className="col-span-1 flex flex-col gap-10 items-center justify-center">
+    <div className="col-span-1 flex flex-col gap-10 items-center justify-center border-2 border-white border-opacity-20 rounded-2xl">
       <img className="rounded-full h-[15rem]" src={Avatar} />
       <h1 className="text-3xl font-bold">mrobaii</h1>
       <div className="flex items-center gap-5">
