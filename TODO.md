@@ -6,11 +6,14 @@ Project Description
 
 ### Todo
 
+- [ ] xp && level  
+- [ ] achivments  
 - [ ] Matching players  
 - [ ] Match History  
 
 ### In Progress
 
+- [ ] play with friends  
 
 ### Done ✓
 
