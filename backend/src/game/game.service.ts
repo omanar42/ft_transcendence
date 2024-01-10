@@ -12,6 +12,35 @@ export class GameService {
     private gameState: GameState,
   ) {}
 
+  invatefriend = async (client: any, friend: string) => {
+    const oauthId = this.GetoauthId(client);
+    const friend_user = await this.usersService.findOneByUsername(friend);
+    if (friend_user.status === 'INGAME') {
+      client.emit(
+        'invate',
+        "you can't invite this user because he is on another game",
+      );
+      throw new Error(
+        "you can't invite this user because he is on another game",
+      );
+    }
+    const friendSocket = this.GetSocket(friend_user.oauthId);
+    if (friendSocket) {
+      const data = {
+        status: 'invate',
+        roomId: `room:${oauthId}${friend_user.oauthId}`,
+      };
+      friendSocket.emit('invate', data);
+      const data2 = {
+        status: 'waiting',
+        roomId: `room:${oauthId}${friend_user.oauthId}`,
+      };
+      client.emit('invate', data2);
+    } else {
+      client.emit('invate', 'this user is offline');
+      throw new Error('this user is offline');
+    }
+  };
   update = (gameState: GameState) => {
     gameState.update();
   };
