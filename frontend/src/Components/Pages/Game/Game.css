@@ -1,7 +1,16 @@
 .game {
-  border-image: linear-gradient(to right, #3490dc, #6574cd, #9561e2) 50 round;
+  background: linear-gradient(90deg, rgba(190,129,247,1) 0%, rgba(124,77,255,1) 100%);
   border-image-slice: 1;
   border-width: 7px;
 	border-style: solid;
+  overflow: hidden;
+}
+
+.canvasStyle {
+  /* width: 100%; */
+  /* height: auto; */
+  border: 5px solid #BE81F7;
+  box-shadow: 0 0 20px #BE81F7;
+  border-radius: 15px;
   overflow: hidden;
 }
