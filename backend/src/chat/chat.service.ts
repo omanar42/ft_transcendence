@@ -265,9 +265,9 @@ export class ChatService {
     }
     // await this.prisma.roomUser.create({
   }
-  async UpdateRoom(RoomId: number, data: any) {
+  async UpdateRoom(data: any) {
     const roomTypes = ['public', 'private', 'protected'];
-    const room = await this.GetRoomById(RoomId);
+    const room = await this.GetRoomById(data.RoomId);
     if (!room) {
       throw new Error('Room not found');
     }
@@ -286,7 +286,7 @@ export class ChatService {
     }
     await this.prisma.room.update({
       where: {
-        id: RoomId,
+        id: data.RoomId,
       },
       data: {
         name: data.roomName,
@@ -297,7 +297,7 @@ export class ChatService {
       const hashedPass_ = await bcrypt.hash(data.roomPassword, 10);
       await this.prisma.room.update({
         where: {
-          id: RoomId,
+          id: room.id,
         },
         data: {
           hashedPass: hashedPass_,
