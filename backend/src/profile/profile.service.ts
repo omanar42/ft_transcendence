@@ -12,10 +12,7 @@ interface ProfilePage {
   level: number;
   wins: number;
   losses: number;
-  achievements: {
-    name: string;
-    description?: string;
-  }[];
+  achievements: string[];
   friends?: {
     username: string;
     avatar: string;
@@ -106,10 +103,7 @@ export class ProfileService {
       level: stats.level,
       wins: stats.wins,
       losses: stats.losses,
-      achievements: stats.achievements.map((achievement) => ({
-        name: achievement.name,
-        description: achievement.description,
-      })),
+      achievements: stats.achievements,
       friends: friends.map((friend) => ({
         username: friend.frUser,
         avatar: friend.frAvatar,

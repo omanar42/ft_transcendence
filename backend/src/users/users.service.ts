@@ -4,12 +4,18 @@ import { UserFriends } from './entities/UserFriends.entity';
 import {
   FriendActions,
   FriendStatus,
+  Match,
   RoomType,
   Status,
   User,
   UserStatusInRoom,
 } from '@prisma/client';
 import * as otplib from 'otplib';
+
+interface PlayerState {
+  id: string;
+  score: number;
+}
 
 @Injectable()
 export class UsersService {
@@ -542,5 +548,149 @@ export class UsersService {
     });
 
     return '2FA verified successfully';
+  }
+
+  async HandleEndGame(winner: PlayerState, loser: PlayerState) {
+    const winnerStats = await this.getStats(winner.id);
+    const loserStats = await this.getStats(loser.id);
+
+    winnerStats.level += ((winner.score * 10) / 100) * 5;
+    loserStats.level += ((loser.score * 10) / 100) * 5;
+
+    winnerStats.wins += 1;
+    loserStats.losses += 1;
+
+    const winnerAchievementsToPush = [];
+    const loserAchievementsToPush = [];
+
+    if (
+      winner.score === 12 &&
+      loser.score === 0 &&
+      !winnerStats.achievements.includes('PERFECT_WIN')
+    )
+      winnerAchievementsToPush.push('PERFECT_WIN');
+
+    if (!winnerStats.achievements.includes('FIRST_WIN'))
+      winnerAchievementsToPush.push('FIRST_WIN');
+
+    if (!loserStats.achievements.includes('FIRST_LOSE'))
+      loserAchievementsToPush.push('FIRST_LOSE');
+
+    if (
+      winnerStats.wins >= 1 &&
+      !winnerStats.achievements.includes('WIN_1_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_1_GAMES');
+
+    if (
+      winnerStats.wins >= 5 &&
+      !winnerStats.achievements.includes('WIN_5_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_5_GAMES');
+
+    if (
+      winnerStats.wins >= 10 &&
+      !winnerStats.achievements.includes('WIN_10_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_10_GAMES');
+
+    if (
+      loserStats.wins >= 1 &&
+      !loserStats.achievements.includes('WIN_1_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_1_GAMES');
+
+    if (
+      loserStats.wins >= 5 &&
+      !loserStats.achievements.includes('WIN_5_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_5_GAMES');
+
+    if (
+      loserStats.wins >= 10 &&
+      !loserStats.achievements.includes('WIN_10_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_10_GAMES');
+
+    if (
+      winnerStats.level >= 10 &&
+      !winnerStats.achievements.includes('LEVEL_10')
+    )
+      winnerAchievementsToPush.push('LEVEL_10');
+    if (
+      winnerStats.level >= 50 &&
+      !winnerStats.achievements.includes('LEVEL_50')
+    )
+      winnerAchievementsToPush.push('LEVEL_50');
+    if (
+      winnerStats.level >= 100 &&
+      !winnerStats.achievements.includes('LEVEL_100')
+    )
+      winnerAchievementsToPush.push('LEVEL_100');
+    if (loserStats.level >= 10 && !loserStats.achievements.includes('LEVEL_10'))
+      loserAchievementsToPush.push('LEVEL_10');
+    if (loserStats.level >= 50 && !loserStats.achievements.includes('LEVEL_50'))
+      loserAchievementsToPush.push('LEVEL_50');
+    if (
+      loserStats.level >= 100 &&
+      !loserStats.achievements.includes('LEVEL_100')
+    )
+      loserAchievementsToPush.push('LEVEL_100');
+
+    await this.prisma.match.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: winner.id,
+          },
+        },
+        opponentId: loser.id,
+        userScore: winner.score,
+        opponentScore: loser.score,
+        win: true,
+        xpGain: winner.score * 10 * 5,
+      },
+    });
+
+    await this.prisma.match.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: loser.id,
+          },
+        },
+        opponentId: winner.id,
+        userScore: loser.score,
+        opponentScore: winner.score,
+        win: false,
+        xpGain: loser.score * 10 * 5,
+      },
+    });
+
+    await this.prisma.stats.update({
+      where: {
+        userId: winner.id,
+      },
+      data: {
+        level: winnerStats.level,
+        wins: winnerStats.wins,
+        achievements: {
+          push: winnerAchievementsToPush,
+        },
+      },
+    });
+
+    await this.prisma.stats.update({
+      where: {
+        userId: loser.id,
+      },
+      data: {
+        level: loserStats.level,
+        wins: loserStats.wins,
+        achievements: {
+          push: loserAchievementsToPush,
+        },
+      },
+    });
   }
 }
