@@ -14,3 +14,25 @@
   border-radius: 15px;
   overflow: hidden;
 }
+
+.playButton {
+  background: linear-gradient(90deg, rgba(190,129,247,1) 0%, rgba(124,77,255,1) 100%);
+  border-image-slice: 1;
+  border-width: 7px;
+  border-style: solid;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #BE81F7;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  margin: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+/* hover */
+.playButton:hover {
+  background: linear-gradient(90deg, rgb(36, 20, 80) 0%, rgb(63, 50, 75) 100%);
+  color: #fff;
+  transition: all 0.3s ease-in-out;
+}
