@@ -182,12 +182,7 @@ const Game = ({ setGameMode }: any) => {
     ctx.lineTo(x + width - radius, y);
     ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
     ctx.lineTo(x + width, y + height - radius);
-    ctx.quadraticCurveTo(
-      x + width,
-      y + height,
-      x + width - radius,
-      y + height
-    );
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
     ctx.lineTo(x + radius, y + height);
     ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     ctx.lineTo(x, y + radius);
@@ -239,7 +234,6 @@ const Game = ({ setGameMode }: any) => {
 
   const draw = (ctx: CanvasRenderingContext2D) => {
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    // drawRect(ctx, 0, 0, ctx.canvas.width, ctx.canvas.height, "#000");
     drawNet(ctx);
     drawPlayer(ctx, gameState.current.user);
     drawPlayer(ctx, gameState.current.opponent);
@@ -251,7 +245,6 @@ const Game = ({ setGameMode }: any) => {
       gameState.current.ball.color,
       gameState.current.user.id
     );
-    // draw scoores
     const canvasMidPoint = 1300 / 2;
     const userScore = gameState.current.user.score;
     const opponentScore = gameState.current.opponent.score;
@@ -319,23 +312,43 @@ const Game = ({ setGameMode }: any) => {
 function LadingPage() {
   const [gameMode, setGameMode] = useState(null);
   const { gamesocket }: any = useContext(LoginInfo);
+  const [friendUsername, setFriendUsername] = useState('');
 
   const handlePlayRandom = () => {
     setGameMode("random");
     gamesocket?.emit("addToRoom");
   };
 
-  const handlePlayWithFriend = () => {
+  const handlePlayWithFriend = (username: string) => {
     setGameMode("friend");
-    gamesocket?.emit("PlayWithFriend");
+    const dataToSend = {
+      friend: username,
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
   };
 
   return (
     <div className="h-screen flex justify-center items-center">
       {!gameMode ? (
-        <div className="border-2 border-white w-[40rem] bg-white h-[10rem]">
-          <button onClick={handlePlayRandom}>Play Random</button>
-          <button onClick={handlePlayWithFriend}>Play with Friend</button>
+        <div>
+          <button className="playButton" onClick={handlePlayRandom}>
+            Play Random
+          </button>
+          <div>
+            <input
+              type="text"
+              placeholder="Friend's username"
+              value={friendUsername}
+              onChange={(e) => setFriendUsername(e.target.value)}
+              className="usernameInput"
+            />
+            <button
+              className="playButton"
+              onClick={() => handlePlayWithFriend(friendUsername)}
+            >
+              Play with Friend
+            </button>
+          </div>
         </div>
       ) : (
         <Game setGameMode={setGameMode} />
