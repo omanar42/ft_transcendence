@@ -3,6 +3,8 @@ import { Server, Socket } from 'socket.io';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
+import { HttpException, HttpStatus } from '@nestjs/common';
+
 // import { Message, Room } from './entities/message.entity';
 import {
   CreateDirectMessageDto,
@@ -223,7 +225,6 @@ export class ChatService {
     const rooms = await this.GetUserByOauthId(oauthId).then((user) => {
       return user.roomsuser;
     });
-    console.log(rooms);
     const rooms_explore = [];
     const all_rooms = await this.prisma.room.findMany({
       where: {
@@ -433,12 +434,11 @@ export class ChatService {
       }
       const temp_list_blocked = await this.GetBlockedUsers(roomuser.userId);
       const isBlockedBySender = blockedlist_sender.some(
-        (blocked) => blocked.userId === roomuser.userId,
+        (blocked) => blocked.oauthId === roomuser.userId,
       );
       const hasBlockedSender = temp_list_blocked.some(
-        (blocked) => blocked.userId === sender.oauthId,
+        (blocked) => blocked.oauthId === sender.oauthId,
       );
-
       if (!isBlockedBySender && !hasBlockedSender) {
         users_list_not_blocked.push(roomuser);
       }
@@ -447,6 +447,7 @@ export class ChatService {
   }
   async Leaveroom(oauthId: string, data: any) {
     try {
+      console.log(data);
       const room = await this.GetRoomById(data.roomId);
       const user = await this.GetUserByOauthId(oauthId);
       const roomuser = room.roomuser.find(
@@ -454,7 +455,10 @@ export class ChatService {
       );
       const RoomMembers = room.roomuser;
       if (roomuser.status === UserStatusInRoom['BANNED']) {
-        throw new Error('You are banned from this room');
+        throw new HttpException(
+          'You are banned from this room',
+          HttpStatus.NOT_ACCEPTABLE,
+        );
       }
       if (roomuser && room.type !== RoomType['DIRECT_MESSAGE']) {
         if (roomuser.status === UserStatusInRoom['OWNER']) {
@@ -507,7 +511,7 @@ export class ChatService {
         }
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     // this.cacheService.delete(`room:${data.roomId}`);
     // this.cacheService.delete(`user:${oauthId}`);
@@ -582,9 +586,12 @@ export class ChatService {
     new_roomUsers.forEach(async (user) => {
       if (user.userId !== sender.oauthId) {
         const _client = await this.GetOauthIdSocket(user.userId);
-        serv
-          .to(_client.id)
-          .emit('new_message', await this.Socket_Front_Dto(message));
+        console.log(user.userName);
+        if (_client) {
+          serv
+            .to(_client.id)
+            .emit('new_message', await this.Socket_Front_Dto(message));
+        }
       }
     });
   }
@@ -718,8 +725,11 @@ export class ChatService {
     for (const roomuser of rooms_user) {
       const room = await this.GetRoomById(roomuser.roomId);
       if (room.type === RoomType['DIRECT_MESSAGE']) {
-        // const last_message = this.GetMessagesByRoomId(room.id, oauthId);
-        for (const roomuser_ of room.roomuser) {
+        const users_not_blocked = await this.filter_blocked_users(
+          { oauthId },
+          room.roomuser,
+        );
+        for (const roomuser_ of users_not_blocked) {
           if (roomuser_.userId !== oauthId) {
             const DM_front = await this.DMsToDMs_Front(room, roomuser_.userId);
             rooms_front.push(DM_front);
