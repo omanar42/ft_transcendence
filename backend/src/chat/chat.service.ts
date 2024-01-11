@@ -521,6 +521,7 @@ export class ChatService {
     roomId: number,
     seter_oauthId: string,
     target_username: string,
+    status: string,
   ) {
     const room = await this.GetRoomById(roomId);
 
@@ -540,9 +541,12 @@ export class ChatService {
       (seter_user.status === UserStatusInRoom['ADMIN'] &&
         target_user.status === UserStatusInRoom['ADMIN'])
     ) {
-      throw new Error('You are not allowed to ban users');
+      throw new Error('You are not allowed to do this action');
     }
-    if (target_user.status === UserStatusInRoom['BANNED']) {
+    if (
+      target_user.status === UserStatusInRoom['BANNED'] &&
+      status === 'BANNED'
+    ) {
       throw new Error('User is already banned');
     }
     await this.prisma.roomUser.update({
@@ -550,11 +554,43 @@ export class ChatService {
         id: target_user.id,
       },
       data: {
-        status: UserStatusInRoom['BANNED'],
+        status: UserStatusInRoom[status.toUpperCase()],
       },
     });
     // this.cacheService.delete(`room:${roomId}`);
   }
+  // async UnbanUserFromRoom(data: any) {
+  //   const room = await this.GetRoomById(data.roomId);
+  //   const seter_user = room.roomuser.find(
+  //     (roomuser) => roomuser.userId === data.seter_oauthId,
+  //   );
+  //   const target_user = room.roomuser.find(
+  //     (roomuser) => roomuser.userId === data.target_oauthId,
+  //   );
+  //   if (!room || !seter_user || !target_user) {
+  //     throw new Error('User or Room not found');
+  //   }
+  //   if (
+  //     seter_user.status === UserStatusInRoom['MEMBER'] ||
+  //     target_user.status === UserStatusInRoom['OWNER'] ||
+  //     (seter_user.status === UserStatusInRoom['ADMIN'] &&
+  //       target_user.status === UserStatusInRoom['ADMIN'])
+  //   ) {
+  //     throw new Error('You are not allowed to unban users');
+  //   }
+  //   if (target_user.status !== UserStatusInRoom['BANNED']) {
+  //     throw new Error('User is not banned');
+  //   }
+  //   await this.prisma.roomUser.update({
+  //     where: {
+  //       id: target_user.id,
+  //     },
+  //     data: {
+  //       status: UserStatusInRoom['MEMBER'],
+  //     },
+  //   });
+  //   // this.cacheService.delete(`room:${data.roomId}`);
+  // }
   async createMessage(serv: Server, createMessageDto: CreateMessageDto) {
     const room = await this.GetRoomById(createMessageDto.roomId);
     const sender = await this.GetUserByUsername(createMessageDto.userName);
