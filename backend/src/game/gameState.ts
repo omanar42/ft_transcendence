@@ -6,12 +6,14 @@ export class GameState {
   ball: Ball;
   playerOne: Player;
   playerTwo: Player;
+  winner: string;
 
   constructor() {
     this.playerOne = null;
     this.playerTwo = null;
     this.ball = null;
     this.roomId = '';
+    this.winner = '';
   }
 
   init = (playerOneId: string, playerTwoId: string) => {
@@ -69,6 +71,13 @@ export class GameState {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
+    }
+
+    if (this.playerOne.score === 12 || this.playerTwo.score === 12) {
+      this.ball.resetBall();
+      this.playerOne.reset();
+      this.playerTwo.reset();
+      this.winner = this.playerOne.score === 12 ? 'playerOne' : 'playerTwo';
     }
   };
 
