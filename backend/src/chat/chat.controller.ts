@@ -102,6 +102,27 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Post('updateRoom')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        roomName: { type: 'string' },
+        username: { type: 'string' },
+        type: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
+  async updateRoom(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.UpdateRoom(body);
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
   @Post('joinRoom')
   @ApiBody({
     schema: {
