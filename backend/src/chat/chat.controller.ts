@@ -95,6 +95,31 @@ export class ChatController {
         parseInt(body.roomid),
         req.user.sub.toString(),
         body.target_username,
+        'BANNED',
+      );
+      console.log(response);
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  @Post('unban_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomid: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async unbanUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.BanUserFromRoom(
+        parseInt(body.roomid),
+        req.user.sub.toString(),
+        body.target_username,
+        'MEMBER',
       );
       console.log(response);
       return res.json(response);
