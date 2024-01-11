@@ -53,7 +53,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('kick_user')
