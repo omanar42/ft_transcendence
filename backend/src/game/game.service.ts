@@ -99,6 +99,7 @@ export class GameService {
 
   GetRoom = (roomId: string) => {
     const key = roomId;
+    // console.log(this.gameMapService.get(key));
     return this.gameMapService.get(key);
   };
 

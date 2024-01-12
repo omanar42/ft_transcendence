@@ -86,19 +86,21 @@ export class GameGateway
         data_in.friend,
       );
       const friendSocket = this.gameService.GetSocket(friend_user.oauthId);
-      this.gameService.CreateRoom(oauthId, friend_user.oauthId);
+      await this.gameService.CreateRoom(oauthId, friend_user.oauthId);
       client.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
-      // const data = {
-      //   status: 'waiting',
-      //   roomId: `room:${oauthId}${friend_user.oauthId}`,
-      //   gameState: this.gameService.GetRoom(
-      //     `room:${oauthId}${friend_user.oauthId}`,
-      //   ),
-      // };
-      // this.server
-      //   .to(`room:${oauthId}${friend_user.oauthId}`)
-      //   .emit('start', data);
+      //demo
+      const data = {
+        // status: 'waiting',
+        status: 'start',
+        roomId: `room:${oauthId}${friend_user.oauthId}`,
+        gameState: this.gameService.GetRoom(
+          `room:${oauthId}${friend_user.oauthId}`,
+        ),
+      };
+      this.server
+        .to(`room:${oauthId}${friend_user.oauthId}`)
+        .emit('start', data);
     } catch (error) {
       this.logger.log(error);
     }
