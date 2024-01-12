@@ -6,7 +6,7 @@ import { ImBlocked } from "react-icons/im";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 
-const friendAction = async (
+export const friendAction = async (
   frUser: any,
   action: any,
   handlUpdate: any,
@@ -31,7 +31,6 @@ const friendAction = async (
     else if (res.data === "Friend blocked") toast.success("Friend blocked");
     else if (res.data === "Friend unblocked") toast.success("Friend unblocked");
 
-    console.log("Firend ================", res.data);
     handlUpdate(id);
   } catch (e) {
     console.error(e);

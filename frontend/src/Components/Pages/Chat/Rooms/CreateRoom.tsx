@@ -15,7 +15,7 @@ interface InputBox {
   children: string;
 }
 
-function InputBox({
+export function InputBox({
   value,
   children,
   placeholder,
