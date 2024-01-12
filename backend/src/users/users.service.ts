@@ -14,6 +14,7 @@ import * as otplib from 'otplib';
 
 interface PlayerState {
   id: string;
+  username: string;
   score: number;
 }
 
@@ -550,12 +551,24 @@ export class UsersService {
     return '2FA verified successfully';
   }
 
+  async getMatchHistory(id: string) {
+    const matches = await this.prisma.user.findUnique({
+      where: {
+        oauthId: id,
+      },
+      select: {
+        matches: true,
+      },
+    });
+    return matches.matches;
+  }
+
   async HandleEndGame(winner: PlayerState, loser: PlayerState) {
     const winnerStats = await this.getStats(winner.id);
     const loserStats = await this.getStats(loser.id);
 
-    winnerStats.level += ((winner.score * 10) / 100) * 5;
-    loserStats.level += ((loser.score * 10) / 100) * 5;
+    winnerStats.level += ((winner.score * 10) / 100) * 4.2;
+    loserStats.level += ((loser.score * 10) / 100) * 4.2;
 
     winnerStats.wins += 1;
     loserStats.losses += 1;
@@ -644,7 +657,7 @@ export class UsersService {
             oauthId: winner.id,
           },
         },
-        opponentId: loser.id,
+        opponentUser: loser.username,
         userScore: winner.score,
         opponentScore: loser.score,
         win: true,
@@ -659,7 +672,7 @@ export class UsersService {
             oauthId: loser.id,
           },
         },
-        opponentId: winner.id,
+        opponentUser: winner.username,
         userScore: loser.score,
         opponentScore: winner.score,
         win: false,
@@ -686,7 +699,7 @@ export class UsersService {
       },
       data: {
         level: loserStats.level,
-        wins: loserStats.wins,
+        losses: loserStats.losses,
         achievements: {
           push: loserAchievementsToPush,
         },

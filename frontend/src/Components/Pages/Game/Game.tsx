@@ -86,6 +86,7 @@ const Game = ({ setGameMode }: any) => {
       return () => {
         gamesocket.off("start", handleStart);
         gamesocket.off("gameState", handleGameState);
+        gamesocket.off("gameOver", handleGameOver);
       };
     }
   }, [gamesocket]);
@@ -261,6 +262,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const update = () => {
+    console.log(status);
     if (isUpPressed.current) {
       gameState.current.user.y = Math.max(
         0,
@@ -285,9 +287,10 @@ const Game = ({ setGameMode }: any) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
-    if (ctx && canvas && status === "gameOver") {
-      drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
-    }
+    // if (ctx && canvas && status === "gameOver") {
+    //   drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
+    //   return () => {};
+    // }
 
     if (ctx && canvas && status !== "start") {
       drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
@@ -314,12 +317,20 @@ const Game = ({ setGameMode }: any) => {
   }, [handleKeyDown, handleKeyUp, status]);
 
   return (
-    <canvas
-      className="canvasStyle"
-      width="1300"
-      height="700"
-      ref={canvasRef}
-    ></canvas>
+    <>
+      {status === "gameOver" ? (
+        <button className="playButton" onClick={() => setGameMode(null)}>
+          Back to Menu
+        </button>
+      ) : (
+        <canvas
+          className="canvasStyle"
+          width="1300"
+          height="700"
+          ref={canvasRef}
+        ></canvas>
+      )}
+    </>
   );
 };
 
