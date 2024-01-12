@@ -4,6 +4,11 @@ import { Player } from './player';
 import { GameMapService } from './gamemap.service';
 import { UsersService } from 'src/users/users.service';
 
+interface PlayerState {
+  id: string;
+  score: number;
+}
+
 @Injectable()
 export class GameService {
   constructor(
@@ -106,5 +111,32 @@ export class GameService {
   DeleteRoom = (roomId: string) => {
     const key = roomId;
     this.gameMapService.delete(key);
+  };
+
+  HandleEndGame = (gameState: GameState) => {
+    let winner: PlayerState;
+    let loser: PlayerState;
+
+    if (gameState.winner === 'playerOne') {
+      winner = {
+        id: gameState.playerOne.id,
+        score: gameState.playerOne.score,
+      }
+      loser = {
+        id: gameState.playerTwo.id,
+        score: gameState.playerTwo.score,
+      }
+    } else if (gameState.winner === 'playerTwo') {
+      winner = {
+        id: gameState.playerTwo.id,
+        score: gameState.playerTwo.score,
+      }
+      loser = {
+        id: gameState.playerOne.id,
+        score: gameState.playerOne.score,
+      }
+    }
+
+    this.usersService.HandleEndGame(winner, loser);
   };
 }
