@@ -150,13 +150,12 @@ export class GameGateway
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
         if (gamestate.winner) {
-          this.gameService.HandleEndGame(gamestate);
+          this.gameService.HandleEndGame(gamestate, this.server);
           return;
         }
         this.server.to(roomId).emit('gameState', gamestate.toJSON());
       }
     } catch (error) {
-      console.log(error);
       this.logger.log(error);
     }
   }
