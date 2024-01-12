@@ -21,6 +21,7 @@ import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
 import { MdVerified } from "react-icons/md";
+import NotFound from "../Components/Pages/404/NotFound";
 
 const ProtectedRoutes = () => {
   const { token, isLoading }: any = useContext(LoginInfo);
@@ -83,6 +84,7 @@ export const routermin = createBrowserRouter(
               <Route path=":username" element={<Profile />} />
             </Route>
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
     </Route>

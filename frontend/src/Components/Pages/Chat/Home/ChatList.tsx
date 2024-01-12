@@ -103,17 +103,17 @@ function ListConversations({ avatar, username, message, time, roomId }:ListConve
   const {setCurrentRoom}:any = useContext(RoomContext);
 
   return (
-    <li onClick={()=>setCurrentRoom(roomId)} className="flex items-center gap-5 mb-6 cursor-pointer">
+    <li onClick={()=>setCurrentRoom(roomId)} className="flex items-center gap-[3rem] p-2 hover:bg-pink-600 hover:duration-[0.2s] rounded-2xl mb-6 cursor-pointer">
       <img className="h-[6rem] w-[6rem] rounded-full" src={avatar} alt="avatar" />
       <div className="overflow-hidden">
-        <h1 className="text-2xl pb-2 font-extrabold">{username}</h1>
+        <h1 className="text-2xl pb-2 font-extrabold uppercase">{username}</h1>
         <p className="text-xl">{message}</p>
       </div>
       <span className="text-xl font-semibold">{time}</span>
     </li>
   );
 }
-function ChatList({chatUser}) {
+function ChatList({chatUser}:any) {
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden  border-2 border-white border-opacity-20 rounded-2xl font-sans">
       <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">

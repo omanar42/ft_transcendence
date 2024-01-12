@@ -5,6 +5,9 @@ import { RoomContext } from "../../../../Contexts/RoomContext";
 import LoginInfo from "../../../../Contexts/LoginContext";
 import { IoLogOutSharp } from "react-icons/io5";
 import "../Rooms/CreateRoom.css";
+import { ToastContainer, toast } from "react-toastify";
+import { IoMdPersonAdd } from "react-icons/io";
+
 interface messageList {
   message: string;
   userName: string;
@@ -18,17 +21,14 @@ interface messageData {
 
 function MessageInput() {
   const [currentMessage, setcurrentMessage] = useState("");
-  const [roomName, setRoomName] = useState("");
-  const [messageList, setMessageList] = useState<messageList[]>([]);
   const { currentRoom, setCurrentRoom }: any = useContext(RoomContext);
   const { userInfo, socket }: any = useContext(LoginInfo);
   const [isOpen, setIsOpen] = useState(false);
   const [roomType, setRoomType] = useState("");
-  const [avatar, setAvatar] = useState(
-    "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-  );
+  const [inviteFriend, setFriend] = useState("");
+  const [addIsopen, setAddIsOpen] = useState(false);
   const [newOwner, setNewowner] = useState("");
-  const { ownerSheep } = useContext(RoomContext);
+  const { ownerSheep, setMessageList, messageList, setAvatar, avatar, setRoomName, roomName}:any = useContext(RoomContext);
 
   const sendMessage = () => {
     if (currentMessage !== "") {
@@ -45,13 +45,26 @@ function MessageInput() {
   };
 
   const leaveRoom = async () => {
+    if (ownerSheep === "OWNER" && newOwner === "") {
+      toast.error("New owner should not be empty");
+      return;
+    }
     setIsOpen(false);
     setCurrentRoom(0);
-    try{
-      const response = axios.post("http://127.0.0.1:3000/chat/leaveroom", {roomId:currentRoom, newOwner:newOwner}, {withCredentials: true});
+    setNewowner("");
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:3000/chat/leaveroom",
+        { roomId: currentRoom, newOwner: newOwner },
+        { withCredentials: true }
+      );
+      if (response.data === "") {
+        toast.error("Member not found");
+        return;
+      }
       window.location.reload();
-    }
-    catch(error){
+    } catch (error) {
       console.error(error);
     }
   };
@@ -79,8 +92,30 @@ function MessageInput() {
       fetchMessages();
     }
   }, [currentRoom]);
+
+  const inviteUser = async () => {
+    if (inviteFriend === "") {
+      toast.error("Username should not be empty");
+      return;
+    }
+    setAddIsOpen(false);
+    setFriend("");
+  };
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        className="text-4xl"
+      />
       {currentRoom ? (
         <>
           <div className=" bg-dark  chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
@@ -93,8 +128,26 @@ function MessageInput() {
             {roomType !== "DIRECT_MESSAGE" && (
               <IoLogOutSharp
                 onClick={() => setIsOpen(true)}
-                className="text-5xl text-red-600 cursor-pointer"
+                className="text-5xl cursor-pointer"
               />
+            )}
+            {roomType === "PRIVATE" && (
+              <div className="relative">
+                <IoMdPersonAdd onClick={()=>setAddIsOpen(!addIsopen)} className="text-5xl cursor-pointer " />
+                {addIsopen && <div className="absolute top-[6rem]  right-[-5rem] flex gap-2 items-center">
+                  <input
+                    onChange={(e) => setFriend(e.target.value)}
+                    value={inviteFriend}
+                    className=" text-2xl w-[20rem]  outline-none pl-4 h-[3rem] bg-dark-200 rounded-xl border-2 border-white border-opacity-20"
+                  />
+                  <button
+                    onClick={inviteUser}
+                    className="text-3xl border-2 border-white border-opacity-20 p-2 rounded-2xl font-bold bg-green-600 hover:bg-opacity-80 hover:duration-[0.2s] "
+                  >
+                    Add
+                  </button>
+                </div>}
+              </div>
             )}
             {isOpen && (
               <div className="modal flex items-center justify-center text-black ">
@@ -164,8 +217,7 @@ function MessageInput() {
               );
             })}
           </div>
-          {
-            ownerSheep !== "BANNED" &&
+          {ownerSheep !== "BANNED" && (
             <div className="h-[6rem] pl-10 pr-10 border-t-2 border-opacity-20 border-white flex justify-between items-center gap-3">
               <input
                 className="h-14 flex-1 outline-none rounded-3xl pl-10 text-white bg-black bg-opacity-50 text-2xl"
@@ -182,7 +234,7 @@ function MessageInput() {
                 className="text-6xl text-pink-600 cursor-pointer"
               />
             </div>
-          }
+          )}
         </>
       ) : (
         <div></div>
