@@ -149,6 +149,10 @@ export class GameGateway
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
+        if (gamestate.winner) {
+          this.gameService.HandleEndGame(gamestate);
+          return;
+        }
         this.server.to(roomId).emit('gameState', gamestate.toJSON());
       }
     } catch (error) {
