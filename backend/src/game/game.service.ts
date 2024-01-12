@@ -135,7 +135,6 @@ export class GameService {
         score: gameState.playerOne.score,
       }
     }
-
     this.usersService.HandleEndGame(winner, loser);
   };
 }
