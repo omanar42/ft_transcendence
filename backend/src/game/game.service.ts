@@ -6,6 +6,7 @@ import { UsersService } from 'src/users/users.service';
 
 interface PlayerState {
   id: string;
+  username: string;
   score: number;
 }
 
@@ -113,30 +114,34 @@ export class GameService {
     this.gameMapService.delete(key);
   };
 
-  HandleEndGame = (gameState: GameState,server: any) => {
+  HandleEndGame = (gameState: GameState, server: any) => {
     let winner: PlayerState;
     let loser: PlayerState;
     this.DeleteRoom(gameState.roomId);
     if (gameState.winner === 'playerOne') {
       winner = {
         id: gameState.playerOne.id,
+        username: gameState.playerOne.username,
         score: gameState.playerOne.score,
-      }
+      };
       loser = {
         id: gameState.playerTwo.id,
+        username: gameState.playerTwo.username,
         score: gameState.playerTwo.score,
-      }
+      };
     } else if (gameState.winner === 'playerTwo') {
       winner = {
         id: gameState.playerTwo.id,
+        username: gameState.playerTwo.username,
         score: gameState.playerTwo.score,
-      }
+      };
       loser = {
         id: gameState.playerOne.id,
+        username: gameState.playerOne.username,
         score: gameState.playerOne.score,
-      }
+      };
     }
-    server.to(gameState.roomId).emit('gameOver', winner);
+    server.to(gameState.roomId).emit('gameOver', { winner: winner.username });
     this.usersService.HandleEndGame(winner, loser);
   };
 }
