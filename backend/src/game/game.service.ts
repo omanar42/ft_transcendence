@@ -104,6 +104,7 @@ export class GameService {
 
   GetRoom = (roomId: string) => {
     const key = roomId;
+    // console.log(this.gameMapService.get(key));
     return this.gameMapService.get(key);
   };
 
@@ -112,10 +113,10 @@ export class GameService {
     this.gameMapService.delete(key);
   };
 
-  HandleEndGame = (gameState: GameState) => {
+  HandleEndGame = (gameState: GameState,server: any) => {
     let winner: PlayerState;
     let loser: PlayerState;
-
+    this.DeleteRoom(gameState.roomId);
     if (gameState.winner === 'playerOne') {
       winner = {
         id: gameState.playerOne.id,
@@ -135,6 +136,7 @@ export class GameService {
         score: gameState.playerOne.score,
       }
     }
+    server.to(gameState.roomId).emit('gameOver', winner);
     this.usersService.HandleEndGame(winner, loser);
   };
 }
