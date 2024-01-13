@@ -51,7 +51,6 @@ export class ChatController {
         req.user.sub.toString(),
         data,
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       throw error;
@@ -98,7 +97,6 @@ export class ChatController {
         body.target_username,
         'BANNED',
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       console.log(error);
@@ -122,7 +120,6 @@ export class ChatController {
         body.target_username,
         'MEMBER',
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       console.log(error);
@@ -144,7 +141,6 @@ export class ChatController {
         req.user.sub.toString(),
         body,
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       throw error;
@@ -171,7 +167,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('joinRoom')
@@ -191,7 +187,6 @@ export class ChatController {
         parseInt(body.roomId),
         body.password,
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       console.log(error);
