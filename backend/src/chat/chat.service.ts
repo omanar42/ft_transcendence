@@ -299,6 +299,8 @@ export class ChatService {
     // await this.prisma.roomUser.create({
   }
   async UpdateRoom(oauthId: string, data: any) {
+    console.log(data);
+    // return;
     const roomTypes = ['public', 'private', 'protected'];
     // console.log(data.roomId);
     // return;
@@ -663,7 +665,6 @@ export class ChatService {
     new_roomUsers.forEach(async (user) => {
       if (user.userId !== sender.oauthId) {
         const _client = await this.GetOauthIdSocket(user.userId);
-        console.log(user.userName);
         if (_client) {
           serv
             .to(_client.id)
