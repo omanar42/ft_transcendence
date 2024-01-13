@@ -190,7 +190,7 @@ export class UsersService {
 
     const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
     if (existingFriend) {
-      return 'Already friends';
+      return 'Cannot add twice';
     }
 
     await this.prisma.friend.create({
@@ -234,9 +234,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REMOVE']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot remove this user';
     }
 
     await this.prisma.friend.deleteMany({
@@ -326,7 +330,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['ACCEPT']),
+    );
     if (!existingFriend) {
       return 'No friend request to accept';
     }
@@ -374,7 +382,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REJECT']),
+    );
     if (!existingFriend) {
       return 'No friend request to reject';
     }
@@ -413,7 +425,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REVOKE']),
+    );
     if (!existingFriend) {
       return 'No friend request to revoke';
     }
@@ -452,9 +468,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['BLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot block this user';
     }
 
     await this.prisma.friend.updateMany({
@@ -499,9 +519,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['UNBLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot unblock this user';
     }
 
     await this.prisma.friend.updateMany({
