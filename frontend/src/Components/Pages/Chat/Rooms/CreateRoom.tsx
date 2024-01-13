@@ -37,7 +37,7 @@ export function InputBox({
   );
 }
 
-function SelectType({ setType, type }) {
+export function SelectType({ setType, type }) {
   return (
     <select
       value={type}
@@ -51,7 +51,7 @@ function SelectType({ setType, type }) {
   );
 }
 
-function CreateRoom({ AddChannelToList, CloseModal }) {
+function CreateRoom({ AddChannelToList, CloseModal }:any) {
   const [roomName, setroomName] = useState("");
   const [Roomtype, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
@@ -85,17 +85,13 @@ function CreateRoom({ AddChannelToList, CloseModal }) {
 
     socket.off("roomCreated").on("roomCreated", handleRoomCreated);
 
-    // return () => {
-    //     // Use the same function reference for adding and removing the listener
-    //     socket.off("roomCreated", handleRoomCreated);
-    // };
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []); 
 
   return (
     <div className="modal flex justify-center items-center">
               <button
           onClick={CloseModal}
-          className=" absolute top-[18rem] left-[47rem] text-[7rem] text-pink-100"
+          className=" absolute top-[13rem] left-[36rem] text-[7rem] text-pink-100"
         >
           &times;
         </button>
