@@ -206,8 +206,8 @@ function MessageInput() {
                   <p
                     className={`text-[1rem]  ${
                       userInfo.username === message.userName
-                        ? "self-start"
-                        : "self-end"
+                        ? "self-end"
+                        : "self-start"
                     } font-bold`}
                   >
                     {message.userName}

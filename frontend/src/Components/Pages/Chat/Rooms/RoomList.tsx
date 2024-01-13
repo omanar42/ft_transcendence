@@ -55,6 +55,8 @@ function RoomSettings() {
           type: roomType,
           password: roomPassword,
         };
+        console.log("---------------------------")
+
         const res = await axios.post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
           withCredentials: true,
         });
