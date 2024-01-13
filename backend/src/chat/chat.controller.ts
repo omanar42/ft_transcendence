@@ -51,6 +51,7 @@ export class ChatController {
         req.user.sub.toString(),
         data,
       );
+      console.log(response);
       return res.json(response);
     } catch (error) {
       throw error;
@@ -127,6 +128,28 @@ export class ChatController {
       console.log(error);
     }
   }
+  @Post('add_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        username: { type: 'string' },
+      },
+    },
+  })
+  async addUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.AddUserToRoom(
+        req.user.sub.toString(),
+        body,
+      );
+      console.log(response);
+      return res.json(response);
+    } catch (error) {
+      throw error;
+    }
+  }
   @Post('updateRoom')
   @ApiBody({
     schema: {
@@ -134,7 +157,7 @@ export class ChatController {
       properties: {
         roomId: { type: 'number' },
         roomName: { type: 'string' },
-        username: { type: 'string' },
+        // username: { type: 'string' },
         type: { type: 'string' },
         password: { type: 'string' },
       },
@@ -142,7 +165,10 @@ export class ChatController {
   })
   async updateRoom(@Req() req, @Res() res: Response, @Body() body) {
     try {
-      const response = await this.chatService.UpdateRoom(body);
+      const response = await this.chatService.UpdateRoom(
+        req.user.sub.toString(),
+        body,
+      );
       return res.json(response);
     } catch (error) {
       console.log(error);
