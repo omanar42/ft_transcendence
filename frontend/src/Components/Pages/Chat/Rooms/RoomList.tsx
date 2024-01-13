@@ -47,7 +47,6 @@ function RoomSettings() {
     event.preventDefault();
     if (roomName !== "") {
       if (roomType === "Protected" && !roomPassword) return null;
-      try {
         
         const newRoom = {
           roomId: currentRoom,
@@ -57,14 +56,7 @@ function RoomSettings() {
         };
         const res = await axios.post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
           withCredentials: true,
-        });
-        console.log("++++++++++++++++++++++++++")
-        // console.log(res);
-      } catch (err) {
-        console.log("++++++++++++++++++++++++++")
-
-        console.error(err);
-      }
+        }).catch((err) => console.log('============'+err));
 
       setSettingsIsOpen(false);
     }
