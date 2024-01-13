@@ -175,7 +175,7 @@ export class ChatService {
       },
     });
     if (!user) {
-      throw new Error('User not found');
+      return null;
     }
     // this.cacheService.set(cacheKey, user);
     return user;
@@ -390,7 +390,7 @@ export class ChatService {
       },
     });
     if (!user) {
-      throw new Error('User not found');
+      return null;
     }
     // this.cacheService.set(cacheKey, user);
     return user;
