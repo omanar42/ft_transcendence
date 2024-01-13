@@ -48,46 +48,46 @@ enum FriendActions {
 }
 
 model User {
-  oauthId   String    @unique
-  username  String    @unique
+  oauthId   String     @unique
+  username  String     @unique
   fullname  String
-  email     String   @unique
+  email     String     @unique
   avatar    String?
   provider  String
   hashedRt  String?
-  twoFactor Boolean  @default(false)
+  twoFactor Boolean    @default(false)
   twoFaSec  String?
-  status    Status   @default(OFFLINE)
+  status    Status     @default(OFFLINE)
   friends   Friend[]
   stats     Stats?
   matches   Match[]
   rooms     Room[]
   roomsuser RoomUser[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Room {
-  id          Int       @unique @id @default(autoincrement())
-  avatar      String?
-  name        String
-  owner       User      @relation(fields: [ownerId], references: [oauthId])
-  ownerId     String
-  type        RoomType  @default(PUBLIC)
-  hashedPass  String?
-  messages    Message[]
-  roomuser    RoomUser[]
-  createdAt   DateTime  @default(now())
+  id         Int        @id @unique @default(autoincrement())
+  avatar     String?
+  name       String
+  owner      User       @relation(fields: [ownerId], references: [oauthId])
+  ownerId    String
+  type       RoomType   @default(PUBLIC)
+  hashedPass String?
+  messages   Message[]
+  roomuser   RoomUser[]
+  createdAt  DateTime   @default(now())
 }
 
 model RoomUser {
-  id        Int      @id @default(autoincrement())
-  userId    String
-  roomId    Int
-  status    UserStatusInRoom @default(MEMBER)
+  id     Int              @id @default(autoincrement())
+  userId String
+  roomId Int
+  status UserStatusInRoom @default(MEMBER)
   // Muted     Boolean  @default(false)
-  user      User     @relation(fields: [userId], references: [oauthId])
-  room      Room     @relation(fields: [roomId], references: [id])
+  user   User             @relation(fields: [userId], references: [oauthId])
+  room   Room             @relation(fields: [roomId], references: [id])
 
   // @@unique([userId, roomId])
 }
@@ -102,12 +102,15 @@ model Message {
 }
 
 model Match {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [oauthId])
-  userId    String
-  win       Boolean
-  enemyId   String
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [oauthId])
+  userId        String
+  userScore     Int
+  opponentScore Int
+  win           Boolean
+  xpGain        Int
+  opponentUser  String
+  createdAt     DateTime @default(now())
 }
 
 model Friend {
@@ -120,22 +123,13 @@ model Friend {
 }
 
 model Stats {
-  id           Int           @id @default(autoincrement())
-  user         User          @relation(fields: [userId], references: [oauthId])
-  userId       String        @unique
-  wins         Int           @default(0)
-  losses       Int           @default(0)
-  level        Int           @default(0)
-  achievements Achievement[]
-}
-
-model Achievement {
-  id          Int             @id @default(autoincrement())
-  name        AchievementName
-  description String
-  icon        String
-  stats       Stats           @relation(fields: [statsId], references: [id])
-  statsId     Int
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [oauthId])
+  userId       String   @unique
+  wins         Int      @default(0)
+  losses       Int      @default(0)
+  level        Float    @default(0)
+  achievements String[]
 }
 
 enum AchievementName {
@@ -145,6 +139,7 @@ enum AchievementName {
   WIN_1_GAMES
   WIN_5_GAMES
   WIN_10_GAMES
-  FIRST_LOSS
+  FIRST_WIN
+  FIRST_LOSE
   PERFECT_WIN
 }

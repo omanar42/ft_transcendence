@@ -4,12 +4,19 @@ import { UserFriends } from './entities/UserFriends.entity';
 import {
   FriendActions,
   FriendStatus,
+  Match,
   RoomType,
   Status,
   User,
   UserStatusInRoom,
 } from '@prisma/client';
 import * as otplib from 'otplib';
+
+interface PlayerState {
+  id: string;
+  username: string;
+  score: number;
+}
 
 @Injectable()
 export class UsersService {
@@ -183,7 +190,7 @@ export class UsersService {
 
     const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
     if (existingFriend) {
-      return 'Already friends';
+      return 'Cannot add twice';
     }
 
     await this.prisma.friend.create({
@@ -227,9 +234,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REMOVE']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot remove this user';
     }
 
     await this.prisma.friend.deleteMany({
@@ -319,7 +330,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['ACCEPT']),
+    );
     if (!existingFriend) {
       return 'No friend request to accept';
     }
@@ -367,7 +382,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REJECT']),
+    );
     if (!existingFriend) {
       return 'No friend request to reject';
     }
@@ -406,7 +425,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REVOKE']),
+    );
     if (!existingFriend) {
       return 'No friend request to revoke';
     }
@@ -445,9 +468,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['BLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot block this user';
     }
 
     await this.prisma.friend.updateMany({
@@ -492,9 +519,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['UNBLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot unblock this user';
     }
 
     await this.prisma.friend.updateMany({
@@ -542,5 +573,161 @@ export class UsersService {
     });
 
     return '2FA verified successfully';
+  }
+
+  async getMatchHistory(id: string) {
+    const matches = await this.prisma.user.findUnique({
+      where: {
+        oauthId: id,
+      },
+      select: {
+        matches: true,
+      },
+    });
+    return matches.matches;
+  }
+
+  async HandleEndGame(winner: PlayerState, loser: PlayerState) {
+    const winnerStats = await this.getStats(winner.id);
+    const loserStats = await this.getStats(loser.id);
+
+    winnerStats.level += ((winner.score * 10) / 100) * 4.2;
+    loserStats.level += ((loser.score * 10) / 100) * 4.2;
+
+    winnerStats.wins += 1;
+    loserStats.losses += 1;
+
+    const winnerAchievementsToPush = [];
+    const loserAchievementsToPush = [];
+
+    if (
+      winner.score === 12 &&
+      loser.score === 0 &&
+      !winnerStats.achievements.includes('PERFECT_WIN')
+    )
+      winnerAchievementsToPush.push('PERFECT_WIN');
+
+    if (!winnerStats.achievements.includes('FIRST_WIN'))
+      winnerAchievementsToPush.push('FIRST_WIN');
+
+    if (!loserStats.achievements.includes('FIRST_LOSE'))
+      loserAchievementsToPush.push('FIRST_LOSE');
+
+    if (
+      winnerStats.wins >= 1 &&
+      !winnerStats.achievements.includes('WIN_1_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_1_GAMES');
+
+    if (
+      winnerStats.wins >= 5 &&
+      !winnerStats.achievements.includes('WIN_5_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_5_GAMES');
+
+    if (
+      winnerStats.wins >= 10 &&
+      !winnerStats.achievements.includes('WIN_10_GAMES')
+    )
+      winnerAchievementsToPush.push('WIN_10_GAMES');
+
+    if (
+      loserStats.wins >= 1 &&
+      !loserStats.achievements.includes('WIN_1_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_1_GAMES');
+
+    if (
+      loserStats.wins >= 5 &&
+      !loserStats.achievements.includes('WIN_5_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_5_GAMES');
+
+    if (
+      loserStats.wins >= 10 &&
+      !loserStats.achievements.includes('WIN_10_GAMES')
+    )
+      loserAchievementsToPush.push('WIN_10_GAMES');
+
+    if (
+      winnerStats.level >= 10 &&
+      !winnerStats.achievements.includes('LEVEL_10')
+    )
+      winnerAchievementsToPush.push('LEVEL_10');
+    if (
+      winnerStats.level >= 50 &&
+      !winnerStats.achievements.includes('LEVEL_50')
+    )
+      winnerAchievementsToPush.push('LEVEL_50');
+    if (
+      winnerStats.level >= 100 &&
+      !winnerStats.achievements.includes('LEVEL_100')
+    )
+      winnerAchievementsToPush.push('LEVEL_100');
+    if (loserStats.level >= 10 && !loserStats.achievements.includes('LEVEL_10'))
+      loserAchievementsToPush.push('LEVEL_10');
+    if (loserStats.level >= 50 && !loserStats.achievements.includes('LEVEL_50'))
+      loserAchievementsToPush.push('LEVEL_50');
+    if (
+      loserStats.level >= 100 &&
+      !loserStats.achievements.includes('LEVEL_100')
+    )
+      loserAchievementsToPush.push('LEVEL_100');
+
+    await this.prisma.match.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: winner.id,
+          },
+        },
+        opponentUser: loser.username,
+        userScore: winner.score,
+        opponentScore: loser.score,
+        win: true,
+        xpGain: winner.score * 10 * 5,
+      },
+    });
+
+    await this.prisma.match.create({
+      data: {
+        user: {
+          connect: {
+            oauthId: loser.id,
+          },
+        },
+        opponentUser: winner.username,
+        userScore: loser.score,
+        opponentScore: winner.score,
+        win: false,
+        xpGain: loser.score * 10 * 5,
+      },
+    });
+
+    await this.prisma.stats.update({
+      where: {
+        userId: winner.id,
+      },
+      data: {
+        level: winnerStats.level,
+        wins: winnerStats.wins,
+        achievements: {
+          push: winnerAchievementsToPush,
+        },
+      },
+    });
+
+    await this.prisma.stats.update({
+      where: {
+        userId: loser.id,
+      },
+      data: {
+        level: loserStats.level,
+        losses: loserStats.losses,
+        achievements: {
+          push: loserAchievementsToPush,
+        },
+      },
+    });
   }
 }
