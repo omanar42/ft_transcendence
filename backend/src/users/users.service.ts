@@ -264,31 +264,10 @@ export class UsersService {
     return 'Friend removed';
   }
 
-  async GetUserByUsername(username: string) {
-    // const cacheKey = `user:${username}`;
-    // const cachedUser = this.cacheService.get(cacheKey);
-    // if (cachedUser) {
-    //   return cachedUser;
-    // }
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-      include: {
-        rooms: true,
-      },
-    });
-    if (!user) {
-      throw new Error('User not found');
-    }
-    // this.cacheService.set(cacheKey, user);
-    return user;
-  }
-
   async directMessage(userName: string, username_target: string) {
     // use this function directly after accept friend request
-    const user_1 = await this.GetUserByUsername(userName);
-    const user_2 = await this.GetUserByUsername(username_target);
+    const user_1 = await this.findOneByUsername(userName);
+    const user_2 = await this.findOneByUsername(username_target);
     const existingRoom = await this.prisma.room.findFirst({
       where: {
         AND: [

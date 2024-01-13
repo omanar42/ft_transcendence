@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { GameState } from './gameState';
-import { Player } from './player';
 import { GameMapService } from './gamemap.service';
 import { UsersService } from 'src/users/users.service';
 
@@ -15,7 +14,6 @@ export class GameService {
   constructor(
     private gameMapService: GameMapService,
     private usersService: UsersService,
-    private gameState: GameState,
   ) {}
 
   invatefriend = async (client: any, friend: string) => {
