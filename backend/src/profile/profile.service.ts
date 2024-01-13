@@ -12,14 +12,20 @@ interface ProfilePage {
   level: number;
   wins: number;
   losses: number;
-  achievements: {
-    name: string;
-    description?: string;
-  }[];
+  achievements: string[];
   friends?: {
     username: string;
     avatar: string;
     status: string;
+  }[];
+  MatchHistory?: {
+    id: string;
+    userId: string;
+    userScore: number;
+    opponentScore: number;
+    win: boolean;
+    xpGain: number;
+    opponentUser: string;
   }[];
 }
 
@@ -80,6 +86,13 @@ export class ProfileService {
     return await this.usersService.getFriends(requested.oauthId);
   }
 
+  async getMatchHistory(username: string) {
+    const requested = await this.usersService.findOneByUsername(username);
+    if (!requested) return null;
+
+    return await this.usersService.getMatchHistory(requested.oauthId);
+  }
+
   async getProfilePage(id: string, username: string): Promise<ProfilePage> {
     const profile = await this.usersService.findOneByUsername(username);
     if (!profile) return null;
@@ -96,6 +109,9 @@ export class ProfileService {
     const friends = await this.getFriends(username);
     if (!friends) return null;
 
+    const matchHistory = await this.getMatchHistory(username);
+    if (!matchHistory) return null;
+  
     return {
       relation: relations.status,
       actions: relations.actions,
@@ -106,15 +122,21 @@ export class ProfileService {
       level: stats.level,
       wins: stats.wins,
       losses: stats.losses,
-      achievements: stats.achievements.map((achievement) => ({
-        name: achievement.name,
-        description: achievement.description,
-      })),
+      achievements: stats.achievements,
       friends: friends.map((friend) => ({
         username: friend.frUser,
         avatar: friend.frAvatar,
         status: friend.frStatus,
       })),
+      MatchHistory: matchHistory.map(match => ({
+        id: match.id.toString(),
+        userId: match.userId,
+        userScore: match.userScore,
+        opponentScore: match.opponentScore,
+        win: match.win,
+        xpGain: match.xpGain,
+        opponentUser: match.opponentUser,
+      }))
     };
   }
 }

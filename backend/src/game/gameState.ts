@@ -2,33 +2,30 @@ import { Ball } from './ball';
 import { Player } from './player';
 
 export class GameState {
+  roomId: string;
+  ball: Ball;
   playerOne: Player;
   playerTwo: Player;
-  ball: Ball;
-  running: boolean;
-  roomId: string;
+  winner: string;
 
   constructor() {
     this.playerOne = null;
     this.playerTwo = null;
     this.ball = null;
-    this.running = false;
     this.roomId = '';
-    // this.roomId = `room:${this.playerOne.id}${this.playerTwo.id}`;
+    this.winner = '';
   }
-  init = (_playerOne: string, _playerTwo: string) => {
-    this.playerOne = new Player(_playerOne, 1);
-    this.playerTwo = new Player(_playerTwo, 2);
+
+  init = (playerOneId: string, playerTwoId: string) => {
+    this.playerOne = new Player(playerOneId, 1);
+    this.playerTwo = new Player(playerTwoId, 2);
     this.ball = new Ball();
-    this.running = false;
     this.roomId = `room:${this.playerOne.id}${this.playerTwo.id}`;
   };
+
   paddleMove = (playerId: string, position: number) => {
-    if (playerId === this.playerOne.id) {
-      this.playerOne.y = position;
-    } else if (playerId === this.playerTwo.id) {
-      this.playerTwo.y = position;
-    }
+    if (playerId === this.playerOne.id) this.playerOne.y = position;
+    else if (playerId === this.playerTwo.id) this.playerTwo.y = position;
   };
 
   collision = (p: Player) => {
@@ -61,23 +58,34 @@ export class GameState {
       this.ball.velocityX = direction * this.ball.speed * Math.cos(angleRad);
       this.ball.velocityY = this.ball.speed * Math.sin(angleRad);
 
-      this.ball.speed += 0.1;
+      // this.ball.speed += 0.1;
     }
 
-    if (this.ball.x - this.ball.radius < 0) {
+    if (this.ball.x - this.ball.radius <= 0) {
       this.playerTwo.updateScore();
       this.ball.resetBall();
-    } else if (this.ball.x + this.ball.radius > 800) {
+      this.playerOne.reset();
+      this.playerTwo.reset();
+    } else if (this.ball.x + this.ball.radius >= 1300) {
       this.playerOne.updateScore();
       this.ball.resetBall();
+      this.playerOne.reset();
+      this.playerTwo.reset();
+    }
+
+    if (this.playerOne.score === 12 || this.playerTwo.score === 12) {
+      this.ball.resetBall();
+      this.playerOne.reset();
+      this.playerTwo.reset();
+      this.winner = this.playerOne.score === 12 ? 'playerOne' : 'playerTwo';
     }
   };
 
   toJSON = () => {
     return {
-      playerOne: this.playerOne,
-      playerTwo: this.playerTwo,
-      ball: this.ball,
+      playerOne: this.playerOne.toJSON(),
+      playerTwo: this.playerTwo.toJSON(),
+      ball: this.ball.toJSON(),
     };
   };
 }

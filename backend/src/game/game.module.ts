@@ -6,10 +6,17 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { GameMapService } from './gamemap.service';
 import { GameState } from './gameState';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [UsersModule, AuthModule],
   controllers: [GameController],
-  providers: [GameService, GameGateway, GameMapService, GameState],
+  providers: [
+    GameService,
+    GameGateway,
+    GameMapService,
+    GameState,
+    PrismaService,
+  ],
 })
 export class GameModule {}

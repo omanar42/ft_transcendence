@@ -4,17 +4,8 @@ export class Room {
   id: string;
   players: Player[];
 
-  constructor(id) {
+  constructor(id: string) {
     this.id = id;
     this.players = [];
-  }
-  addPlayer(player) {
-    this.players.push(player);
-  }
-  isFull() {
-    return this.players.length === 2;
-  }
-  isAvailable() {
-    return this.players.length === 1;
   }
 }
