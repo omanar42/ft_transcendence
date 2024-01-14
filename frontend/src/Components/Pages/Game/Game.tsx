@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
+import Friend from "./Assets/Friend.png";
+import Random from "./Assets/random.png";
 
 interface Player {
   id: number;
@@ -334,6 +336,30 @@ const Game = ({ setGameMode }: any) => {
   );
 };
 
+const StartGame = ({ handlePlayRandom, handlePlayWithFriend}: any) => {
+  return (
+    <div className="flex justify-around w-[130rem] ml-auto mr-auto">
+      <div className="flex flex-col items-center gap-[2rem]">
+        <h1 className="text-5xl text-white">Play With Friend</h1>
+        <img
+          onClick={handlePlayWithFriend}
+          className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]"
+          src={Friend}
+          alt="friend"
+        />
+      </div>
+      <div className="flex flex-col items-center gap-[2rem]">
+        <h1 className="text-5xl text-white">Play Random</h1>
+        <img
+          onClick={handlePlayRandom}
+          className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]"
+          src={Random}
+          alt="random"
+        />
+      </div>
+    </div>
+  );
+};
 function LadingPage() {
   const [gameMode, setGameMode] = useState(null);
   const { gamesocket }: any = useContext(LoginInfo);
@@ -356,39 +382,41 @@ function LadingPage() {
   return (
     <div className="h-screen flex justify-center items-center">
       {!gameMode ? (
-        <div>
-          <button className="playButton" onClick={() => setPrompt(true)}>
-            Play Random
-          </button>
-          {prompt && (
-            <div>
-              <button className="playButton" onClick={() => handlePlayRandom()}>
-                Confirm
-              </button>
-              <button className="playButton" onClick={() => setPrompt(false)}>
-                Cancel
-              </button>
-            </div>
-          )}
-          <div>
-            <input
-              type="text"
-              placeholder="Friend's username"
-              value={friendUsername}
-              onChange={(e) => setFriendUsername(e.target.value)}
-              className="usernameInput"
-            />
-            <button
-              className="playButton"
-              onClick={() => handlePlayWithFriend(friendUsername)}
-            >
-              Play with Friend
-            </button>
-          </div>
-        </div>
+        // <div>
+        //   <button className="playButton" onClick={() => setPrompt(true)}>
+        //     Play Random
+        //   </button>
+        //   {prompt && (
+        //     <div>
+        //       <button className="playButton" onClick={() => handlePlayRandom()}>
+        //         Confirm
+        //       </button>
+        //       <button className="playButton" onClick={() => setPrompt(false)}>
+        //         Cancel
+        //       </button>
+        //     </div>
+        //   )}
+        //   <div>
+        //     <input
+        //       type="text"
+        //       placeholder="Friend's username"
+        //       value={friendUsername}
+        //       onChange={(e) => setFriendUsername(e.target.value)}
+        //       className="usernameInput"
+        //     />
+        //     <button
+        //       className="playButton"
+        //       onClick={() => handlePlayWithFriend(friendUsername)}
+        //     >
+        //       Play with Friend
+        //     </button>
+        //   </div>
+        // </div>
+        <StartGame handlePlayRandom={handlePlayRandom} />
       ) : (
         <Game setGameMode={setGameMode} />
       )}
+      {/* <StartGame /> */}
     </div>
   );
 }
