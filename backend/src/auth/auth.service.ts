@@ -141,8 +141,6 @@ export class AuthService {
       secure: true,
     });
 
-    this.usersService.setStatus(found.oauthId, Status['ONLINE']);
-
     if (found.twoFactor) redirectUrl = process.env.CLIENT_URL + '/two-factor';
 
     return res.redirect(redirectUrl);
@@ -168,6 +166,13 @@ export class AuthService {
     let token = null;
     if (req && req.cookies) {
       token = req.cookies['access_token'];
+      try {
+        this.jwtService.verify(token, {
+          secret: process.env.AT_SECRET,
+        });
+      } catch (err) {
+        token = null;
+      }
     }
     return token;
   };

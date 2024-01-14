@@ -18,6 +18,7 @@ import { stat } from 'fs';
 import { subscribe } from 'diagnostics_channel';
 import { UsersService } from 'src/users/users.service';
 import { emit } from 'process';
+import { Status } from '@prisma/client';
 
 @WebSocketGateway({
   port: 3000,
@@ -39,10 +40,25 @@ export class GameGateway
   ) {}
   private logger: Logger = new Logger('GameGateway');
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
-      
+      const oauthId = this.gameService.GetoauthId(client);
+      const gameState = this.gameService.GetRoom(
+        this.gameService.GetRoomIdByOauthId(oauthId),
+      );
+      if (gameState) {
+        if (gameState.playerOne.id === oauthId) {
+          gameState.winner = 'playerTwo';
+        } else if (gameState.playerTwo.id === oauthId) {
+          gameState.winner = 'playerOne';
+        }
+        this.gameService.HandleEndGame(gameState, this.server);
+      }
+      await this.prismaService.user.update({
+        where: { oauthId: oauthId },
+        data: { status: Status['OFFLINE'] },
+      });
       this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
@@ -57,6 +73,10 @@ export class GameGateway
         process.env.AT_SECRET,
       );
       this.gameService.SaveSocket(id.sub.toString(), client);
+      await this.prismaService.user.update({
+        where: { oauthId: id.sub.toString() },
+        data: { status: Status['ONLINE'] },
+      });
     } catch (error) {
       this.logger.log(error);
     }
@@ -110,9 +130,13 @@ export class GameGateway
   async handlePlayRandom(@ConnectedSocket() client: Socket) {
     try {
       const oauthId = this.gameService.GetoauthId(client);
-      this.gameService.PushOnWaitingList(oauthId);
+      await this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
+        await this.prismaService.user.update({
+          where: { oauthId: oauthId },
+          data: { status: Status['INGAME'] },
+        });
         await this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
@@ -142,10 +166,6 @@ export class GameGateway
     try {
       const roomId = data.roomId;
       const oauthId = this.gameService.GetoauthId(client);
-      await this.prismaService.user.update({
-        where: { oauthId: oauthId },
-        data: { status: 'INGAME' },
-      });
       const gamestate = await this.gameService.GetRoom(roomId);
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);

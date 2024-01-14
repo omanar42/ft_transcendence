@@ -1,12 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { GameState } from './gameState';
-import { Player } from './player';
 import { GameMapService } from './gamemap.service';
 import { UsersService } from 'src/users/users.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { use } from 'passport';
+import { Status } from '@prisma/client';
 
 interface PlayerState {
   id: string;
+  username: string;
   score: number;
 }
 
@@ -52,13 +54,18 @@ export class GameService {
     gameState.update();
   };
 
-  PushOnWaitingList = (oauthId: string) => {
+  PushOnWaitingList = async (oauthId: string) => {
     const key = 'waitingList';
+    const arr = [];
     const value = this.gameMapService.get(key);
-    if (value.includes(oauthId)) {
-      value.splice(value.indexOf(oauthId), 1);
-      return;
+    const user = await this.usersService.findOneById(oauthId);
+    if (user.status === 'INGAME' || value.includes(oauthId)) {
+      console.log(this.GetSocket(oauthId).id);
+      throw new Error("you can't play because you are on another game");
     }
+    // if (value.includes(oauthId)) {
+    //   return;
+    // }
     value.push(oauthId);
     this.gameMapService.set(key, value);
   };
@@ -119,10 +126,15 @@ export class GameService {
     return this.gameMapService.get(key);
   };
 
+  GetRoomIdByOauthId = (oauthId: string) => {
+    return this.gameMapService.get(oauthId);
+  };
+
   DeleteRoom = (roomId: string) => {
     const key = roomId;
     this.gameMapService.delete(key);
   };
+  // offline = async (oauthId: string) => {
 
   HandleEndGame = async (gameState: GameState, server: any) => {
     let winner: PlayerState;
@@ -131,33 +143,51 @@ export class GameService {
     if (gameState.winner === 'playerOne') {
       winner = {
         id: gameState.playerOne.id,
+        username: gameState.playerOne.username,
         score: gameState.playerOne.score,
       };
       loser = {
         id: gameState.playerTwo.id,
+        username: gameState.playerTwo.username,
         score: gameState.playerTwo.score,
       };
     } else if (gameState.winner === 'playerTwo') {
       winner = {
         id: gameState.playerTwo.id,
+        username: gameState.playerTwo.username,
         score: gameState.playerTwo.score,
       };
       loser = {
         id: gameState.playerOne.id,
+        username: gameState.playerOne.username,
         score: gameState.playerOne.score,
       };
     }
-    await this.prisma.user.update({
-      where: { oauthId: winner.id },
-      data: { status: 'ONLINE' },
-    });
-    await this.prisma.user.update({
-      where: { oauthId: loser.id },
-      data: { status: 'ONLINE' },
-    });
-    server.to(gameState.roomId).emit('gameOver', winner);
+    // await this.usersService.setStatus(winner.id, Status['ONLINE']);
+    // await this.usersService.setStatus(loser.id, Status['ONLINE']);
+    // await this.prisma.user.update({
+    //   where: { oauthId: winner.id },
+    //   data: { status: 'ONLINE' },
+    // });
+    // await this.prisma.user.update({
+    //   where: { oauthId: loser.id },
+    //   data: { status: 'ONLINE' },
+    // });
+    // console.log(
+    //   await this.usersService.findOneById(winner.id).then((user) => user.status),
+    // );
+    // console.log(
+    //   await this.usersService.findOneById(winner.id).then((user) => user.username),
+    // );
+    // console.log(
+    //   await this.usersService.findOneById(loser.id).then((user) => user.status),
+    // );
+    // console.log(
+    //   await this.usersService.findOneById(loser.id).then((user) => user.username),
+    // );
     this.gameMapService.delete(winner.id);
     this.gameMapService.delete(loser.id);
     this.usersService.HandleEndGame(winner, loser);
+    server.to(gameState.roomId).emit('gameOver', winner.username);
   };
 }

@@ -109,7 +109,7 @@ model Match {
   opponentScore Int
   win           Boolean
   xpGain        Int
-  opponentId    String
+  opponentUser  String
   createdAt     DateTime @default(now())
 }
 
@@ -128,7 +128,7 @@ model Stats {
   userId       String   @unique
   wins         Int      @default(0)
   losses       Int      @default(0)
-  level        Int      @default(0)
+  level        Float    @default(0)
   achievements String[]
 }
 

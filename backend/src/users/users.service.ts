@@ -14,6 +14,7 @@ import * as otplib from 'otplib';
 
 interface PlayerState {
   id: string;
+  username: string;
   score: number;
 }
 
@@ -189,7 +190,7 @@ export class UsersService {
 
     const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
     if (existingFriend) {
-      return 'Already friends';
+      return 'Cannot add twice';
     }
 
     await this.prisma.friend.create({
@@ -233,9 +234,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REMOVE']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot remove this user';
     }
 
     await this.prisma.friend.deleteMany({
@@ -259,31 +264,10 @@ export class UsersService {
     return 'Friend removed';
   }
 
-  async GetUserByUsername(username: string) {
-    // const cacheKey = `user:${username}`;
-    // const cachedUser = this.cacheService.get(cacheKey);
-    // if (cachedUser) {
-    //   return cachedUser;
-    // }
-    const user = await this.prisma.user.findUnique({
-      where: {
-        username: username,
-      },
-      include: {
-        rooms: true,
-      },
-    });
-    if (!user) {
-      throw new Error('User not found');
-    }
-    // this.cacheService.set(cacheKey, user);
-    return user;
-  }
-
   async directMessage(userName: string, username_target: string) {
     // use this function directly after accept friend request
-    const user_1 = await this.GetUserByUsername(userName);
-    const user_2 = await this.GetUserByUsername(username_target);
+    const user_1 = await this.findOneByUsername(userName);
+    const user_2 = await this.findOneByUsername(username_target);
     const existingRoom = await this.prisma.room.findFirst({
       where: {
         AND: [
@@ -325,7 +309,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['ACCEPT']),
+    );
     if (!existingFriend) {
       return 'No friend request to accept';
     }
@@ -373,7 +361,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REJECT']),
+    );
     if (!existingFriend) {
       return 'No friend request to reject';
     }
@@ -412,7 +404,11 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['REVOKE']),
+    );
     if (!existingFriend) {
       return 'No friend request to revoke';
     }
@@ -451,9 +447,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['BLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot block this user';
     }
 
     await this.prisma.friend.updateMany({
@@ -498,9 +498,13 @@ export class UsersService {
 
     const friends = await this.getAllFriends(user.oauthId);
 
-    const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
+    const existingFriend = friends.find(
+      (f) =>
+        f.friendId === friend.oauthId &&
+        f.actions.includes(FriendActions['UNBLOCK']),
+    );
     if (!existingFriend) {
-      return 'Not friends';
+      return 'Cannot unblock this user';
     }
 
     await this.prisma.friend.updateMany({
@@ -550,12 +554,24 @@ export class UsersService {
     return '2FA verified successfully';
   }
 
+  async getMatchHistory(id: string) {
+    const matches = await this.prisma.user.findUnique({
+      where: {
+        oauthId: id,
+      },
+      select: {
+        matches: true,
+      },
+    });
+    return matches.matches;
+  }
+
   async HandleEndGame(winner: PlayerState, loser: PlayerState) {
     const winnerStats = await this.getStats(winner.id);
     const loserStats = await this.getStats(loser.id);
 
-    winnerStats.level += ((winner.score * 10) / 100) * 5;
-    loserStats.level += ((loser.score * 10) / 100) * 5;
+    winnerStats.level += ((winner.score * 10) / 100) * 4.2;
+    loserStats.level += ((loser.score * 10) / 100) * 4.2;
 
     winnerStats.wins += 1;
     loserStats.losses += 1;
@@ -564,7 +580,7 @@ export class UsersService {
     const loserAchievementsToPush = [];
 
     if (
-      winner.score === 12 &&
+      winner.score === 4 &&
       loser.score === 0 &&
       !winnerStats.achievements.includes('PERFECT_WIN')
     )
@@ -644,7 +660,7 @@ export class UsersService {
             oauthId: winner.id,
           },
         },
-        opponentId: loser.id,
+        opponentUser: loser.username,
         userScore: winner.score,
         opponentScore: loser.score,
         win: true,
@@ -659,7 +675,7 @@ export class UsersService {
             oauthId: loser.id,
           },
         },
-        opponentId: winner.id,
+        opponentUser: winner.username,
         userScore: loser.score,
         opponentScore: winner.score,
         win: false,
@@ -686,7 +702,7 @@ export class UsersService {
       },
       data: {
         level: loserStats.level,
-        wins: loserStats.wins,
+        losses: loserStats.losses,
         achievements: {
           push: loserAchievementsToPush,
         },
