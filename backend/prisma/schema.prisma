@@ -106,10 +106,10 @@ model Match {
   user          User     @relation(fields: [userId], references: [oauthId])
   userId        String
   userScore     Int
+  opponentId    String
   opponentScore Int
   win           Boolean
   xpGain        Int
-  opponentUser  String
   createdAt     DateTime @default(now())
 }
 
@@ -139,7 +139,6 @@ enum AchievementName {
   WIN_1_GAMES
   WIN_5_GAMES
   WIN_10_GAMES
-  FIRST_WIN
   FIRST_LOSE
   PERFECT_WIN
 }

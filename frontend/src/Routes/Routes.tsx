@@ -14,13 +14,13 @@ import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
+import Friends from "../Components/Pages/Friends/Friends";
 import LadingPage from "../Components/Pages/Game/Game";
-import Friends from "../Components/Friends/Friends";
 import Profile from "../Components/Pages/Profile/Profile";
 import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
-import { MdVerified } from "react-icons/md";
+import NotFound from "../Components/Pages/404/NotFound";
 
 const ProtectedRoutes = () => {
   const { token, isLoading }: any = useContext(LoginInfo);
@@ -47,10 +47,10 @@ const Protect2fa = () => {
 };
 
 const Reverse2fa = () => {
-  const { verifed}: any = useContext(LoginInfo);
-  
+  const { verifed }: any = useContext(LoginInfo);
+
   return !verifed ? <Outlet /> : <Navigate to="/home" replace />;
-}
+};
 
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
@@ -84,6 +84,7 @@ export const routermin = createBrowserRouter(
               <Route path=":username" element={<Profile />} />
             </Route>
           </Route>
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
     </Route>
