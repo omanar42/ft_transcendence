@@ -102,15 +102,16 @@ model Message {
 }
 
 model Match {
-  id            Int      @id @default(autoincrement())
-  user          User     @relation(fields: [userId], references: [oauthId])
-  userId        String
-  userScore     Int
-  opponentScore Int
-  win           Boolean
-  xpGain        Int
-  opponentUser  String
-  createdAt     DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  user           User     @relation(fields: [userId], references: [oauthId])
+  userId         String
+  userScore      Int
+  opponentUser   String
+  opponentScore  Int
+  opponentAvatar String
+  win            Boolean
+  xpGain         Int
+  createdAt      DateTime @default(now())
 }
 
 model Friend {
@@ -139,7 +140,6 @@ enum AchievementName {
   WIN_1_GAMES
   WIN_5_GAMES
   WIN_10_GAMES
-  FIRST_WIN
   FIRST_LOSE
   PERFECT_WIN
 }

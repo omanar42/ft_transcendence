@@ -19,13 +19,13 @@ interface ProfilePage {
     status: string;
   }[];
   MatchHistory?: {
-    id: string;
     userId: string;
     userScore: number;
+    opponentUser: string;
     opponentScore: number;
+    opponentAvatar: string;
     win: boolean;
     xpGain: number;
-    opponentUser: string;
   }[];
 }
 
@@ -129,13 +129,13 @@ export class ProfileService {
         status: friend.frStatus,
       })),
       MatchHistory: matchHistory.map(match => ({
-        id: match.id.toString(),
         userId: match.userId,
         userScore: match.userScore,
+        opponentUser: match.opponentUser,
         opponentScore: match.opponentScore,
+        opponentAvatar: match.opponentAvatar,
         win: match.win,
         xpGain: match.xpGain,
-        opponentUser: match.opponentUser,
       }))
     };
   }

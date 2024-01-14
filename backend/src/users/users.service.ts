@@ -15,6 +15,7 @@ import * as otplib from 'otplib';
 interface PlayerState {
   id: string;
   username: string;
+  avatar: string;
   score: number;
 }
 
@@ -586,9 +587,6 @@ export class UsersService {
     )
       winnerAchievementsToPush.push('PERFECT_WIN');
 
-    if (!winnerStats.achievements.includes('FIRST_WIN'))
-      winnerAchievementsToPush.push('FIRST_WIN');
-
     if (!loserStats.achievements.includes('FIRST_LOSE'))
       loserAchievementsToPush.push('FIRST_LOSE');
 
@@ -660,9 +658,10 @@ export class UsersService {
             oauthId: winner.id,
           },
         },
-        opponentUser: loser.username,
         userScore: winner.score,
+        opponentUser: loser.username,
         opponentScore: loser.score,
+        opponentAvatar: loser.avatar,
         win: true,
         xpGain: winner.score * 10 * 5,
       },
@@ -675,9 +674,10 @@ export class UsersService {
             oauthId: loser.id,
           },
         },
-        opponentUser: winner.username,
         userScore: loser.score,
+        opponentUser: winner.username,
         opponentScore: winner.score,
+        opponentAvatar: winner.avatar,
         win: false,
         xpGain: loser.score * 10 * 5,
       },

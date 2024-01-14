@@ -7,8 +7,6 @@
 }
 
 .canvasStyle {
-  /* width: 100%; */
-  /* height: auto; */
   border: 5px solid #BE81F7;
   box-shadow: 0 0 20px #BE81F7;
   border-radius: 15px;
@@ -30,7 +28,6 @@
   transition: all 0.3s ease-in-out;
 }
 
-/* hover */
 .playButton:hover {
   background: linear-gradient(90deg, rgb(36, 20, 80) 0%, rgb(63, 50, 75) 100%);
   color: #fff;
