@@ -141,8 +141,6 @@ export class AuthService {
       secure: true,
     });
 
-    this.usersService.setStatus(found.oauthId, Status['ONLINE']);
-
     if (found.twoFactor) redirectUrl = process.env.CLIENT_URL + '/two-factor';
 
     return res.redirect(redirectUrl);

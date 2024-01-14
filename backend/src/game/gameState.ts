@@ -73,11 +73,11 @@ export class GameState {
       this.playerTwo.reset();
     }
 
-    if (this.playerOne.score === 12 || this.playerTwo.score === 12) {
+    if (this.playerOne.score === 4 || this.playerTwo.score === 4) {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
-      this.winner = this.playerOne.score === 12 ? 'playerOne' : 'playerTwo';
+      this.winner = this.playerOne.score === 4 ? 'playerOne' : 'playerTwo';
     }
   };
 
