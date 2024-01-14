@@ -93,6 +93,23 @@ export class ProfileService {
     return await this.usersService.getMatchHistory(requested.oauthId);
   }
 
+  async getmatchHistoryUpdated(matchHistory: any[]) {
+    return matchHistory.map(async (match) => {
+      const opponent = await this.usersService.findOneById(match.opponentId);
+      if (!opponent) return null;
+
+      return {
+        userId: match.userId,
+        userScore: match.userScore,
+        opponentUser: opponent.username,
+        opponentScore: match.opponentScore,
+        opponentAvatar: opponent.avatar,
+        win: match.win,
+        xpGain: match.xpGain,
+      };
+    });
+  }
+
   async getProfilePage(id: string, username: string): Promise<ProfilePage> {
     const profile = await this.usersService.findOneByUsername(username);
     if (!profile) return null;
@@ -111,6 +128,9 @@ export class ProfileService {
 
     const matchHistory = await this.getMatchHistory(username);
     if (!matchHistory) return null;
+
+    const matchHistoryUpdated = await this.getmatchHistoryUpdated(matchHistory);
+    if (!matchHistoryUpdated) return null;
   
     return {
       relation: relations.status,
@@ -128,15 +148,7 @@ export class ProfileService {
         avatar: friend.frAvatar,
         status: friend.frStatus,
       })),
-      MatchHistory: matchHistory.map(match => ({
-        userId: match.userId,
-        userScore: match.userScore,
-        opponentUser: match.opponentUser,
-        opponentScore: match.opponentScore,
-        opponentAvatar: match.opponentAvatar,
-        win: match.win,
-        xpGain: match.xpGain,
-      }))
+      MatchHistory: await Promise.all(matchHistoryUpdated),
     };
   }
 }
