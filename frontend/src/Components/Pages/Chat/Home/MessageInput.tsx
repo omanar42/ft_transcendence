@@ -8,10 +8,7 @@ import "../Rooms/CreateRoom.css";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdPersonAdd } from "react-icons/io";
 
-interface messageList {
-  message: string;
-  userName: string;
-}
+
 
 interface messageData {
   message: string;
@@ -37,7 +34,7 @@ function MessageInput() {
         roomId: currentRoom,
         userName: userInfo.username,
       };
-      setMessageList((list) => [...list, messageData]);
+      setMessageList((list:any) => [...list, messageData]);
       setcurrentMessage("");
       socket.emit("message", messageData);
       // console.log(messageData);
@@ -71,7 +68,7 @@ function MessageInput() {
   useEffect(() => {
     socket?.off("new_message").on("new_message", (data: any) => {
       if (data.roomId === currentRoom)
-        setMessageList((list) => [...list, data]);
+        setMessageList((list:any) => [...list, data]);
     });
   }, [socket, currentRoom]);
 
@@ -98,8 +95,8 @@ function MessageInput() {
       toast.error("Username should not be empty");
       return;
     }
-    const res = await axios.post("http://127.0.0.1:3000/chat/add_user", {roomId: currentRoom, username:inviteFriend},
-     {withCredentials: true}).catch((error) => { toast.warning(error.response.data.message); return;});
+    await axios.post("http://127.0.0.1:3000/chat/add_user", {roomId: currentRoom, username:inviteFriend},
+     {withCredentials: true}).then(()=>window.location.reload()).catch((error) => { toast.warning(error.response.data.message); return;});
     setAddIsOpen(false);
     setFriend("");
   };
@@ -186,7 +183,7 @@ function MessageInput() {
             )}
           </div>
           <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll">
-            {messageList.map((message, i) => {
+            {messageList.map((message:any, i:number) => {
               return (
                 <div
                   className={`text-white text-2xl flex flex-col gap-[0.5rem] ${

@@ -14,15 +14,12 @@ import Chat from "../Components/Pages/Chat/Home/Chat";
 import Rooms from "../Components/Pages/Chat/Rooms/Rooms";
 import Settings from "../Components/Pages/Settings/Settings";
 import Explore from "../Components/Pages/Chat/Rooms/Explore";
-import Game from "../Components/Pages/Game/Game";
 import Friends from "../Components/Pages/Friends/Friends";
 import LadingPage from "../Components/Pages/Game/Game";
-import Friends from "../Components/Friends/Friends";
 import Profile from "../Components/Pages/Profile/Profile";
 import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
-import { MdVerified } from "react-icons/md";
 import NotFound from "../Components/Pages/404/NotFound";
 
 const ProtectedRoutes = () => {
