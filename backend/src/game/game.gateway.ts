@@ -42,6 +42,7 @@ export class GameGateway
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
+      
       this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
