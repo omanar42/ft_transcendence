@@ -3,6 +3,7 @@ import { GameState } from './gameState';
 import { Player } from './player';
 import { GameMapService } from './gamemap.service';
 import { UsersService } from 'src/users/users.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 interface PlayerState {
   id: string;
@@ -15,6 +16,7 @@ export class GameService {
     private gameMapService: GameMapService,
     private usersService: UsersService,
     private gameState: GameState,
+    private prisma: PrismaService,
   ) {}
 
   invatefriend = async (client: any, friend: string) => {
@@ -53,6 +55,10 @@ export class GameService {
   PushOnWaitingList = (oauthId: string) => {
     const key = 'waitingList';
     const value = this.gameMapService.get(key);
+    if (value.includes(oauthId)) {
+      value.splice(value.indexOf(oauthId), 1);
+      return;
+    }
     value.push(oauthId);
     this.gameMapService.set(key, value);
   };
@@ -99,8 +105,13 @@ export class GameService {
     value.playerOne.username = user1.username;
     const user2 = await this.usersService.findOneById(oauthId2);
     value.playerTwo.username = user2.username;
+    this.gameMapService.set(oauthId1, key);
+    this.gameMapService.set(oauthId2, key);
     this.gameMapService.set(key, value);
   };
+
+  // handelDisconnect = async (socket: any) => {
+  // };
 
   GetRoom = (roomId: string) => {
     const key = roomId;
@@ -113,7 +124,7 @@ export class GameService {
     this.gameMapService.delete(key);
   };
 
-  HandleEndGame = (gameState: GameState,server: any) => {
+  HandleEndGame = async (gameState: GameState, server: any) => {
     let winner: PlayerState;
     let loser: PlayerState;
     this.DeleteRoom(gameState.roomId);
@@ -121,23 +132,32 @@ export class GameService {
       winner = {
         id: gameState.playerOne.id,
         score: gameState.playerOne.score,
-      }
+      };
       loser = {
         id: gameState.playerTwo.id,
         score: gameState.playerTwo.score,
-      }
+      };
     } else if (gameState.winner === 'playerTwo') {
       winner = {
         id: gameState.playerTwo.id,
         score: gameState.playerTwo.score,
-      }
+      };
       loser = {
         id: gameState.playerOne.id,
         score: gameState.playerOne.score,
-      }
+      };
     }
+    await this.prisma.user.update({
+      where: { oauthId: winner.id },
+      data: { status: 'ONLINE' },
+    });
+    await this.prisma.user.update({
+      where: { oauthId: loser.id },
+      data: { status: 'ONLINE' },
+    });
     server.to(gameState.roomId).emit('gameOver', winner);
-
+    this.gameMapService.delete(winner.id);
+    this.gameMapService.delete(loser.id);
     this.usersService.HandleEndGame(winner, loser);
   };
 }
