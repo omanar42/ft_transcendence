@@ -124,7 +124,7 @@ const ImageSlider = ({ images }) => {
                       onClick={prevSlide}
                     />
                     <img
-                      className="h-[20rem] border-4 border-pink-500 w-[20rem]  rounded-full"
+                      className="h-[20rem] border-4  border-pink-500 w-[20rem]  rounded-full"
                       src={url + image + ".png"}
                       alt="travel image"
                     />
@@ -164,7 +164,7 @@ const ProgressBar = ({ bgColor, level }: any) => {
   return (
     <div className="h-[4rem] relative w-11/12 rounded-2xl m-4 border-2 border-opacity-60 border-white">
       <div className="flex  justify-center items-center" style={fillerStyles} >
-        <span className="text-3xl absolute top-1rem right-[22rem]" style={labelStyles}>Level {level}</span>
+        <span className="text-3xl absolute top-1rem right-[22rem]" style={labelStyles}>Level {Math.round(Number(level) * 100) / 100}</span>
       </div>
     </div>
   );
@@ -208,16 +208,16 @@ const MatchHistory = ({
   return (
     <div
       onClick={()=>navigate(`/profile/${username}`)} 
-      className={`${win ? "bg-green-600" : "bg-red-600" } bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer`}>
-      <div className="flex items-center gap-[1rem] text-white font-bol ">
+      className={`${win ? "bg-green-600" : "bg-red-600" }  bg-opacity-25  rounded-xl flex  items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer`}>
+      <div className="flex  flex-1 items-center gap-[1rem] text-white font-bol ">
         <img className="h-[4rem] w-[4rem] rounded-full" src={avatar} />
         <h1 className="text-2xl font-bold">{username}</h1>
       </div>
-      <div className="flex flex-col justify-center items-center font-bold flex-1">
+      <div className="flex flex-col  justify-center items-center font-bold flex-1">
         <h1 className={`${win ? "text-green-600" : "text-red-600"} text-3xl`}>{`${win ? "Victory" : "Defeat"} `}</h1>
         <span className="text-2xl">{OpunentScore} _ {userScore}</span>
       </div>
-      <h1 className="text-3xl ">{xp} EXP</h1>
+      <h1 className="text-3xl flex-1 text-end">{xp} EXP</h1>
     </div>
   );
 };
