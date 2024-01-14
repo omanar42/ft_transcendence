@@ -77,19 +77,28 @@ const Game = ({ setGameMode }: any) => {
     },
   });
 
-  // Handlers for button clicks
-
   useEffect(() => {
     if (gamesocket) {
       gamesocket.on("start", handleStart);
       gamesocket.on("gameState", handleGameState);
+      gamesocket.on("gameOver", handleGameOver);
 
       return () => {
         gamesocket.off("start", handleStart);
         gamesocket.off("gameState", handleGameState);
+        gamesocket.off("gameOver", handleGameOver);
       };
     }
   }, [gamesocket]);
+
+  const handleGameOver = (data: any) => {
+    if (data.winner === userInfo.username) {
+      alert("You won!");
+    } else {
+      alert("You lost!");
+    }
+    setStatus("gameOver");
+  };
 
   const handleStart = (data: any) => {
     setStatus(data.status);
@@ -253,6 +262,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const update = () => {
+    console.log(status);
     if (isUpPressed.current) {
       gameState.current.user.y = Math.max(
         0,
@@ -277,7 +287,12 @@ const Game = ({ setGameMode }: any) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
-    if (status != "start") {
+    // if (ctx && canvas && status === "gameOver") {
+    //   drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
+    //   return () => {};
+    // }
+
+    if (ctx && canvas && status !== "start") {
       drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
     }
 
@@ -297,22 +312,33 @@ const Game = ({ setGameMode }: any) => {
         window.removeEventListener("keyup", handleKeyUp);
       };
     }
+
+    return () => {};
   }, [handleKeyDown, handleKeyUp, status]);
 
   return (
-    <canvas
-      className="canvasStyle"
-      width="1300"
-      height="700"
-      ref={canvasRef}
-    ></canvas>
+    <>
+      {status === "gameOver" ? (
+        <button className="playButton" onClick={() => setGameMode(null)}>
+          Back to Menu
+        </button>
+      ) : (
+        <canvas
+          className="canvasStyle"
+          width="1300"
+          height="700"
+          ref={canvasRef}
+        ></canvas>
+      )}
+    </>
   );
 };
 
 function LadingPage() {
   const [gameMode, setGameMode] = useState(null);
   const { gamesocket }: any = useContext(LoginInfo);
-  const [friendUsername, setFriendUsername] = useState('');
+  const [friendUsername, setFriendUsername] = useState("");
+  const [prompt, setPrompt] = useState(false);
 
   const handlePlayRandom = () => {
     setGameMode("random");
@@ -331,9 +357,19 @@ function LadingPage() {
     <div className="h-screen flex justify-center items-center">
       {!gameMode ? (
         <div>
-          <button className="playButton" onClick={handlePlayRandom}>
+          <button className="playButton" onClick={() => setPrompt(true)}>
             Play Random
           </button>
+          {prompt && (
+            <div>
+              <button className="playButton" onClick={() => handlePlayRandom()}>
+                Confirm
+              </button>
+              <button className="playButton" onClick={() => setPrompt(false)}>
+                Cancel
+              </button>
+            </div>
+          )}
           <div>
             <input
               type="text"

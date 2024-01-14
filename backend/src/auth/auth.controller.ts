@@ -58,6 +58,13 @@ export class AuthController {
     return this.authService.refresh(req, res);
   }
 
+  @Get('isLogged')
+  async isLogged(@Req() req: Request, @Res() res: Response) {
+    const token = this.authService.token(req);
+    if (!token) return res.json({ logged: false });
+    return res.json({ logged: true });
+  }
+
   @Get('token')
   async token(@Req() req: Request, @Res() res: Response) {
     const token = this.authService.token(req);
