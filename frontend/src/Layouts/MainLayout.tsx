@@ -10,7 +10,7 @@ import LoginInfo from "../Contexts/LoginContext";
 function DropDwonMenu({CloseDropMenu}:any) {
   const { Logout }: any = useContext(LoginInfo);
   return (
-    <div className="transition-all duration-[0.3s] absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[13rem]">
+    <div className="transition-all duration-[0.3s] border-2 z-50 border-opacity-20 border-white absolute top-[8rem] rounded-xl pt-3 right-[-1.7rem] bg-dark w-[10rem] h-[13rem]">
       <ul className="flex flex-col items-center justify-center gap-4 font-bold text-2xl">
         <NavigationLink onClick={CloseDropMenu} to="Profile/me">Profile</NavigationLink>
         <NavigationLink onClick={CloseDropMenu} to="Settings">Settings</NavigationLink>
@@ -44,15 +44,15 @@ function MainLayout() {
               <NavigationLink to="/chat" onClick={CloseDropMenu}>
                 Chat
               </NavigationLink>
-              <NavigationLink to="/settings" onClick={CloseDropMenu}>
-                Settings
+              <NavigationLink to="/friends" onClick={CloseDropMenu}>
+                Friends
               </NavigationLink>
             </ul>
           </nav>
           <FaBell className="text-4xl" />
           <ProfileAvatar
             src={userInfo.avatar}
-            className="h-[6rem] w-[6rem] cursor-pointer rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
+            className="h-[6rem] w-[6rem] cursor-pointer border-4  rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
             onClick={() => setisDropDown(!isDropDown)}
           />
           {isDropDown && <DropDwonMenu  CloseDropMenu={CloseDropMenu}/>}
