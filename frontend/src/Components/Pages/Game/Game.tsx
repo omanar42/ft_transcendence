@@ -101,7 +101,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log('----------------dkhaal----------------');
+    console.log('----------------dkhaal fekerk----------------');
     setStatus(data.status);
     setRoomId(data.roomId);
   };
@@ -352,6 +352,7 @@ function LadingPage() {
   }, [gamesocket]);
 
   const handleInvitation = (data: any) => {
+    console.log(`jat invitation ahbibi ara chi boussa `)
     const accept = window.confirm(
       `'wa7ad khona' has invited you to play a game. Do you accept?`
     );

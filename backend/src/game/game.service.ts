@@ -27,7 +27,7 @@ export class GameService {
     const friend_user = await this.usersService.findOneByUsername(friend);
     if (friend_user.status === 'INGAME') {
       client.emit(
-        'invite',
+        'invitation',
         "you can't invite this user because he is on another game",
       );
       throw new Error(
@@ -37,17 +37,17 @@ export class GameService {
     const friendSocket = this.GetSocket(friend_user.oauthId);
     if (friendSocket) {
       const data = {
-        status: 'invite',
+        status: 'req',
         roomId: `room:${oauthId}${friend_user.oauthId}`,
       };
-      friendSocket.emit('invite', data);
-      const data2 = {
-        status: 'waiting',
-        roomId: `room:${oauthId}${friend_user.oauthId}`,
-      };
-      client.emit('invite', data2);
+      friendSocket.emit('invitation', data);
+      // const data2 = {
+      //   status: 'waiting',
+      //   roomId: `room:${oauthId}${friend_user.oauthId}`,
+      // };
+      // client.emit('invitation', data2);
     } else {
-      client.emit('invite', 'this user is offline');
+      client.emit('invitation', 'this user is offline');
       throw new Error('this user is offline');
     }
   };
@@ -136,7 +136,6 @@ export class GameService {
     const key = roomId;
     this.gameMapService.delete(key);
   };
-  // offline = async (oauthId: string) => {
 
   HandleEndGame = async (gameState: GameState, server: any) => {
     let winner: PlayerState;

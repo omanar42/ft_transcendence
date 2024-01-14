@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Get, Logger } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -72,11 +72,18 @@ export class GameGateway
         client.handshake.query.token.toString(),
         process.env.AT_SECRET,
       );
+      // the expered token
+      if (!id.sub) {
+        // client.disconnect(true);
+        throw new Error('invalid token');
+      }
       this.gameService.SaveSocket(id.sub.toString(), client);
-      await this.prismaService.user.update({
-        where: { oauthId: id.sub.toString() },
-        data: { status: Status['ONLINE'] },
-      });
+      if (id.sub) {
+        await this.prismaService.user.update({
+          where: { oauthId: id.sub.toString() },
+          data: { status: Status['ONLINE'] },
+        });
+      }
     } catch (error) {
       this.logger.log(error);
     }
@@ -101,27 +108,32 @@ export class GameGateway
     @MessageBody() data_in,
   ) {
     try {
-      await this.gameService.invatefriend(client, data_in.friend);
-      const oauthId = this.gameService.GetoauthId(client);
-      const friend_user = await this.userService.findOneByUsername(
-        data_in.friend,
-      );
-      const friendSocket = this.gameService.GetSocket(friend_user.oauthId);
-      await this.gameService.CreateRoom(oauthId, friend_user.oauthId);
-      client.join(`room:${oauthId}${friend_user.oauthId}`);
-      friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
+      // console.log(data_in);
+      console.log(data_in);
+      if (data_in.status === 'request') {
+        console.log('request');
+        await this.gameService.invatefriend(client, data_in.friend);
+        const oauthId = this.gameService.GetoauthId(client);
+        const friend_user = await this.userService.findOneByUsername(
+          data_in.friend,
+        );
+        const friendSocket = this.gameService.GetSocket(friend_user.oauthId);
+        await this.gameService.CreateRoom(oauthId, friend_user.oauthId);
+        console.log(friend_user.oauthId);
+        client.join(`room:${oauthId}${friend_user.oauthId}`);
+        friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
+      }
       //demo
-      const data = {
-        // status: 'waiting',
-        status: 'start',
-        roomId: `room:${oauthId}${friend_user.oauthId}`,
-        gameState: this.gameService.GetRoom(
-          `room:${oauthId}${friend_user.oauthId}`,
-        ),
-      };
-      this.server
-        .to(`room:${oauthId}${friend_user.oauthId}`)
-        .emit('start', data);
+      else if (data_in.status === 'accept') {
+        console.log('accept');
+        const data = {
+          // status: 'waiting',
+          status: 'start',
+          roomId: data_in.roomId,
+          gameState: this.gameService.GetRoom(data_in.roomId),
+        };
+        this.server.to(data_in.roomId).emit('start', data);
+      }
     } catch (error) {
       this.logger.log(error);
     }
