@@ -27,7 +27,7 @@ export class GameService {
     const friend_user = await this.usersService.findOneByUsername(friend);
     if (friend_user.status === 'INGAME') {
       client.emit(
-        'invate',
+        'invite',
         "you can't invite this user because he is on another game",
       );
       throw new Error(
@@ -37,17 +37,17 @@ export class GameService {
     const friendSocket = this.GetSocket(friend_user.oauthId);
     if (friendSocket) {
       const data = {
-        status: 'invate',
+        status: 'invite',
         roomId: `room:${oauthId}${friend_user.oauthId}`,
       };
-      friendSocket.emit('invate', data);
+      friendSocket.emit('invite', data);
       const data2 = {
         status: 'waiting',
         roomId: `room:${oauthId}${friend_user.oauthId}`,
       };
-      client.emit('invate', data2);
+      client.emit('invite', data2);
     } else {
-      client.emit('invate', 'this user is offline');
+      client.emit('invite', 'this user is offline');
       throw new Error('this user is offline');
     }
   };
@@ -57,11 +57,10 @@ export class GameService {
 
   PushOnWaitingList = async (oauthId: string) => {
     const key = 'waitingList';
-    const arr = [];
     const value = this.gameMapService.get(key);
     const user = await this.usersService.findOneById(oauthId);
     if (user.status === 'INGAME' || value.includes(oauthId)) {
-      console.log(this.GetSocket(oauthId).id);
+      console.log(user.status);
       throw new Error("you can't play because you are on another game");
     }
     // if (value.includes(oauthId)) {
@@ -170,8 +169,8 @@ export class GameService {
         score: gameState.playerOne.score,
       };
     }
-    // await this.usersService.setStatus(winner.id, Status['ONLINE']);
-    // await this.usersService.setStatus(loser.id, Status['ONLINE']);
+    await this.usersService.setStatus(winner.id, Status['ONLINE']);
+    await this.usersService.setStatus(loser.id, Status['ONLINE']);
     // await this.prisma.user.update({
     //   where: { oauthId: winner.id },
     //   data: { status: 'ONLINE' },
