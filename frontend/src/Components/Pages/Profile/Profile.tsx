@@ -204,8 +204,11 @@ const MatchHistory = ({
   win,
   xp,
 }: any) => {
+  const navigate = useNavigate();
   return (
-    <div className="bg-white bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer">
+    <div
+      onClick={()=>navigate(`/profile/${username}`)} 
+      className={`${win ? "bg-green-600" : "bg-red-600" } bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer`}>
       <div className="flex items-center gap-[1rem] text-white font-bol ">
         <img className="h-[4rem] w-[4rem] rounded-full" src={avatar} />
         <h1 className="text-2xl font-bold">{username}</h1>
