@@ -9,6 +9,7 @@ import { Status } from '@prisma/client';
 interface PlayerState {
   id: string;
   username: string;
+  avatar: string;
   score: number;
 }
 
@@ -110,8 +111,10 @@ export class GameService {
     value.init(oauthId1, oauthId2);
     const user1 = await this.usersService.findOneById(oauthId1);
     value.playerOne.username = user1.username;
+    value.playerOne.avatar = user1.avatar;
     const user2 = await this.usersService.findOneById(oauthId2);
     value.playerTwo.username = user2.username;
+    value.playerTwo.avatar = user2.avatar;
     this.gameMapService.set(oauthId1, key);
     this.gameMapService.set(oauthId2, key);
     this.gameMapService.set(key, value);
@@ -144,22 +147,26 @@ export class GameService {
       winner = {
         id: gameState.playerOne.id,
         username: gameState.playerOne.username,
+        avatar: gameState.playerOne.avatar,
         score: gameState.playerOne.score,
       };
       loser = {
         id: gameState.playerTwo.id,
         username: gameState.playerTwo.username,
+        avatar: gameState.playerTwo.avatar,
         score: gameState.playerTwo.score,
       };
     } else if (gameState.winner === 'playerTwo') {
       winner = {
         id: gameState.playerTwo.id,
         username: gameState.playerTwo.username,
+        avatar: gameState.playerTwo.avatar,
         score: gameState.playerTwo.score,
       };
       loser = {
         id: gameState.playerOne.id,
         username: gameState.playerOne.username,
+        avatar: gameState.playerOne.avatar,
         score: gameState.playerOne.score,
       };
     }

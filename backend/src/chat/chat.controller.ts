@@ -53,7 +53,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('kick_user')
@@ -95,11 +95,79 @@ export class ChatController {
         parseInt(body.roomid),
         req.user.sub.toString(),
         body.target_username,
+        'BANNED',
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       console.log(error);
+    }
+  }
+  @Post('unban_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomid: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async unbanUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.BanUserFromRoom(
+        parseInt(body.roomid),
+        req.user.sub.toString(),
+        body.target_username,
+        'MEMBER',
+      );
+      return res.json(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  @Post('add_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        username: { type: 'string' },
+      },
+    },
+  })
+  async addUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.AddUserToRoom(
+        req.user.sub.toString(),
+        body,
+      );
+      return res.json(response);
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post('updateRoom')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        roomName: { type: 'string' },
+        // username: { type: 'string' },
+        type: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
+  async updateRoom(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.UpdateRoom(
+        req.user.sub.toString(),
+        body,
+      );
+      return res.json(response);
+    } catch (error) {
+      throw error;
     }
   }
   @Post('joinRoom')
@@ -119,7 +187,6 @@ export class ChatController {
         parseInt(body.roomId),
         body.password,
       );
-      console.log(response);
       return res.json(response);
     } catch (error) {
       console.log(error);
