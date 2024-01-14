@@ -101,6 +101,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
+    console.log('----------------dkhaal----------------');
     setStatus(data.status);
     setRoomId(data.roomId);
   };
@@ -340,6 +341,30 @@ function LadingPage() {
   const [friendUsername, setFriendUsername] = useState("");
   const [prompt, setPrompt] = useState(false);
 
+  useEffect(() => {
+    if (gamesocket) {
+      gamesocket.on("invitation", handleInvitation);
+
+      return () => {
+        gamesocket.off("invitation", handleInvitation);
+      };
+    }
+  }, [gamesocket]);
+
+  const handleInvitation = (data: any) => {
+    const accept = window.confirm(
+      `'wa7ad khona' has invited you to play a game. Do you accept?`
+    );
+    if (accept) {
+      setGameMode("friend");
+      const dataToSend = {
+        roomId: data.roomId,
+        status: 'accept'
+      };
+      gamesocket?.emit("PlayWithFriend", dataToSend);
+    }
+  };
+
   const handlePlayRandom = () => {
     setGameMode("random");
     gamesocket?.emit("addToRoom");
@@ -349,6 +374,7 @@ function LadingPage() {
     setGameMode("friend");
     const dataToSend = {
       friend: username,
+      status: 'request'
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
   };
