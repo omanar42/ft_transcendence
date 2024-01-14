@@ -168,6 +168,13 @@ export class AuthService {
     let token = null;
     if (req && req.cookies) {
       token = req.cookies['access_token'];
+      try {
+        this.jwtService.verify(token, {
+          secret: process.env.AT_SECRET,
+        });
+      } catch (err) {
+        token = null;
+      }
     }
     return token;
   };
