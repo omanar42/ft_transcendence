@@ -336,7 +336,7 @@ const Game = ({ setGameMode }: any) => {
 };
 
 function LadingPage() {
-  const [gameMode, setGameMode] = useState(null);
+  const [gameMode, setGameMode] = useState('');
   const { gamesocket }: any = useContext(LoginInfo);
   const [friendUsername, setFriendUsername] = useState("");
   const [prompt, setPrompt] = useState(false);
@@ -353,17 +353,12 @@ function LadingPage() {
 
   const handleInvitation = (data: any) => {
     console.log(`jat invitation ahbibi ara chi boussa `)
-    const accept = window.confirm(
-      `'wa7ad khona' has invited you to play a game. Do you accept?`
-    );
-    if (accept) {
-      setGameMode("friend");
-      const dataToSend = {
-        roomId: data.roomId,
-        status: 'accept'
-      };
-      gamesocket?.emit("PlayWithFriend", dataToSend);
-    }
+    setGameMode('friend');
+    const dataToSend = {
+      roomId: data.roomId,
+      status: 'accept'
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
   };
 
   const handlePlayRandom = () => {
