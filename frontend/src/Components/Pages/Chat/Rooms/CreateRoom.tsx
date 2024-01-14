@@ -37,7 +37,7 @@ export function InputBox({
   );
 }
 
-export function SelectType({ setType, type }) {
+export function SelectType({ setType, type }:any) {
   return (
     <select
       value={type}
@@ -56,9 +56,9 @@ function CreateRoom({ AddChannelToList, CloseModal }:any) {
   const [Roomtype, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
 
-  const { userInfo, socket } = useContext(LoginInfo);
+  const { userInfo, socket }:any = useContext(LoginInfo);
 
-  const handlSubmit = (event) => {
+  const handlSubmit = (event:any) => {
     event.preventDefault();
     if (roomName !== "") {
       if (Roomtype === "Protected" && !roomPassword) return null;
@@ -79,7 +79,7 @@ function CreateRoom({ AddChannelToList, CloseModal }:any) {
     }
   };
   useEffect(() => {
-    const handleRoomCreated = (Room) => {
+    const handleRoomCreated = (Room:any) => {
       AddChannelToList(Room);
     };
 

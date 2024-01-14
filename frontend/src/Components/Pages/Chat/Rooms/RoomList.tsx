@@ -7,13 +7,8 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { InputBox } from "./CreateRoom";
 import { SelectType } from "./CreateRoom";
 import axios from "axios";
+import { toast } from "react-toastify";
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
-
-interface messageData {
-  message: string;
-  roomId: number;
-  userName: string;
-}
 
 interface ListAvatars {
   avatar: string;
@@ -35,6 +30,7 @@ export interface Room {
   roomPassword?: string;
   userName?: string;
   roomId: string;
+  message?: string;
 }
 
 function RoomSettings() {
@@ -43,22 +39,25 @@ function RoomSettings() {
   const [roomPassword, setroomPassword] = useState("");
   const { setSettingsIsOpen, currentRoom }: any = useContext(RoomContext);
 
-  const handlSubmit = async (event) => {
+  const handlSubmit = async (event: any) => {
     event.preventDefault();
     if (roomName !== "") {
       if (roomType === "Protected" && !roomPassword) return null;
-        
-        const newRoom = {
-          roomId: currentRoom,
-          roomName: roomName,
-          type: roomType,
-          password: roomPassword,
-        };
-        console.log("---------------------------")
 
-        const res = await axios.post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
+      const newRoom = {
+        roomId: currentRoom,
+        roomName: roomName,
+        type: roomType,
+        password: roomPassword,
+      };
+      console.log("---------------------------");
+
+      await axios
+        .post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
           withCredentials: true,
-        }).catch((err) => console.log('============'+err));
+        })
+        .then(() => window.location.reload())
+        .catch((err) => toast.error(err.response.data.message));
 
       setSettingsIsOpen(false);
     }
@@ -118,13 +117,13 @@ function RoomSettings() {
   );
 }
 
-function ListRooms({ avatar, time, roomName, roomType, roomId }: Room) {
-  const { setCurrentRoom, ownerSheep }: any = useContext(RoomContext);
+function ListRooms({roomName, roomType, roomId }: Room) {
+  const { setCurrentRoom }: any = useContext(RoomContext);
   const { setSettingsIsOpen }: any = useContext(RoomContext);
 
   return (
     <li
-      className="flex items-center justify-between mb-6 cursor-pointer hover:bg-pink-600 rounded-lg pl-2 pr-2 hover:duration-[0.2s]"
+      className="flex items-center gap-[2rem] mb-6 cursor-pointer hover:bg-pink-600 rounded-lg pl-2 pr-2 hover:duration-[0.2s]"
       key={roomId}
       onClick={() => {
         setCurrentRoom(roomId);
@@ -132,24 +131,27 @@ function ListRooms({ avatar, time, roomName, roomType, roomId }: Room) {
     >
       <div className="overflow-hidden flex items-center gap-5">
         <img className="h-[5rem] rounded-full" src={Avatar} alt="avatar" />
-        <h1 className="text-2xl pb-2 font-extrabold">{roomName}</h1>
+        <h1 className="text-2xl overflow-hidden w-[8rem] pb-2 text-ellipsis font-extrabold">
+          {roomName}
+        </h1>
       </div>
       <div className="flex flex-col ml-10">
         <span className="text-xl font-semibold">{roomType}</span>
       </div>
-      {ownerSheep === "OWNER" && (
+
+      <div>
         <IoSettingsOutline
-          className="text-4xl hover:bg-white rounded-full hover:duration-[0.2s] hover:text-black"
+          className="text-4xl hover:bg-white rounded-full  hover:duration-[0.2s] hover:text-black"
           onClick={() => setSettingsIsOpen(true)}
         />
-      )}
+      </div>
     </li>
   );
 }
 
 function RoomList({ handeltoggelModal, List }: any) {
   const reversList = [...List].reverse();
-  const { settingsIsOpen, setSettingsIsOpen }: any = useContext(RoomContext);
+  const { settingsIsOpen }: any = useContext(RoomContext);
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden border-2 border-white border-opacity-20 rounded-2xl">
       {settingsIsOpen && <RoomSettings />}
