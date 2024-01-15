@@ -93,6 +93,7 @@ const Game = ({ setGameMode }: any) => {
 
   const handleGameOver = (data: any) => {
     console.log("game over");
+    console.log(data);
     if (data.winner === userInfo.username) {
       alert("You won!");
     } else {
@@ -102,7 +103,6 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log('----------------dkhaal fekerk----------------');
     setStatus(data.status);
     setRoomId(data.roomId);
   };
