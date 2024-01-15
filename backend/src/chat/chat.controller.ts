@@ -99,7 +99,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('unban_user')
@@ -122,7 +122,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('add_user')
@@ -140,6 +140,28 @@ export class ChatController {
       const response = await this.chatService.AddUserToRoom(
         req.user.sub.toString(),
         body,
+      );
+      return res.json(response);
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post('setadmin')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        username: { type: 'string' },
+      },
+    },
+  })
+  async setAdmin(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.setAdminForRoom(
+        body.roomId,
+        req.user.sub.toString(),
+        body.username,
       );
       return res.json(response);
     } catch (error) {
