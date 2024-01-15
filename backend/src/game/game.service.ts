@@ -25,11 +25,11 @@ export class GameService {
   invatefriend = async (client: any, friend: string) => {
     const oauthId = this.GetoauthId(client);
     const friend_user = await this.usersService.findOneByUsername(friend);
-    if (friend_user.status === 'INGAME') {
-      client.emit(
-        'invitation',
-        "you can't invite this user because he is on another game",
-      );
+    const user = await this.usersService.findOneById(oauthId);
+    if (!friend_user || !user) {
+      throw new Error('this user is not exist');
+    }
+    if (friend_user.status === 'INGAME' || user.status === 'INGAME') {
       throw new Error(
         "you can't invite this user because he is on another game",
       );
@@ -40,8 +40,12 @@ export class GameService {
         status: 'req',
         roomId: `room:${oauthId}${friend_user.oauthId}`,
       };
+      await this.CreateRoom(oauthId, friend_user.oauthId);
+      client.join(`room:${oauthId}${friend_user.oauthId}`);
+      friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.emit('invitation', data);
       // const data2 = {
+      // meslalla9082062
       //   status: 'waiting',
       //   roomId: `room:${oauthId}${friend_user.oauthId}`,
       // };
@@ -81,8 +85,24 @@ export class GameService {
     return null;
   };
 
-  SaveSocket = (oauthId: string, socket: any) => {
+  SaveSocket = (oauthId: string, socket: any, server: any) => {
     const key = `socket:${oauthId}`;
+    if (this.gameMapService.get(key)) {
+      const game = this.GetRoom(this.gameMapService.get(oauthId));
+      if (game) {
+        if (game.playerOne.id === oauthId) {
+          game.winner = 'playerTwo';
+          this.HandleEndGame(game, server);
+        }
+        if (game.playerTwo.id === oauthId) {
+          game.winner = 'playerOne';
+          this.HandleEndGame(game, server);
+        }
+      }
+    }
+    if (this.gameMapService.get(key)) {
+      this.GetSocket(oauthId).disconnect(true);
+    }
     this.gameMapService.set(key, socket);
     this.gameMapService.set(`socket:${socket.id}`, oauthId);
   };
@@ -136,10 +156,40 @@ export class GameService {
     const key = roomId;
     this.gameMapService.delete(key);
   };
-
+  set_offline = async (oauthId: string) => {
+    this.usersService.setStatus(oauthId, Status['OFFLINE']);
+  };
+  set_online = async (oauthId: string) => {
+    this.usersService.setStatus(oauthId, Status['ONLINE']);
+  }
+  checkoffline = async (gamestate: GameState) => {
+    const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
+    const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
+    if (player1.status === 'OFFLINE') {
+      console.log('player1 offline');
+      gamestate.winner = 'playerTwo';
+      return true;
+    }
+    if (player2.status === 'OFFLINE') {
+      console.log('player2 offline');
+      gamestate.winner = 'playerOne';
+      return true;
+    }
+    return false;
+  };
+  Ingame = async (gamestate: GameState) => {
+    const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
+    const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
+    await this.usersService.setStatus(player1.oauthId, Status['INGAME']);
+    await this.usersService.setStatus(player2.oauthId, Status['INGAME']);
+  };
   HandleEndGame = async (gameState: GameState, server: any) => {
     let winner: PlayerState;
     let loser: PlayerState;
+    // console.log(gameState);
+    if (!this.GetRoom(gameState.roomId)) {
+      return;
+    }
     this.DeleteRoom(gameState.roomId);
     if (gameState.winner === 'playerOne') {
       winner = {
@@ -168,8 +218,8 @@ export class GameService {
         score: gameState.playerOne.score,
       };
     }
-    await this.usersService.setStatus(winner.id, Status['ONLINE']);
-    await this.usersService.setStatus(loser.id, Status['ONLINE']);
+    // await this.usersService.setStatus(winner.id, Status['ONLINE']);
+    // await this.usersService.setStatus(loser.id, Status['ONLINE']);
     // await this.prisma.user.update({
     //   where: { oauthId: winner.id },
     //   data: { status: 'ONLINE' },
@@ -193,6 +243,20 @@ export class GameService {
     this.gameMapService.delete(winner.id);
     this.gameMapService.delete(loser.id);
     this.usersService.HandleEndGame(winner, loser);
+    console.log('winner', winner);
     server.to(gameState.roomId).emit('gameOver', winner.username);
+    // just the online player will leave the room
+    const user1 = await this.usersService.findOneById(winner.id);
+    const user2 = await this.usersService.findOneById(loser.id);
+    if (user1.status !== 'OFFLINE') {
+      // this.GetSocket(winner.id).leave(gameState.roomId);
+      await this.usersService.setStatus(user1.oauthId, Status['ONLINE']);
+    }
+    if (user2.status !== 'OFFLINE') {
+      // this.GetSocket(loser.id).leave(gameState.roomId);
+      await this.usersService.setStatus(user2.oauthId, Status['ONLINE']);
+    }
+    //delete room from server
+    // server.delete(gameState.roomId);
   };
 }
