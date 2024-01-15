@@ -92,6 +92,7 @@ const Game = ({ setGameMode }: any) => {
   }, [gamesocket]);
 
   const handleGameOver = (data: any) => {
+    console.log("game over");
     if (data.winner === userInfo.username) {
       alert("You won!");
     } else {

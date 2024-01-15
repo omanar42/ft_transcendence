@@ -11,6 +11,7 @@ import {
   UserStatusInRoom,
 } from '@prisma/client';
 import * as otplib from 'otplib';
+import { stat } from 'fs';
 
 interface PlayerState {
   id: string;
