@@ -17,6 +17,7 @@ export const friendAction = async (
     accept: "accept",
     block: "block",
     unblock: "unblock",
+    revoke: "revoke",
   };
 
   try {
@@ -37,15 +38,15 @@ export const friendAction = async (
   }
 };
 
-function ListFriends({ avatar, username, status, handlUpdate, id }: any) {
+function ListFriends({ avatar, username, status, handlUpdate, id, actions }: any) {
   return (
     <li className="text-white flex cursor-pointer hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
       <img className="h-[2rem] w-full flex-1" src={avatar} />
-      <div className="flex h-[6rem] justify-around items-center gap-[1rem]">
-        <h1 className="text-3xl border-2 overflow-hidden whitespace-nowrap text-ellipsis border-white ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
+      <div className="flex h-[6rem] justify-around items-center h-full gap-[1rem]">
+        <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
           {username}
         </h1>
-        {status === "PENDING" && (
+        {actions.find((action)=> action === "ACCEPT") && (
           <button
             onClick={() => friendAction(username, "accept", handlUpdate, id)}
             className="text-2xl cursor-pointer rounded-lg p-2 border-2 border-white border-opacity-20 mr-1 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
@@ -53,7 +54,7 @@ function ListFriends({ avatar, username, status, handlUpdate, id }: any) {
             Accept
           </button>
         )}
-        {status === "FRIENDS" && (
+        {(actions.find((action)=> action === "REMOVE") && actions.find((action)=> action === "BLOCK"))&& (
           <div className="flex items-center gap-[1rem]">
             <HiUserRemove
               onClick={() => friendAction(username, "remove", handlUpdate, id)}
@@ -65,12 +66,20 @@ function ListFriends({ avatar, username, status, handlUpdate, id }: any) {
             />
           </div>
         )}
-        {status === "BLOCKED" && (
+        {actions.find((action)=> action === "UNBLOCK") && (
           <button
             onClick={() => friendAction(username, "unblock", handlUpdate, id)}
             className="text-2xl cursor-pointer border-2 border-white border-opacity-20 rounded-lg p-2 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
           >
             Unblock
+          </button>
+        )}
+        {actions.find((action)=> action === "REVOKE") && (
+          <button
+            onClick={() => friendAction(username, "revoke", handlUpdate, id)}
+            className="text-2xl cursor-pointer border-2 border-white border-opacity-20 rounded-lg p-2 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
+          >
+            REVOKE
           </button>
         )}
       </div>
@@ -81,6 +90,7 @@ function Friends() {
   const [Friends, setFriends] = useState([]);
   const [isOpened, setIsOpened] = useState(false);
   const [addFriend, setAddFriend] = useState("");
+  const [actions, setActions] = useState("");
 
   useEffect(() => {
     getFriendsAction("friends");
@@ -98,7 +108,10 @@ function Friends() {
     try {
       const url = `http://127.0.0.1:3000/users/${actions[action]}`;
       const res = await axios.get(url, { withCredentials: true });
+      console.log(res.data);
       setFriends(res.data);
+      setActions(res.data.actions);
+      console.log(res.data[0].actions);
     } catch (e) {
       console.error(e);
     }
@@ -176,6 +189,8 @@ function Friends() {
               <div className="absolute top-[12rem] flex items-center justify-center gap-4">
                 <input
                   onChange={(e) => setAddFriend(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && AddFriend()}
+                  
                   value={addFriend}
                   className=" text-2xl w-[20rem] outline-none pl-4 h-[3rem] bg-dark-200 rounded-xl border-2 border-white border-opacity-20"
                 />
@@ -197,6 +212,7 @@ function Friends() {
               status={Friend.status}
               id={Friend.id}
               handlUpdate={handlUpdate}
+              actions={Friend.actions}
             />
           ))}
         </ul>

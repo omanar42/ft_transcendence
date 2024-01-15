@@ -8,6 +8,9 @@ import { InputBox } from "./CreateRoom";
 import { SelectType } from "./CreateRoom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaLock } from "react-icons/fa";
+import { MdOutlinePublic } from "react-icons/md";
+import { SiPrivateinternetaccess } from "react-icons/si";
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
 interface ListAvatars {
@@ -136,7 +139,10 @@ function ListRooms({roomName, roomType, roomId }: Room) {
         </h1>
       </div>
       <div className="flex flex-col ml-10">
-        <span className="text-xl font-semibold">{roomType}</span>
+       {roomType === "PROTECTED" && <FaLock className="text-3xl" />}
+       {roomType === "PUBLIC" && <MdOutlinePublic className="text-4xl" />}
+       {roomType === "PRIVATE" && <SiPrivateinternetaccess className="text-3xl" />}
+
       </div>
 
       <div>
