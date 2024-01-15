@@ -34,6 +34,9 @@ export class GameService {
         "you can't invite this user because he is on another game",
       );
     }
+    if (friend === user.username) {
+      throw new Error("you can't invite yourself");
+    }
     const friendSocket = this.GetSocket(friend_user.oauthId);
     if (friendSocket) {
       const data = {
@@ -161,7 +164,7 @@ export class GameService {
   };
   set_online = async (oauthId: string) => {
     this.usersService.setStatus(oauthId, Status['ONLINE']);
-  }
+  };
   checkoffline = async (gamestate: GameState) => {
     const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
     const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
@@ -243,8 +246,7 @@ export class GameService {
     this.gameMapService.delete(winner.id);
     this.gameMapService.delete(loser.id);
     this.usersService.HandleEndGame(winner, loser);
-    console.log('winner', winner);
-    server.to(gameState.roomId).emit('gameOver', winner.username);
+    server.to(gameState.roomId).emit('gameOver', { winner: winner.username });
     // just the online player will leave the room
     const user1 = await this.usersService.findOneById(winner.id);
     const user2 = await this.usersService.findOneById(loser.id);
