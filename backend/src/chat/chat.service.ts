@@ -449,20 +449,25 @@ export class ChatService {
   // the seter is oauthId of the user
   async setAdminForRoom(roomId: number, seter: string, target: string) {
     const room = await this.GetRoomById(roomId);
+    const target_userModel = await this.GetUserByUsername(target);
+    target = target_userModel.oauthId;
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter,
     );
     const target_user = room.roomuser.find(
       (roomuser) => roomuser.userId === target,
     );
-    if (!room || !seter_user || !target_user) {
-      throw new Error('User or Room not found');
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
+    if (!seter_user || !target_user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (seter_user.status !== UserStatusInRoom['OWNER']) {
-      throw new Error('You are not the owner of this room');
+      throw new HttpException('You are not the owner of this room', 403);
     }
     if (target_user.status === UserStatusInRoom['ADMIN']) {
-      throw new Error('User is already an admin');
+      throw new HttpException('User is already an admin', 403);
     }
     await this.prisma.roomUser.update({
       where: {
@@ -576,7 +581,7 @@ export class ChatService {
       (roomuser) => roomuser.userId === target_user_model.oauthId,
     );
     if (!room || !seter_user || !target_user) {
-      throw new Error('User or Room not found');
+      throw new HttpException('User or Room not found', HttpStatus.NOT_FOUND);
     }
     if (
       seter_user.status === UserStatusInRoom['MEMBER'] ||
@@ -584,13 +589,19 @@ export class ChatService {
       (seter_user.status === UserStatusInRoom['ADMIN'] &&
         target_user.status === UserStatusInRoom['ADMIN'])
     ) {
-      throw new Error('You are not allowed to do this action');
+      throw new HttpException('You are not allowed to ban users', 403);
     }
     if (
       target_user.status === UserStatusInRoom['BANNED'] &&
       status === 'BANNED'
     ) {
-      throw new Error('User is already banned');
+      throw new HttpException('User is already banned', 403);
+    }
+    if (
+      target_user.status !== UserStatusInRoom['BANNED'] &&
+      status === 'MEMBER'
+    ) {
+      throw new HttpException('User is not banned', 403);
     }
     await this.prisma.roomUser.update({
       where: {
