@@ -4,6 +4,7 @@ import {
   createRoutesFromElements,
   Navigate,
   Outlet,
+  useLocation,
 } from "react-router-dom";
 import Home from "../Components/Pages/Home/Home";
 import Login from "../Components/Pages/Login/Login";
@@ -23,11 +24,12 @@ import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
 import NotFound from "../Components/Pages/404/NotFound";
 
 const ProtectedRoutes = () => {
+  const location = useLocation();
   const { token, isLoading }: any = useContext(LoginInfo);
 
   if (isLoading) return <div>Loading...</div>;
   console.log("is Logged is", token);
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  return token ? <Outlet  /> : <Navigate to="/login" replace />;
 };
 
 const ProtectLogin = () => {
@@ -52,6 +54,7 @@ const Reverse2fa = () => {
   return !verifed ? <Outlet /> : <Navigate to="/home" replace />;
 };
 
+
 export const routermin = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -66,7 +69,7 @@ export const routermin = createBrowserRouter(
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             // Chat Routes
-            <Route path="/chat" element={<ChatLayout />}>
+            <Route  path="/chat" element={<ChatLayout />}>
               <Route index element={<Chat />} />
               <Route path="rooms" element={<Rooms />} />
               <Route path="chat" element={<Chat />} />

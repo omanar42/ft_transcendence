@@ -3,6 +3,7 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 import Friend from "./Assets/Friend.png";
 import Random from "./Assets/random.png";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Player {
   id: number;
@@ -103,7 +104,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log('----------------dkhaal----------------');
+    console.log("----------------dkhaal----------------");
     setStatus(data.status);
     setRoomId(data.roomId);
   };
@@ -337,7 +338,7 @@ const Game = ({ setGameMode }: any) => {
   );
 };
 
-const StartGame = ({ handlePlayRandom, handlePlayWithFriend}: any) => {
+const StartGame = ({ handlePlayRandom, handlePlayWithFriend }: any) => {
   return (
     <div className="flex justify-around w-[130rem] ml-auto mr-auto">
       <div className="flex flex-col items-center gap-[2rem]">
@@ -385,7 +386,7 @@ function LadingPage() {
       setGameMode("friend");
       const dataToSend = {
         roomId: data.roomId,
-        status: 'accept'
+        status: "accept",
       };
       gamesocket?.emit("PlayWithFriend", dataToSend);
     }
@@ -400,50 +401,57 @@ function LadingPage() {
     setGameMode("friend");
     const dataToSend = {
       friend: username,
-      status: 'request'
+      status: "request",
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      {!gameMode ? (
-        // <div>
-        //   <button className="playButton" onClick={() => setPrompt(true)}>
-        //     Play Random
-        //   </button>
-        //   {prompt && (
-        //     <div>
-        //       <button className="playButton" onClick={() => handlePlayRandom()}>
-        //         Confirm
-        //       </button>
-        //       <button className="playButton" onClick={() => setPrompt(false)}>
-        //         Cancel
-        //       </button>
-        //     </div>
-        //   )}
-        //   <div>
-        //     <input
-        //       type="text"
-        //       placeholder="Friend's username"
-        //       value={friendUsername}
-        //       onChange={(e) => setFriendUsername(e.target.value)}
-        //       className="usernameInput"
-        //     />
-        //     <button
-        //       className="playButton"
-        //       onClick={() => handlePlayWithFriend(friendUsername)}
-        //     >
-        //       Play with Friend
-        //     </button>
-        //   </div>
-        // </div>
-        <StartGame handlePlayRandom={handlePlayRandom} />
-      ) : (
-        <Game setGameMode={setGameMode} />
-      )}
-      {/* <StartGame /> */}
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: "0" }}
+        exit={{y: "100%" }}
+        className="h-screen flex justify-center items-center"
+      >
+        {!gameMode ? (
+          // <div>
+          //   <button className="playButton" onClick={() => setPrompt(true)}>
+          //     Play Random
+          //   </button>
+          //   {prompt && (
+          //     <div>
+          //       <button className="playButton" onClick={() => handlePlayRandom()}>
+          //         Confirm
+          //       </button>
+          //       <button className="playButton" onClick={() => setPrompt(false)}>
+          //         Cancel
+          //       </button>
+          //     </div>
+          //   )}
+          //   <div>
+          //     <input
+          //       type="text"
+          //       placeholder="Friend's username"
+          //       value={friendUsername}
+          //       onChange={(e) => setFriendUsername(e.target.value)}
+          //       className="usernameInput"
+          //     />
+          //     <button
+          //       className="playButton"
+          //       onClick={() => handlePlayWithFriend(friendUsername)}
+          //     >
+          //       Play with Friend
+          //     </button>
+          //   </div>
+          // </div>
+          <StartGame handlePlayRandom={handlePlayRandom} />
+        ) : (
+          <Game setGameMode={setGameMode} />
+        )}
+        {/* <StartGame /> */}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
