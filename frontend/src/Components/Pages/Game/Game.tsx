@@ -95,12 +95,15 @@ const Game = ({ setGameMode }: any) => {
   }, [gamesocket]);
 
   const handleGameOver = (data: any) => {
+    console.log("game over");
+    console.log(data);
     if (data.winner === userInfo.username) {
       alert("You won!");
     } else {
       alert("You lost!");
     }
     setStatus("gameOver");
+    setGameMode(null);
   };
 
   const handleStart = (data: any) => {
@@ -363,34 +366,29 @@ const StartGame = ({ handlePlayRandom, handlePlayWithFriend }: any) => {
   );
 };
 function LadingPage() {
-  const [gameMode, setGameMode] = useState(null);
-  const { gamesocket }: any = useContext(LoginInfo);
+  const { gamesocket, gameMode, setGameMode }: any = useContext(LoginInfo);
   const [friendUsername, setFriendUsername] = useState("");
   const [prompt, setPrompt] = useState(false);
 
-  useEffect(() => {
-    if (gamesocket) {
-      gamesocket.on("invitation", handleInvitation);
+  // useEffect(() => {
+  //   if (gamesocket) {
+  //     gamesocket.on("invitation", handleInvitation);
 
-      return () => {
-        gamesocket.off("invitation", handleInvitation);
-      };
-    }
-  }, [gamesocket]);
+  //     return () => {
+  //       gamesocket.off("invitation", handleInvitation);
+  //     };
+  //   }
+  // }, [gamesocket]);
 
-  const handleInvitation = (data: any) => {
-    const accept = window.confirm(
-      `'wa7ad khona' has invited you to play a game. Do you accept?`
-    );
-    if (accept) {
-      setGameMode("friend");
-      const dataToSend = {
-        roomId: data.roomId,
-        status: "accept",
-      };
-      gamesocket?.emit("PlayWithFriend", dataToSend);
-    }
-  };
+  // const handleInvitation = (data: any) => {
+  //   console.log(`jat invitation ahbibi ara chi boussa `)
+  //   setGameMode('friend');
+  //   const dataToSend = {
+  //     roomId: data.roomId,
+  //     status: 'accept'
+  //   };
+  //   gamesocket?.emit("PlayWithFriend", dataToSend);
+  // };
 
   const handlePlayRandom = () => {
     setGameMode("random");

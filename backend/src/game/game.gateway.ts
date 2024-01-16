@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common';
+import { Get, Logger } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -17,7 +17,7 @@ import { GameState } from './gameState';
 import { stat } from 'fs';
 import { subscribe } from 'diagnostics_channel';
 import { UsersService } from 'src/users/users.service';
-import { emit } from 'process';
+import { disconnect, emit } from 'process';
 import { Status } from '@prisma/client';
 
 @WebSocketGateway({
@@ -55,10 +55,7 @@ export class GameGateway
         }
         this.gameService.HandleEndGame(gameState, this.server);
       }
-      await this.prismaService.user.update({
-        where: { oauthId: oauthId },
-        data: { status: Status['OFFLINE'] },
-      });
+      this.gameService.set_offline(oauthId);
       this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
@@ -72,11 +69,17 @@ export class GameGateway
         client.handshake.query.token.toString(),
         process.env.AT_SECRET,
       );
-      this.gameService.SaveSocket(id.sub.toString(), client);
-      await this.prismaService.user.update({
-        where: { oauthId: id.sub.toString() },
-        data: { status: Status['ONLINE'] },
-      });
+      // the expered token
+      // const client_is_connected = this.gameService.GetSocket(id.sub.toString());
+      // if (client_is_connected) {
+      // client_is_connected.disconnect(true);
+      // this.gameService.DeleteSocket(this.gameService.GetSocket(id.sub));
+      // disconnect
+      // }
+      if (id.sub) {
+        this.gameService.SaveSocket(id.sub.toString(), client, this.server);
+        this.gameService.set_online(id.sub.toString());
+      }
     } catch (error) {
       this.logger.log(error);
     }
@@ -101,29 +104,35 @@ export class GameGateway
     @MessageBody() data_in,
   ) {
     try {
-      await this.gameService.invatefriend(client, data_in.friend);
-      const oauthId = this.gameService.GetoauthId(client);
-      const friend_user = await this.userService.findOneByUsername(
-        data_in.friend,
-      );
-      const friendSocket = this.gameService.GetSocket(friend_user.oauthId);
-      await this.gameService.CreateRoom(oauthId, friend_user.oauthId);
-      client.join(`room:${oauthId}${friend_user.oauthId}`);
-      friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
+      // console.log(data_in);
+      console.log(data_in);
+      if (data_in.status === 'request') {
+        console.log('request');
+        await this.gameService.invatefriend(client, data_in.friend);
+      }
       //demo
-      const data = {
-        // status: 'waiting',
-        status: 'start',
-        roomId: `room:${oauthId}${friend_user.oauthId}`,
-        gameState: this.gameService.GetRoom(
-          `room:${oauthId}${friend_user.oauthId}`,
-        ),
-      };
-      this.server
-        .to(`room:${oauthId}${friend_user.oauthId}`)
-        .emit('start', data);
+      else if (data_in.status === 'accept') {
+        console.log('accept');
+        const data = {
+          // status: 'waiting',
+          status: 'start',
+          roomId: data_in.roomId,
+          gameState: this.gameService.GetRoom(data_in.roomId),
+        };
+        // await this.prismaService.user.update({
+        //   where: { oauthId: data_in.gameState.playerOne.id },
+        //   data: { status: Status['INGAME'] },
+        // });
+        // await this.prismaService.user.update({
+        //   where: { oauthId: data_in.gameState.playerTwo.id },
+        //   data: { status: Status['INGAME'] },
+        // });
+        await this.gameService.Ingame(data.gameState);
+        this.server.to(data_in.roomId).emit('start', data);
+      }
     } catch (error) {
-      this.logger.log(error);
+      console.log(error);
+      // this.logger.log(error);
     }
   }
   @SubscribeMessage('addToRoom')
@@ -133,10 +142,11 @@ export class GameGateway
       await this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
-        await this.prismaService.user.update({
-          where: { oauthId: oauthId },
-          data: { status: Status['INGAME'] },
-        });
+        // await this.prismaService.user.update({
+        //   where: { oauthId: oauthId },
+        //   data: { status: Status['INGAME'] },
+        // });
+        //if clent disconnect remove from waiting list
         await this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
@@ -149,6 +159,7 @@ export class GameGateway
             `room:${randomPlayers[0]}${randomPlayers[1]}`,
           ),
         };
+        await this.gameService.Ingame(data.gameState);
         this.server
           .to(`room:${randomPlayers[0]}${randomPlayers[1]}`)
           .emit('start', data);
@@ -170,7 +181,9 @@ export class GameGateway
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
+        // const checkoffline = await this.gameService.checkoffline(gamestate);
         if (gamestate.winner) {
+          console.log('end game');
           this.gameService.HandleEndGame(gamestate, this.server);
           return;
         }
