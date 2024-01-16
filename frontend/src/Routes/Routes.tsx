@@ -66,6 +66,8 @@ export const routermin = createBrowserRouter(
       </Route>
       <Route element={<ProtectedRoutes />}>
         <Route element={<Protect2fa />}>
+        <Route path="/game" element={<LadingPage />} />
+
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             // Chat Routes
@@ -78,7 +80,6 @@ export const routermin = createBrowserRouter(
             </Route>
             // Other Routes
             <Route path="/home" element={<Home />} />
-            <Route path="/game" element={<LadingPage />} />
             <Route path="/Welcome" element={<Welcome />} />
             <Route path="/Settings" element={<Settings />} />
             <Route path="/friends" element={<Friends />} />
