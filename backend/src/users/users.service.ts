@@ -56,6 +56,11 @@ export class UsersService {
   }
 
   async setStatus(id: string, _status: Status) {
+    if (!id) return null;
+
+    const user = await this.prisma.user.findUnique({ where: { oauthId: id } });
+    if (!user) return null;
+
     return await this.prisma.user.update({
       where: { oauthId: id },
       data: {

@@ -44,23 +44,18 @@ export class GameGateway
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
       const oauthId = this.gameService.GetoauthId(client);
+      const gameState = this.gameService.GetRoom(
+        this.gameService.GetRoomIdByOauthId(oauthId),
+      );
+      if (gameState) {
+        if (gameState.playerOne.id === oauthId) {
+          gameState.winner = 'playerTwo';
+        } else if (gameState.playerTwo.id === oauthId) {
+          gameState.winner = 'playerOne';
+        }
+        this.gameService.HandleEndGame(gameState, this.server);
+      }
       this.gameService.set_offline(oauthId);
-
-      // await this.prismaService.user.update({
-      //   where: { oauthId: oauthId },
-      //   data: { status: Status['OFFLINE'] },
-      // });
-      // const gameState = this.gameService.GetRoom(
-      //   this.gameService.GetRoomIdByOauthId(oauthId),
-      // );
-      // if (gameState) {
-      //   if (gameState.playerOne.id === oauthId) {
-      //     gameState.winner = 'playerTwo';
-      //   } else if (gameState.playerTwo.id === oauthId) {
-      //     gameState.winner = 'playerOne';
-      //   }
-      //   // this.gameService.HandleEndGame(gameState, this.server);
-      // }
       this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
@@ -186,8 +181,8 @@ export class GameGateway
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
-        const checkoffline = await this.gameService.checkoffline(gamestate);
-        if (gamestate.winner || checkoffline) {
+        // const checkoffline = await this.gameService.checkoffline(gamestate);
+        if (gamestate.winner) {
           console.log('end game');
           this.gameService.HandleEndGame(gamestate, this.server);
           return;

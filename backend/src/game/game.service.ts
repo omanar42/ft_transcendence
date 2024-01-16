@@ -157,26 +157,26 @@ export class GameService {
     this.gameMapService.delete(key);
   };
   set_offline = async (oauthId: string) => {
-    this.usersService.setStatus(oauthId, Status['OFFLINE']);
+    await this.usersService.setStatus(oauthId, Status['OFFLINE']);
   };
   set_online = async (oauthId: string) => {
-    this.usersService.setStatus(oauthId, Status['ONLINE']);
+    await this.usersService.setStatus(oauthId, Status['ONLINE']);
   }
-  checkoffline = async (gamestate: GameState) => {
-    const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
-    const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
-    if (player1.status === 'OFFLINE') {
-      console.log('player1 offline');
-      gamestate.winner = 'playerTwo';
-      return true;
-    }
-    if (player2.status === 'OFFLINE') {
-      console.log('player2 offline');
-      gamestate.winner = 'playerOne';
-      return true;
-    }
-    return false;
-  };
+  // checkoffline = async (gamestate: GameState) => {
+  //   const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
+  //   const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
+  //   if (player1.status === 'OFFLINE') {
+  //     console.log('player1 offline');
+  //     gamestate.winner = 'playerTwo';
+  //     return true;
+  //   }
+  //   if (player2.status === 'OFFLINE') {
+  //     console.log('player2 offline');
+  //     gamestate.winner = 'playerOne';
+  //     return true;
+  //   }
+  //   return false;
+  // };
   Ingame = async (gamestate: GameState) => {
     const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
     const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
@@ -249,11 +249,9 @@ export class GameService {
     const user1 = await this.usersService.findOneById(winner.id);
     const user2 = await this.usersService.findOneById(loser.id);
     if (user1.status !== 'OFFLINE') {
-      // this.GetSocket(winner.id).leave(gameState.roomId);
       await this.usersService.setStatus(user1.oauthId, Status['ONLINE']);
     }
     if (user2.status !== 'OFFLINE') {
-      // this.GetSocket(loser.id).leave(gameState.roomId);
       await this.usersService.setStatus(user2.oauthId, Status['ONLINE']);
     }
     //delete room from server
