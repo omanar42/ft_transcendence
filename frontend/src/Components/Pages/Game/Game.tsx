@@ -100,6 +100,7 @@ const Game = ({ setGameMode }: any) => {
       alert("You lost!");
     }
     setStatus("gameOver");
+    setGameMode(null);
   };
 
   const handleStart = (data: any) => {
@@ -337,30 +338,29 @@ const Game = ({ setGameMode }: any) => {
 };
 
 function LadingPage() {
-  const [gameMode, setGameMode] = useState('');
-  const { gamesocket }: any = useContext(LoginInfo);
+  const { gamesocket, gameMode, setGameMode }: any = useContext(LoginInfo);
   const [friendUsername, setFriendUsername] = useState("");
   const [prompt, setPrompt] = useState(false);
 
-  useEffect(() => {
-    if (gamesocket) {
-      gamesocket.on("invitation", handleInvitation);
+  // useEffect(() => {
+  //   if (gamesocket) {
+  //     gamesocket.on("invitation", handleInvitation);
 
-      return () => {
-        gamesocket.off("invitation", handleInvitation);
-      };
-    }
-  }, [gamesocket]);
+  //     return () => {
+  //       gamesocket.off("invitation", handleInvitation);
+  //     };
+  //   }
+  // }, [gamesocket]);
 
-  const handleInvitation = (data: any) => {
-    console.log(`jat invitation ahbibi ara chi boussa `)
-    setGameMode('friend');
-    const dataToSend = {
-      roomId: data.roomId,
-      status: 'accept'
-    };
-    gamesocket?.emit("PlayWithFriend", dataToSend);
-  };
+  // const handleInvitation = (data: any) => {
+  //   console.log(`jat invitation ahbibi ara chi boussa `)
+  //   setGameMode('friend');
+  //   const dataToSend = {
+  //     roomId: data.roomId,
+  //     status: 'accept'
+  //   };
+  //   gamesocket?.emit("PlayWithFriend", dataToSend);
+  // };
 
   const handlePlayRandom = () => {
     setGameMode("random");

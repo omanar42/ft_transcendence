@@ -1,10 +1,10 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, redirect, useNavigate } from "react-router-dom";
 import { Logo } from "../Components/Pages/Login";
 import NavigationLink from "../Utils/NavigationLink";
 import { FaBell } from "react-icons/fa6";
 import ProfileAvatar from "../Utils/ProfileAvatar";
 import Avatar from "../assets/avatar.jpeg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 
 function DropDwonMenu({CloseDropMenu}:any) {
@@ -23,8 +23,41 @@ function DropDwonMenu({CloseDropMenu}:any) {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-  const { userInfo }: any = useContext(LoginInfo);
+  const { userInfo, gamesocket, gameMode, setGameMode  }: any = useContext(LoginInfo);
   const CloseDropMenu = () => setisDropDown(false);
+  const [isInvitation, setIsInvitation] = useState(false);
+  const [isAccept, setIsAccept] = useState(false);
+  const [roomId, setRoomId] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (gamesocket) {
+      gamesocket.on("invitation", handleInvitation);
+
+      return () => {
+        gamesocket.off("invitation", handleInvitation);
+      };
+    }
+  }, [gamesocket]);
+  
+  const handleInvitation = (data: any) => {
+    console.log(`jat invitation ahbibi ara chi boussa `);
+    setRoomId(data.roomId);
+    setIsInvitation(true);
+  };
+
+  const handleAccept = () => {    
+    const dataToSend = {
+      roomId: roomId,
+      status: 'accept'
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
+    setIsAccept(false);
+    setIsInvitation(false);
+    setGameMode('friend');
+    navigate('/game');
+  };
+
   return (
     <div>
       <div className="max-w-140  ml-auto mr-auto p-10 text-3xl text-white h-40 flex justify-between items-center font-extrabold">
@@ -61,6 +94,29 @@ function MainLayout() {
       <main>
         <Outlet />
       </main>
+      {isInvitation && (
+        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-dark p-10 rounded-xl">
+            <h1 className="text-4xl font-bold text-white">
+              You have an invitation
+            </h1>
+            <div className="flex justify-between items-center gap-10 mt-10">
+              <button
+                className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                onClick={() => handleAccept()}
+              >
+                Accept
+              </button>
+              <button
+                className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                onClick={() => setIsInvitation(false)}
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
