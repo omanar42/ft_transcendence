@@ -380,17 +380,16 @@ const StartGame = ({ handlePlayRandom, handlePlayWithFriend }: any) => {
       <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With Friend</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped}>
-          <div className="w-[50rem]">
             <img
               onClick={() => setIsFlipped(!isFlipped)}
-              className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]"
+              className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s] h-[50rem] w-[42rem]"
               src={Friend}
               alt="friend"
             />
-          </div>
+            
           <div
             onClick={() => setIsFlipped(!isFlipped)}
-            className="w-[20rem] h-[20rem] bg-black"
+            className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s] h-[50rem] w-[42rem] bg-dark"
           ></div>
         </ReactCardFlip>
       </div>
