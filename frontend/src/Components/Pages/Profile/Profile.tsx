@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { GrCaretPrevious } from "react-icons/gr";
 import { GrCaretNext } from "react-icons/gr";
+import { motion } from "framer-motion";
+
 // const History = [
 //   {
 //     avatar:
@@ -75,8 +77,7 @@ import { GrCaretNext } from "react-icons/gr";
 //     avatar:
 //       "https://cdn.intra.42.fr/users/d0ac05e0e24c0d0a932a8c2ff83d833e/small_slouham.jpeg",
 //     username: "small_slouham",
-//   },
-//   {
+//   },mrmedrobaii23241
 //     avatar:
 //       "https://cdn.intra.42.fr/users/f108b3d2ad145657c753cd4caad243cb/small_nben-ais.jpeg",
 //     username: "small_nben-ais",
@@ -106,7 +107,7 @@ const renderCustomizedLabel = ({
 
   return (
     <text
-    className="text-4xl font-bold"
+      className="text-4xl font-bold"
       x={x}
       y={y}
       fill="white"
@@ -117,12 +118,12 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
-const WinLose = ({GmStatus}) => {
+const WinLose = ({ GmStatus }) => {
   return (
     <div className="absolute  top-[1.5em] right-[-1rem]">
-      <PieChart  width={300} height={300}>
+      <PieChart width={300} height={300}>
         <Pie
-        className="border-2 border-white border-opacity-20 rounded-full opacity-80"
+          className="border-2 border-white border-opacity-20 rounded-full opacity-80"
           data={GmStatus}
           cx="50%"
           cy="50%"
@@ -133,7 +134,7 @@ const WinLose = ({GmStatus}) => {
           dataKey="value"
         >
           {data.map((entry, index) => (
-            <Cell  key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
       </PieChart>
@@ -228,7 +229,7 @@ const ProgressBar = ({ bgColor, level }: any) => {
     </div>
   );
 };
-const Scoure = ({ userInfo, acheivments, level, GmStatus}: any) => {
+const Scoure = ({ userInfo, acheivments, level, GmStatus }: any) => {
   return (
     <div className="flex flex-col items-center gap-[4rem]">
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
@@ -249,7 +250,7 @@ const Scoure = ({ userInfo, acheivments, level, GmStatus}: any) => {
       </div>
       <div className="flex-1 relative w-full bg-black bg-opacity-40 rounded-3xl flex items-center justify-between">
         <ImageSlider images={acheivments} />
-        <WinLose GmStatus={GmStatus}/>
+        <WinLose GmStatus={GmStatus} />
       </div>
     </div>
   );
@@ -332,7 +333,10 @@ function Profile() {
   const [level, setLevel] = useState(0);
   const userName = useParams();
   const navigate = useNavigate();
-  const [GmStatus, setGmStatus] = useState([{name:"Win", value:0}, {name:"Lose", value:0}]);
+  const [GmStatus, setGmStatus] = useState([
+    { name: "Win", value: 0 },
+    { name: "Lose", value: 0 },
+  ]);
   const { userInfo }: any = useContext(LoginInfo);
   if (userName.username === undefined || userName.username === "me") {
     userName.username = userInfo.username;
@@ -355,18 +359,16 @@ function Profile() {
         setAcheivments(response.data.achievements);
         setHistory(response.data.MatchHistory);
         setLevel(response.data.level);
-        setGmStatus(() => (
-          [
-            {
-              name: "Win",
-              value: response.data.wins,
-            },
-            {
-              name: "Lose",
-              value: response.data.losses,
-            },
-          ]
-        ))
+        setGmStatus(() => [
+          {
+            name: "Win",
+            value: response.data.wins,
+          },
+          {
+            name: "Lose",
+            value: response.data.losses,
+          },
+        ]);
         console.log(GmStatus);
       } catch (error) {
         navigate("/404");
@@ -378,7 +380,12 @@ function Profile() {
 
   return (
     <div className="ml-auto mr-auto mt-4 text-white text-opacity-50  border-[1px] border-green-600 w-140 h-[70rem] overflow-hidden bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center">
-      <div className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: "100%" , transition: { duration: 0.3 }}}
+        exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+        className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full"
+      >
         <Scoure
           userInfo={ProfileInfo}
           acheivments={acheivments}
@@ -437,7 +444,7 @@ function Profile() {
           </main>
           <div></div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

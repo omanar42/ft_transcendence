@@ -3,6 +3,7 @@ import Robot from './assets/Robot.png'
 import axios from 'axios';
 import { useContext } from 'react';
 import LoginInfo from '../../../Contexts/LoginContext';
+import { motion } from "framer-motion"
 
 function Home() {
   const {setuserInfo, userInfo} = useContext(LoginInfo);
@@ -51,7 +52,11 @@ function Home() {
   // }, [userInfo])
 
   return (
-    <div className="h-screen flex justify-center relative items-center text-white">
+    <motion.div 
+    initial={{ y: "100%" }}
+    animate={{ y: "0" }}
+    exit={{y: "100%" }} 
+    className="h-screen flex justify-center relative items-center text-white">
       <div className="w-140 flex gap-[10rem] ">
         <div className="w-3/5">
           <h1 className="text-9xl pb-16">RoboPong Story</h1>
@@ -74,7 +79,7 @@ function Home() {
         </div>
           <img className="h-[50rem] absolute top-[14rem] right-[1rem]" src={Robot} />
       </div>
-    </div>
+    </motion.div>
   );
 }
 

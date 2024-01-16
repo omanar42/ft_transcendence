@@ -29,7 +29,7 @@ function RenderMembers({
   const unBanedUser = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:3000/chat/ban_user",
+        "http://127.0.0.1:3000/chat/unban_user",
         { roomid: currentRoom, target_username: username },
         { withCredentials: true }
       );
@@ -77,6 +77,20 @@ function RenderMembers({
       console.error(error);
     }
   };
+
+  const UnbannUser = async() => {
+    try{
+      const user ={
+        roomid: currentRoom,
+        target_username: username,
+      };
+      await axios.post("http://127.0.0.1:3000/chat/unban_user", user, {withCredentials: true});
+      window.location.reload();
+      }
+      catch(error){
+        toast.error(error.response.data.message);
+    }
+  }
   return (
     <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-blue-600 hover:duration-[0.2s] rounded-xl  ">
       <div className="flex flex-col items-start gap-3">
@@ -99,7 +113,7 @@ function RenderMembers({
           userInfo.username !== username &&
           status === "BANNED" && (
             <div className="flex gap-4 items-center">
-              <TbCurrencyPoundOff className="text-4xl" />
+              <TbCurrencyPoundOff onClick={unBanedUser} className="text-5xl rounded-full hover:bg-white hover:text-red-600" />
               <GiBootKick
                 onClick={KickUser}
                 className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full"
@@ -119,8 +133,8 @@ function RenderMembers({
 
 function RoomMembers() {
   const [roomMembers, setRoomMembers] = useState<RoomMembers[]>([]);
-  const { currentRoom, setOwnersheep, ownerSheep } = useContext(RoomContext);
-  const { userInfo } = useContext(LoginInfo);
+  const { currentRoom, setOwnersheep, ownerSheep }:any = useContext(RoomContext);
+  const { userInfo }:any = useContext(LoginInfo);
 
   useEffect(() => {
     const fetchRoommemebers = async () => {

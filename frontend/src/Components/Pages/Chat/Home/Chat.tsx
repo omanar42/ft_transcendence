@@ -5,6 +5,7 @@ import UserInfo from "./UserInfo";
 import { Room } from "../Rooms/RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
+import { motion } from "framer-motion";
 
 function Chat() {
   const [usersRoom, setUsersRoom] = useState<Room[]>([]);
@@ -23,11 +24,16 @@ function Chat() {
   }, []);
   return (
     <RoomContextProvider>
-      <div className="bg-black bg-opacity-30 backdrop-blur-sm h-[62rem] grid grid-cols-5 gap-x-2 mt-4">
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: "0" }}
+        exit={{ y: "100%" }}
+        className="bg-black bg-opacity-30 backdrop-blur-sm h-[62rem] grid grid-cols-5 gap-x-2 mt-4"
+      >
         <ChatList chatUser={usersRoom} />
         <MessageInput />
         <UserInfo />
-      </div>
+      </motion.div>
     </RoomContextProvider>
   );
 }

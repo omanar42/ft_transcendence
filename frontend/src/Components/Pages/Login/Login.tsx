@@ -5,7 +5,7 @@ import google from "./assets/Google.png";
 import Logo from "../../../assets/logo.png";
 import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
-
+import {motion} from "framer-motion";
 interface ButtonType {
   icon: string;
   text: string;
@@ -35,7 +35,10 @@ function Login() {
     }
   }
   return (
-    <div className="h-screen flex justify-center items-center pl-10 pr-10">
+    <motion.div 
+    initial={{width:0}}
+    animate={{width:"100%"}}
+    exit={{width:0}}className="h-screen flex justify-center items-center pl-10 pr-10">
       <div className="grid grid-cols-3 max-w-140">
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
@@ -61,7 +64,7 @@ function Login() {
           <img className="w-full h-full" src={login} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

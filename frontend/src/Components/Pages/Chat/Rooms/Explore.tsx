@@ -4,7 +4,7 @@ import axios from "axios";
 import avatar from "../../../../assets/avatar.jpeg";
 import { ToastContainer, toast } from "react-toastify";
 import "./CreateRoom.css";
-
+import { motion } from "framer-motion";
 export interface UnjoinedRoom {
   avatar: string; // assuming avatar is a string URL or similar
   time?: string;
@@ -52,7 +52,10 @@ function ListRooms({
 
   return (
     <div>
-      <li
+      <motion.li
+        initial={{ y: "100%" }}
+        animate={{ y: 0, transition: { duration: 0.2 } }}
+        exit={{ y: "100%" }}
         className="flex items-center justify-between mb-6 cursor-pointer border-2 border-white border-opacity-20 p-3 rounded-xl w-[25rem] hover:bg-white hover:bg-opacity-80 hover:border-pink-100 hover:text-black hover:duration-[0.3s] "
         key={roomId}
         onClick={() => setIsOpen(true)}
@@ -67,7 +70,7 @@ function ListRooms({
             JOIN
           </button>
         </div>
-      </li>
+      </motion.li>
       {isOPen && (
         <div className="modal  flex justify-center items-center">
           <div className="w-[60rem] relative h-[40rem] bg-white bg-opacity-10 border-2 border-white border-opacity-20 rounded-3xl flex flex-col items-center justify-center gap-[3rem]">
@@ -130,7 +133,12 @@ function Explore() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center">
+    <motion.div
+      initial={{ width: 0 }}
+      animate={{ width: "100%" }}
+      exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+      className="flex items-center justify-center"
+    >
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -158,7 +166,7 @@ function Explore() {
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -5,6 +5,8 @@ import { HiUserRemove } from "react-icons/hi";
 import { ImBlocked } from "react-icons/im";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
+import { motion } from "framer-motion"
+
 
 export const friendAction = async (
   frUser: any,
@@ -42,7 +44,7 @@ function ListFriends({ avatar, username, status, handlUpdate, id, actions }: any
   return (
     <li className="text-white flex cursor-pointer hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
       <img className="h-[2rem] w-full flex-1" src={avatar} />
-      <div className="flex h-[6rem] justify-around items-center h-full gap-[1rem]">
+      <div className="flex h-[6rem] justify-around items-center  gap-[1rem]">
         <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
           {username}
         </h1>
@@ -138,7 +140,11 @@ function Friends() {
   };
 
   return (
-    <div className="ml-auto mr-auto w-[140rem] h-[62rem] rounded-xl bg-black bg-opacity-20 backdrop-blur-sm p-[3rem] border-2 border-white border-opacity-20">
+    <motion.div 
+    initial={{ width: 0 }}
+    animate={{ width: "140rem" }}
+    exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+    className="ml-auto mr-auto w-[140rem] h-[62rem] rounded-xl bg-black bg-opacity-20 backdrop-blur-sm p-[3rem] border-2 border-white border-opacity-20">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -152,7 +158,11 @@ function Friends() {
         theme="dark"
         className="text-3xl"
       />
-      <div className=" flex flex-col border-opacity-20">
+      <motion.div 
+         initial={{ width: 0 }}
+         animate={{ width: "100%" }}
+         exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+      className=" flex flex-col border-opacity-20">
         <header className="h-[7rem] bg-dark-300 bg-opacity-60 rounded-xl text-white flex items-center justify-around">
           <nav className="flex justify-between  w-2/3 text-2xl pr-[3rem] font-bold pl-[3rem]">
             <button
@@ -216,8 +226,8 @@ function Friends() {
             />
           ))}
         </ul>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
