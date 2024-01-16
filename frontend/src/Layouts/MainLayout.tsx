@@ -1,4 +1,4 @@
-import { Link, Outlet, redirect, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Logo } from "../Components/Pages/Login";
 import NavigationLink from "../Utils/NavigationLink";
 import { FaBell } from "react-icons/fa6";
@@ -23,28 +23,24 @@ function DropDwonMenu({CloseDropMenu}:any) {
 
 function MainLayout() {
   const [isDropDown, setisDropDown] = useState(false);
-  const { userInfo, gamesocket, gameMode, setGameMode  }: any = useContext(LoginInfo);
+  const { userInfo, gamesocket, setGameMode  }: any = useContext(LoginInfo);
   const CloseDropMenu = () => setisDropDown(false);
   const [isInvitation, setIsInvitation] = useState(false);
-  const [isAccept, setIsAccept] = useState(false);
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     if (gamesocket) {
-      gamesocket.on("invitation", handleInvitation);
+      gamesocket.on("invitation", (data: any) => {
+        setRoomId(data.roomId);
+        setIsInvitation(true);
+      });
 
       return () => {
-        gamesocket.off("invitation", handleInvitation);
-      };
+        gamesocket.off("invitation");
+      }
     }
   }, [gamesocket]);
-  
-  const handleInvitation = (data: any) => {
-    console.log(`jat invitation ahbibi ara chi boussa `);
-    setRoomId(data.roomId);
-    setIsInvitation(true);
-  };
 
   const handleAccept = () => {    
     const dataToSend = {
@@ -52,7 +48,6 @@ function MainLayout() {
       status: 'accept'
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
-    setIsAccept(false);
     setIsInvitation(false);
     setGameMode('friend');
     navigate('/game');
