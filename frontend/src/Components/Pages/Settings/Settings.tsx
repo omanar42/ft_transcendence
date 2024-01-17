@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./settings.css";
@@ -165,7 +166,12 @@ function Settings() {
   }
 
   return (
-    <div className="flex justify-center items-center h-full mt-4">
+    <motion.div
+    
+    initial={{ y: "100%" }}
+    animate={{ y: "0" }}
+    exit={{y: "100%" }} 
+    className="flex justify-center items-center h-full mt-4">
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -256,7 +262,7 @@ function Settings() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

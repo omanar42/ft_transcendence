@@ -5,6 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { GrCaretPrevious } from "react-icons/gr";
 import { GrCaretNext } from "react-icons/gr";
+import { motion } from "framer-motion";
+
 // const History = [
 //   {
 //     avatar:
@@ -75,14 +77,70 @@ import { GrCaretNext } from "react-icons/gr";
 //     avatar:
 //       "https://cdn.intra.42.fr/users/d0ac05e0e24c0d0a932a8c2ff83d833e/small_slouham.jpeg",
 //     username: "small_slouham",
-//   },
-//   {
+//   },mrmedrobaii23241
 //     avatar:
 //       "https://cdn.intra.42.fr/users/f108b3d2ad145657c753cd4caad243cb/small_nben-ais.jpeg",
 //     username: "small_nben-ais",
 //   },
 // ];
+import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 
+const data = [
+  { name: "Group A", value: 400 },
+  { name: "Group B", value: 300 },
+];
+const COLORS = ["#16a34a", "#dc2626"];
+
+const RADIAN = Math.PI / 180;
+const renderCustomizedLabel = ({
+  cx,
+  cy,
+  midAngle,
+  innerRadius,
+  outerRadius,
+  percent,
+  index,
+}) => {
+  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+  return (
+    <text
+      className="text-4xl font-bold"
+      x={x}
+      y={y}
+      fill="white"
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+    >
+      {`${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+};
+const WinLose = ({ GmStatus }) => {
+  return (
+    <div className="absolute  top-[1.5em] right-[-1rem]">
+      <PieChart width={300} height={300}>
+        <Pie
+          className="border-2 border-white border-opacity-20 rounded-full opacity-80"
+          data={GmStatus}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          label={renderCustomizedLabel}
+          outerRadius={100}
+          fill="#16a34a"
+          dataKey="value"
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+      </PieChart>
+    </div>
+  );
+};
 const ImageSlider = ({ images }) => {
   const [current, setCurrent] = useState(0);
   const length = images.length;
@@ -99,7 +157,7 @@ const ImageSlider = ({ images }) => {
     return null;
   }
   return (
-    <ul className="flex items-center justify-between gap-[2rem]">
+    <ul className="ml-[4rem] flex items-center justify-between gap-[2rem]">
       <div>
         {images.map((image, index) => {
           // console.log()
@@ -124,7 +182,7 @@ const ImageSlider = ({ images }) => {
                       onClick={prevSlide}
                     />
                     <img
-                      className="h-[20rem] border-4 border-pink-500 w-[20rem]  rounded-full"
+                      className="h-[18rem] border-4  border-pink-500 w-[18rem]  rounded-full"
                       src={url + image + ".png"}
                       alt="travel image"
                     />
@@ -144,32 +202,34 @@ const ImageSlider = ({ images }) => {
   );
 };
 
-
 const ProgressBar = ({ bgColor, level }: any) => {
-
   const fillerStyles = {
-    height: '100%',
-    width: `${Number(level) * 100 % 100}%`,
+    height: "100%",
+    width: `${(Number(level) * 100) % 100}%`,
     backgroundColor: bgColor,
-    borderRadius: 'inherit',
-    textAlign: 'center'
-  }
+    borderRadius: "inherit",
+    textAlign: "center",
+  };
 
   const labelStyles = {
     // padding: 5,
-    color: 'white',
-    fontWeight: 'bold'
-
-  }
+    color: "white",
+    fontWeight: "bold",
+  };
   return (
     <div className="h-[4rem] relative w-11/12 rounded-2xl m-4 border-2 border-opacity-60 border-white">
-      <div className="flex  justify-center items-center" style={fillerStyles} >
-        <span className="text-3xl absolute top-1rem right-[22rem]" style={labelStyles}>Level {level}</span>
+      <div className="flex  justify-center items-center" style={fillerStyles}>
+        <span
+          className="text-3xl absolute top-1rem right-[22rem]"
+          style={labelStyles}
+        >
+          Level {Math.round(Number(level) * 100) / 100}
+        </span>
       </div>
     </div>
   );
 };
-const Scoure = ({ userInfo, acheivments, level }: any) => {
+const Scoure = ({ userInfo, acheivments, level, GmStatus }: any) => {
   return (
     <div className="flex flex-col items-center gap-[4rem]">
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
@@ -188,9 +248,9 @@ const Scoure = ({ userInfo, acheivments, level }: any) => {
         {/* <LevelBar currentScore={50} maxScore={100} /> */}
         <ProgressBar bgColor={"#008000"} level={level} />
       </div>
-      <div className="flex-1 w-full bg-black bg-opacity-40 rounded-3xl flex items-center justify-center">
+      <div className="flex-1 relative w-full bg-black bg-opacity-40 rounded-3xl flex items-center justify-between">
         <ImageSlider images={acheivments} />
-        <ImageSlider images={acheivments} />
+        <WinLose GmStatus={GmStatus} />
       </div>
     </div>
   );
@@ -207,17 +267,24 @@ const MatchHistory = ({
   const navigate = useNavigate();
   return (
     <div
-      onClick={()=>navigate(`/profile/${username}`)} 
-      className={`${win ? "bg-green-600" : "bg-red-600" } bg-opacity-25 rounded-xl flex items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer`}>
-      <div className="flex items-center gap-[1rem] text-white font-bol ">
+      onClick={() => navigate(`/profile/${username}`)}
+      className={`${
+        win ? "bg-green-600" : "bg-red-600"
+      }  bg-opacity-25  rounded-xl flex  items-center  p-2 pl-4 pr-4 hover:bg-slate-500 hover:duration-[0.2s] cursor-pointer`}
+    >
+      <div className="flex  flex-1 items-center gap-[1rem] text-white font-bol ">
         <img className="h-[4rem] w-[4rem] rounded-full" src={avatar} />
         <h1 className="text-2xl font-bold">{username}</h1>
       </div>
-      <div className="flex flex-col justify-center items-center font-bold flex-1">
-        <h1 className={`${win ? "text-green-600" : "text-red-600"} text-3xl`}>{`${win ? "Victory" : "Defeat"} `}</h1>
-        <span className="text-2xl">{OpunentScore} _ {userScore}</span>
+      <div className="flex flex-col  justify-center items-center font-bold flex-1">
+        <h1
+          className={`${win ? "text-green-600" : "text-red-600"} text-3xl`}
+        >{`${win ? "Victory" : "Defeat"} `}</h1>
+        <span className="text-2xl">
+          {OpunentScore} _ {userScore}
+        </span>
       </div>
-      <h1 className="text-3xl ">{xp} EXP</h1>
+      <h1 className="text-3xl flex-1 text-end">{xp} EXP</h1>
     </div>
   );
 };
@@ -266,8 +333,12 @@ function Profile() {
   const [level, setLevel] = useState(0);
   const userName = useParams();
   const navigate = useNavigate();
-  const {userInfo}:any = useContext(LoginInfo);
-  if (userName.username === undefined || userName.username === "me"){
+  const [GmStatus, setGmStatus] = useState([
+    { name: "Win", value: 0 },
+    { name: "Lose", value: 0 },
+  ]);
+  const { userInfo }: any = useContext(LoginInfo);
+  if (userName.username === undefined || userName.username === "me") {
     userName.username = userInfo.username;
   }
   useEffect(() => {
@@ -288,6 +359,17 @@ function Profile() {
         setAcheivments(response.data.achievements);
         setHistory(response.data.MatchHistory);
         setLevel(response.data.level);
+        setGmStatus(() => [
+          {
+            name: "Win",
+            value: response.data.wins,
+          },
+          {
+            name: "Lose",
+            value: response.data.losses,
+          },
+        ]);
+        console.log(GmStatus);
       } catch (error) {
         navigate("/404");
       }
@@ -298,8 +380,18 @@ function Profile() {
 
   return (
     <div className="ml-auto mr-auto mt-4 text-white text-opacity-50  border-[1px] border-green-600 w-140 h-[70rem] overflow-hidden bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center">
-      <div className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full">
-        <Scoure userInfo={ProfileInfo} acheivments={acheivments} level={level}/>
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: "100%" , transition: { duration: 0.3 }}}
+        exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+        className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full"
+      >
+        <Scoure
+          userInfo={ProfileInfo}
+          acheivments={acheivments}
+          level={level}
+          GmStatus={GmStatus}
+        />
         <div className="grid-2 bg-black bg-opacity-40 rounded-3xl pl-8 pr-8 pt-5 overflow-auto">
           <nav className="flex gap-[3rem] text-3xl text-white font-bold">
             <button
@@ -326,7 +418,14 @@ function Profile() {
             {openMatch && (
               <div className="flex flex-col text-white gap-[0.7rem]">
                 {History.map((user) => (
-                  <MatchHistory username={user.opponentUser} avatar={user.opponentAvatar} userScore={user.userScore} OpunentScore={user.opponentScore} xp={user.xpGain} win={user.win}/>
+                  <MatchHistory
+                    username={user.opponentUser}
+                    avatar={user.opponentAvatar}
+                    userScore={user.userScore}
+                    OpunentScore={user.opponentScore}
+                    xp={user.xpGain}
+                    win={user.win}
+                  />
                 ))}
               </div>
             )}
@@ -345,7 +444,7 @@ function Profile() {
           </main>
           <div></div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
