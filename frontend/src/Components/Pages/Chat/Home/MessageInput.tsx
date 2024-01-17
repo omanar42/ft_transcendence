@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { IoIosSend } from "react-icons/io";
 import axios from "axios";
 import { RoomContext } from "../../../../Contexts/RoomContext";
@@ -16,6 +16,16 @@ interface messageData {
   userName: string;
 }
 
+const useAutoScroll = () => {
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  });
+
+  return bottomRef;
+};
+
 function MessageInput() {
   const [currentMessage, setcurrentMessage] = useState("");
   const { currentRoom, setCurrentRoom }: any = useContext(RoomContext);
@@ -26,7 +36,7 @@ function MessageInput() {
   const [addIsopen, setAddIsOpen] = useState(false);
   const [newOwner, setNewowner] = useState("");
   const { ownerSheep, setMessageList, messageList, setAvatar, avatar, setRoomName, roomName}:any = useContext(RoomContext);
-
+  const scrollRef = useAutoScroll();
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData: messageData = {
@@ -215,6 +225,7 @@ function MessageInput() {
                 </div>
               );
             })}
+            <div ref={scrollRef}/>
           </div>
           {ownerSheep !== "BANNED" && (
             <div className="h-[6rem] pl-10 pr-10 border-t-2 border-opacity-20 border-white flex justify-between items-center gap-3">

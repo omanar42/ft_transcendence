@@ -1,6 +1,11 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
+import Friend from "./Assets/Friend.png";
+import Random from "./Assets/random.png";
+import { motion, AnimatePresence } from "framer-motion";
+import avatar from "../../../assets/avatar.jpeg";
+import ReactCardFlip from "react-card-flip";
 
 interface Player {
   id: number;
@@ -76,7 +81,8 @@ const Game = ({ setGameMode }: any) => {
       color: "#6574cd",
     },
   });
-
+  const [userScore, setUserScore] = useState<number>(0);
+  const [opponentScore, setOpponentScore] = useState<number>(0);
   useEffect(() => {
     if (gamesocket) {
       gamesocket.on("start", handleStart);
@@ -104,6 +110,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
+    console.log("----------------dkhaal----------------");
     setStatus(data.status);
     setRoomId(data.roomId);
   };
@@ -120,6 +127,8 @@ const Game = ({ setGameMode }: any) => {
       ) {
         gameState.current.user.score = gameStateUpdate.playerOne.score;
         gameState.current.opponent.score = gameStateUpdate.playerTwo.score;
+        setUserScore(gameStateUpdate.playerOne.score);
+        setOpponentScore(gameStateUpdate.playerTwo.score);
         gameState.current.user.y = 700 / 2 - 100 / 2;
       }
     } else {
@@ -131,6 +140,8 @@ const Game = ({ setGameMode }: any) => {
       ) {
         gameState.current.opponent.score = gameStateUpdate.playerOne.score;
         gameState.current.user.score = gameStateUpdate.playerTwo.score;
+        setUserScore(gameStateUpdate.playerOne.score);
+        setOpponentScore(gameStateUpdate.playerTwo.score);
         gameState.current.user.y = 700 / 2 - 100 / 2;
       }
     }
@@ -326,17 +337,74 @@ const Game = ({ setGameMode }: any) => {
           Back to Menu
         </button>
       ) : (
-        <canvas
-          className="canvasStyle"
-          width="1300"
-          height="700"
-          ref={canvasRef}
-        ></canvas>
+        <div className="w-[75%] flex flex-col gap-1 justify-center">
+          {status === "start" && (
+            <div className="b800 bg-white bg-opacity-[10%] backdrop-blur-sm flex items-center justify-between p-4 rounded-xl">
+              <div className="flex-1 flex gap-[2rem] items-center text-white ">
+                <img
+                  src={avatar}
+                  className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                />
+                <h1 className="text-4xl font-extrabold">Simo</h1>
+              </div>
+              <div className="flex-1 flex items-center  text-white font-bold justify-between">
+                <span className="text-6xl">{userScore}</span>
+                <h1 className="text-8xl">VS</h1>
+                <span className="text-6xl">{opponentScore}</span>
+              </div>
+              <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
+                <h1 className="text-4xl font-extrabold">Simo</h1>
+                <img
+                  src={avatar}
+                  className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                />
+              </div>
+            </div>
+          )}
+          <canvas
+            className="canvasStyle"
+            width="1300"
+            height="700"
+            ref={canvasRef}
+          ></canvas>
+        </div>
       )}
     </>
   );
 };
 
+const StartGame = ({ handlePlayRandom, handlePlayWithFriend }: any) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+  return (
+    <div className="flex justify-around w-[130rem] ml-auto mr-auto">
+      <div className="flex flex-col items-center gap-[2rem]">
+        <h1 className="text-5xl text-white">Play With Friend</h1>
+        <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped}>
+            <img
+              onClick={() => setIsFlipped(!isFlipped)}
+              className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s] h-[50rem] w-[42rem]"
+              src={Friend}
+              alt="friend"
+            />
+            
+          <div
+            onClick={() => setIsFlipped(!isFlipped)}
+            className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s] h-[50rem] w-[42rem] bg-dark"
+          ></div>
+        </ReactCardFlip>
+      </div>
+      <div className="flex flex-col items-center gap-[2rem]">
+        <h1 className="text-5xl text-white">Play Random</h1>
+        <img
+          onClick={handlePlayRandom}
+          className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]"
+          src={Random}
+          alt="random"
+        />
+      </div>
+    </div>
+  );
+};
 function LadingPage() {
   const { gamesocket, gameMode, setGameMode }: any = useContext(LoginInfo);
   const [friendUsername, setFriendUsername] = useState("");
@@ -371,48 +439,57 @@ function LadingPage() {
     setGameMode("friend");
     const dataToSend = {
       friend: username,
-      status: 'request'
+      status: "request",
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      {!gameMode ? (
-        <div>
-          <button className="playButton" onClick={() => setPrompt(true)}>
-            Play Random
-          </button>
-          {prompt && (
-            <div>
-              <button className="playButton" onClick={() => handlePlayRandom()}>
-                Confirm
-              </button>
-              <button className="playButton" onClick={() => setPrompt(false)}>
-                Cancel
-              </button>
-            </div>
-          )}
-          <div>
-            <input
-              type="text"
-              placeholder="Friend's username"
-              value={friendUsername}
-              onChange={(e) => setFriendUsername(e.target.value)}
-              className="usernameInput"
-            />
-            <button
-              className="playButton"
-              onClick={() => handlePlayWithFriend(friendUsername)}
-            >
-              Play with Friend
-            </button>
-          </div>
-        </div>
-      ) : (
-        <Game setGameMode={setGameMode} />
-      )}
-    </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ y: "100%" }}
+        animate={{ y: "0" }}
+        exit={{ y: "100%" }}
+        className="h-screen flex justify-center items-center"
+      >
+        {!gameMode ? (
+          // <div>
+          //   <button className="playButton" onClick={() => setPrompt(true)}>
+          //     Play Random
+          //   </button>
+          //   {prompt && (
+          //     <div>
+          //       <button className="playButton" onClick={() => handlePlayRandom()}>
+          //         Confirm
+          //       </button>
+          //       <button className="playButton" onClick={() => setPrompt(false)}>
+          //         Cancel
+          //       </button>
+          //     </div>
+          //   )}
+          //   <div>
+          //     <input
+          //       type="text"
+          //       placeholder="Friend's username"
+          //       value={friendUsername}
+          //       onChange={(e) => setFriendUsername(e.target.value)}
+          //       className="usernameInput"
+          //     />
+          //     <button
+          //       className="playButton"
+          //       onClick={() => handlePlayWithFriend(friendUsername)}
+          //     >
+          //       Play with Friend
+          //     </button>
+          //   </div>
+          // </div>
+          <StartGame handlePlayRandom={handlePlayRandom} />
+        ) : (
+          <Game setGameMode={setGameMode} />
+        )}
+        {/* <StartGame /> */}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
