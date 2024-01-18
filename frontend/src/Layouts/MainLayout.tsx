@@ -53,6 +53,15 @@ function MainLayout() {
     navigate('/game');
   };
 
+  const handleReject = () => {
+    const dataToSend = {
+      roomId: roomId,
+      status: 'reject'
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
+    setIsInvitation(false);
+  }
+
   return (
     <div>
       <div className="max-w-140  ml-auto mr-auto p-10 text-3xl text-white h-40 flex justify-between items-center font-extrabold">
@@ -104,7 +113,7 @@ function MainLayout() {
               </button>
               <button
                 className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
-                onClick={() => setIsInvitation(false)}
+                onClick={() => handleReject()}
               >
                 Reject
               </button>
