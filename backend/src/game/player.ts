@@ -39,6 +39,7 @@ export class Player {
       id: this.id,
       num: this.num,
       username: this.username,
+      avatar: this.avatar,
       x: this.x,
       y: this.y,
       width: this.width,

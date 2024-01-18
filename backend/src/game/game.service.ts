@@ -26,14 +26,14 @@ export class GameService {
     const oauthId = this.GetoauthId(client);
     const friend_user = await this.usersService.findOneByUsername(friend);
     const user = await this.usersService.findOneById(oauthId);
+    if (!friend_user || !user) {
+      throw new Error('this user is not exist');
+    }
     if (this.gameMapService.get(oauthId)) {
       throw new Error('you are in game');
     }
     if (this.gameMapService.get(friend_user.oauthId)) {
       throw new Error('this user is in game');
-    }
-    if (!friend_user || !user) {
-      throw new Error('this user is not exist');
     }
     if (friend_user.status === 'INGAME' || user.status === 'INGAME') {
       throw new Error(
