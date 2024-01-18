@@ -6,10 +6,10 @@ import Random from "./Assets/random.jpg";
 import { motion, AnimatePresence } from "framer-motion";
 import avatar from "../../../assets/avatar.jpeg";
 import ReactCardFlip from "react-card-flip";
-import Background_1 from "../../../../public/Modes/black.jpg";
-import Background_2 from "../../../../public/Modes/kimetsu.jpg";
+import Background_1 from "/Modes/black.jpg";
+import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
-
+import gameover from '/gameover.png';
 interface Player {
   id: number;
   x: number;
@@ -113,14 +113,14 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log('start');
+    console.log("start");
     console.log(data);
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log('gameStateUpdate');
+    console.log("gameStateUpdate");
     console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
@@ -338,10 +338,15 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   return (
     <>
       {status === "gameOver" ? (
-
-        <button className="playButton w-[20rem] h-[20rem] z-20 bg-pink-600 " onClick={() => setGameMode(null)}>
-          Back to Menu
-        </button>
+        <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
+          <img className="w- h-full" src={gameover}/>
+          <button
+            className="w-[20%] absolute top-[37rem] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
+            onClick={() => setGameMode(null)}
+          >
+            Menu
+          </button>
+        </div>
       ) : (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
           {status === "start" && (
@@ -380,7 +385,7 @@ const Game = ({ setGameMode, imageUrl }: any) => {
 };
 
 const images = [Background_1, Background_2];
-const StartGame = ({setImageUrl}:any) => {
+const StartGame = ({ setImageUrl }: any) => {
   const { gamesocket, setGameMode }: any = useContext(LoginInfo);
   const [isFlipped, setIsFlipped] = useState(false);
   const [userName, setUserName] = useState("");
@@ -417,19 +422,6 @@ const StartGame = ({setImageUrl}:any) => {
 
   return (
     <div className="flex justify-around w-[130rem] ml-auto mr-auto">
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        className="text-4xl"
-      />
       <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With Friend</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped}>
@@ -477,7 +469,7 @@ const StartGame = ({setImageUrl}:any) => {
         <h1 className="text-5xl text-white">Play Random</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped_1}>
           <img
-            onClick={()=>setIsFlipped_1(true)}
+            onClick={() => setIsFlipped_1(true)}
             className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]  h-[50rem] w-[45rem]"
             src={Random}
             alt="random"
@@ -508,9 +500,26 @@ function LadingPage() {
         initial={{ y: "100%" }}
         animate={{ y: "0" }}
         exit={{ y: "100%" }}
-        className="h-screen flex justify-center items-center"
+        className="h-screen flex justify-center items-center ml-auto mr-auto"
       >
-        {!gameMode ? <StartGame setImageUrl={setImageUrl} /> : <Game setGameMode={setGameMode} imageUrl={imageUrl}/>}
+        <ToastContainer
+          position="top-center"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          className="text-4xl"
+        />
+        {!gameMode ? (
+          <StartGame setImageUrl={setImageUrl} />
+        ) : (
+          <Game setGameMode={setGameMode} imageUrl={imageUrl} />
+        )}
       </motion.div>
     </AnimatePresence>
   );
