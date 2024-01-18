@@ -9,7 +9,6 @@ Project Description
 - [ ] change scores before push and remove .env  
 - [ ] invite game from chat  
 - [ ] docker in prod mode  
-- [ ] Avatars in game  
 - [ ] gameMods  
 - [ ] Ledder  
 
@@ -18,6 +17,7 @@ Project Description
 
 ### Done ✓
 
+- [x] Avatars in game  
 - [x] play with friends  
 - [x] Match History  
 - [x] Matching players  
