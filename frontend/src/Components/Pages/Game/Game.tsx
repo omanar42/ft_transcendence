@@ -98,8 +98,6 @@ const Game = ({ setGameMode }: any) => {
   }, [gamesocket]);
 
   const handleGameOver = (data: any) => {
-    console.log("game over");
-    console.log(data);
     if (data.winner === userInfo.username) {
       alert("You won!");
     } else {
@@ -110,12 +108,15 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log("----------------dkhaal----------------");
+    console.log('start');
+    console.log(data);
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
+    console.log('gameStateUpdate');
+    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
@@ -256,7 +257,7 @@ const Game = ({ setGameMode }: any) => {
   };
 
   const draw = (ctx: CanvasRenderingContext2D) => {
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.clearRect(0, 0, 1300, 700);
     drawNet(ctx);
     drawPlayer(ctx, gameState.current.user);
     drawPlayer(ctx, gameState.current.opponent);
@@ -268,15 +269,9 @@ const Game = ({ setGameMode }: any) => {
       gameState.current.ball.color,
       gameState.current.user.id
     );
-    const canvasMidPoint = 1300 / 2;
-    const userScore = gameState.current.user.score;
-    const opponentScore = gameState.current.opponent.score;
-    drawText(ctx, userScore.toString(), canvasMidPoint - 190, 100, "#fff");
-    drawText(ctx, opponentScore.toString(), canvasMidPoint + 100, 100, "#fff");
   };
 
   const update = () => {
-    console.log(status);
     if (isUpPressed.current) {
       gameState.current.user.y = Math.max(
         0,
@@ -408,27 +403,6 @@ const StartGame = ({ handlePlayRandom, handlePlayWithFriend }: any) => {
 function LadingPage() {
   const { gamesocket, gameMode, setGameMode }: any = useContext(LoginInfo);
   const [friendUsername, setFriendUsername] = useState("");
-  const [prompt, setPrompt] = useState(false);
-
-  // useEffect(() => {
-  //   if (gamesocket) {
-  //     gamesocket.on("invitation", handleInvitation);
-
-  //     return () => {
-  //       gamesocket.off("invitation", handleInvitation);
-  //     };
-  //   }
-  // }, [gamesocket]);
-
-  // const handleInvitation = (data: any) => {
-  //   console.log(`jat invitation ahbibi ara chi boussa `)
-  //   setGameMode('friend');
-  //   const dataToSend = {
-  //     roomId: data.roomId,
-  //     status: 'accept'
-  //   };
-  //   gamesocket?.emit("PlayWithFriend", dataToSend);
-  // };
 
   const handlePlayRandom = () => {
     setGameMode("random");
