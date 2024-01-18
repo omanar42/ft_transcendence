@@ -67,7 +67,27 @@ export class GameService {
   update = (gameState: GameState) => {
     gameState.update();
   };
-
+  handledisconnect = async (client: any, server: any) => {
+    const oauthId = this.GetoauthId(client);
+    let waitingList = this.gameMapService.get('waitingList');
+    if (waitingList.includes(oauthId)) {
+      waitingList = waitingList.filter((item) => item !== oauthId);
+      console.log(waitingList);
+      this.gameMapService.set('waitingList', waitingList);
+    }
+    const game = this.GetRoom(this.gameMapService.get(oauthId));
+    if (game) {
+      if (game.playerOne.id === oauthId) {
+        game.winner = 'playerTwo';
+      }
+      if (game.playerTwo.id === oauthId) {
+        game.winner = 'playerOne';
+      }
+      this.HandleEndGame(game, server);
+    }
+    this.set_offline(oauthId);
+    this.DeleteSocket(client);
+  };
   PushOnWaitingList = async (oauthId: string) => {
     const key = 'waitingList';
     const value = this.gameMapService.get(key);

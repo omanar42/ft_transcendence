@@ -29,7 +29,7 @@ import { CacheService } from './cache.service';
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    method: ['GET', 'POST'],
+    // method: ['GET', 'POST'],
   },
   namespace: 'chat',
 })
@@ -48,7 +48,7 @@ export class ChatGateway
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
-      this.messagesService.DeleteOauthIdSocket(client);
+      // this.messagesService.DeleteOauthIdSocket(client);
     } catch (error) {
       this.logger.log(error);
     }
@@ -87,6 +87,9 @@ export class ChatGateway
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
     try {
+      console.log(createMessageDto);
+      const user =  await this.messagesService.GetUserByUsername(createMessageDto.userName);
+      this.messagesService.GetOauthIdSocket(user.oauthId).then((socket) => console.log(socket.id));
       await this.messagesService.createMessage(this.server, createMessageDto);
     } catch (error) {
       this.logger.log(error);

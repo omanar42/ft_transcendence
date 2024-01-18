@@ -74,7 +74,9 @@ export class ChatController {
         req.user.sub.toString(),
         body.target_username,
       );
+      console.log(response);
       return res.json(response);
+      // return res.json(this.chatService.GetRoomUsers(parseInt(body.roomid)));
     } catch (error) {
       console.log(error);
     }
