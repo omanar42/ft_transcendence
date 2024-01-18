@@ -346,12 +346,13 @@ const Game = ({ imageUrl }: any) => {
     };
 
     if (ctx && canvas && status !== "start") {
-      drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
+      drawText(ctx, "Waiting for opponent...", 1300 / 2 - 450, 700 / 2 + 20, "#6574cd");
     }
 
     if (ctx && canvas && status === "start") {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
+  
       const render = () => {
         update();
         draw(ctx);
