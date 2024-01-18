@@ -14,7 +14,7 @@ export class Ball {
     this.x += this.velocityX;
     this.y += this.velocityY;
 
-    if (this.y + this.radius >= 700 || this.y - this.radius <= 0)
+    if (this.y + this.radius >= 699 || this.y - this.radius <= 1)
       this.velocityY = -this.velocityY;
   }
 
