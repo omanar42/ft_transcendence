@@ -483,6 +483,7 @@ export class ChatService {
         status: UserStatusInRoom['ADMIN'],
       },
     });
+    return this.GetRoomUsers(roomId);
     // this.cacheService.delete(`room:${roomId}`);
   }
   async filter_blocked_users(sender: { oauthId: string }, roomUsers: any[]) {
@@ -513,27 +514,44 @@ export class ChatService {
       (roomuser) => roomuser.userId === oauthId,
     );
     const RoomMembers = room.roomuser;
-    if (roomuser.status === UserStatusInRoom['BANNED']) {
-      throw new HttpException(
-        'You are banned from this room',
-        HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
+    // if (roomuser.status === UserStatusInRoom['OWNER']) {
+    // }
     if (roomuser && room.type !== RoomType['DIRECT_MESSAGE']) {
+      if (roomuser.status === UserStatusInRoom['BANNED']) {
+        throw new HttpException(
+          'You are banned from this room',
+          HttpStatus.NOT_ACCEPTABLE,
+        );
+      }
       if (roomuser.status === UserStatusInRoom['OWNER']) {
         if (!data.newOwner) {
-          throw new Error(
-            'You are the owner of this room , you have to choose a new owner',
+          throw new HttpException(
+            'You must specify a new owner',
+            HttpStatus.NOT_ACCEPTABLE,
           );
+          // throw new HttpException(
+          //   'You are the owner of this room , you cant leave it',
+          //   HttpStatus.NOT_ACCEPTABLE,
+          // );
         }
         const newOwner = await this.GetUserByUsername(data.newOwner);
         if (!newOwner) {
-          throw new Error('New owner not found');
+          throw new HttpException('New owner not found', HttpStatus.NOT_FOUND);
+        }
+        if (newOwner.oauthId === oauthId) {
+
+          throw new HttpException(
+            'neta zaml bel wera9',
+            HttpStatus.NOT_ACCEPTABLE,
+          );
         }
         if (
           !RoomMembers.some((roomuser) => roomuser.userId === newOwner.oauthId)
         ) {
-          throw new Error('New owner is not a member of this room');
+          throw new HttpException(
+            'New owner is not a member of this room',
+            HttpStatus.NOT_ACCEPTABLE,
+          );
         }
         await this.prisma.roomUser.delete({
           where: {
@@ -617,6 +635,7 @@ export class ChatService {
         status: UserStatusInRoom[status.toUpperCase()],
       },
     });
+    return this.GetRoomUsers(roomId);
     // this.cacheService.delete(`room:${roomId}`);
   }
   // async UnbanUserFromRoom(data: any) {
