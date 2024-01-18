@@ -69,8 +69,8 @@ const GameAI = ({ imageUrl }: any) => {
       y: 700 / 2,
       radius: 16,
       speed: 10,
-      velocityX: 3,
-      velocityY: 3,
+      velocityX: 10,
+      velocityY: 4,
       color: "#6574cd",
     },
   });
@@ -204,16 +204,16 @@ const GameAI = ({ imageUrl }: any) => {
   const resetBall = (canvas: HTMLCanvasElement) => {
     gameState.current.ball.x = canvas.width / 2;
     gameState.current.ball.y = canvas.height / 2;
-    gameState.current.ball.speed = 10;
     gameState.current.ball.velocityX = -gameState.current.ball.velocityX;
+    gameState.current.ball.velocityY = 4;
   };
 
-  const resetGame = () => {
+  const resetGame = (canvas: HTMLCanvasElement) => {
     gameState.current.user.score = 0;
     gameState.current.ai.score = 0;
     setUserScore(0);
     setaiScore(0);
-    resetBall(canvasRef.current as HTMLCanvasElement);
+    resetBall(canvas);
   };
 
   const update = (canvas: HTMLCanvasElement) => {
@@ -242,7 +242,7 @@ const GameAI = ({ imageUrl }: any) => {
       gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
     }
 
-    let aiLevel = 0.08;
+    let aiLevel = 0.05;
     gameState.current.ai.y +=
       (gameState.current.ball.y -
         (gameState.current.ai.y + gameState.current.ai.height / 2)) *
@@ -251,6 +251,8 @@ const GameAI = ({ imageUrl }: any) => {
     if (gameState.current.ai.y >= canvas.height - gameState.current.ai.height)
       gameState.current.ai.y = canvas.height - gameState.current.ai.height;
 
+    console.log(gameState.current.ball.velocityX);
+    console.log(gameState.current.ball.velocityY);
     let player =
       gameState.current.ball.x < canvas.width / 2
         ? gameState.current.user
@@ -258,14 +260,13 @@ const GameAI = ({ imageUrl }: any) => {
     if (collision(gameState.current.ball, player)) {
       let collidePoint =
         gameState.current.ball.y - (player.y + player.height / 2);
-      collidePoint = collidePoint / (player.height / 2);
-      let angleRad = (Math.PI / 4) * collidePoint;
+      collidePoint = collidePoint / (player.height / 2) - 0.5;
+      let angleRad = (Math.PI / 5) * collidePoint;
       let direction = gameState.current.ball.x < canvas.width / 2 ? 1 : -1;
       gameState.current.ball.velocityX =
         direction * gameState.current.ball.speed * Math.cos(angleRad);
       gameState.current.ball.velocityY =
         gameState.current.ball.speed * Math.sin(angleRad);
-      gameState.current.ball.speed += 0.1;
     }
 
     if (gameState.current.ball.x - gameState.current.ball.radius < 0) {
@@ -286,7 +287,7 @@ const GameAI = ({ imageUrl }: any) => {
       gameState.current.user.score === 4
     ) {
       setGameEnd(true);
-      resetGame();
+      resetGame(canvas);
     }
   };
 

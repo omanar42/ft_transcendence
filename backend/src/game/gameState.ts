@@ -25,6 +25,9 @@ export class GameState {
     this.playerTwo = new Player(playerTwoId, 2);
     this.ball = new Ball();
     this.roomId = `room:${this.playerOne.id}${this.playerTwo.id}`;
+    setTimeout(() => {
+      this.waiting = false;
+    }, 3000);
   };
 
   paddleMove = (playerId: string, position: number) => {
@@ -47,12 +50,7 @@ export class GameState {
   };
 
   update = () => {
-    // if (this.waiting) {
-    //   setTimeout(() => {
-    //     this.waiting = false;
-    //   }, 3000);
-    //   return;
-    // }
+    if (this.waiting) return;
 
     this.ball.update();
 
@@ -76,23 +74,30 @@ export class GameState {
     }
 
     if (this.ball.x - this.ball.radius <= 0) {
+      this.waiting = true;
+      setTimeout(() => {
+        this.waiting = false;
+      }, 3000);
       this.playerTwo.updateScore();
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
-      this.waiting = true;
     } else if (this.ball.x + this.ball.radius >= 1300) {
+      this.waiting = true;
+      setTimeout(() => {
+        this.waiting = false;
+      }, 3000);
       this.playerOne.updateScore();
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
-      this.waiting = true;
     }
 
     if (this.playerOne.score === 4 || this.playerTwo.score === 4) {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
+      this.waiting = true;
       this.winner = this.playerOne.score === 4 ? 'playerOne' : 'playerTwo';
     }
   };

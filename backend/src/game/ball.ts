@@ -7,7 +7,12 @@ export class Ball {
   velocityY: number;
 
   constructor() {
-    this.resetBall();
+    this.x = 1300 / 2;
+    this.y = 700 / 2;
+    this.radius = 16;
+    this.speed = 4;
+    this.velocityX = 4;
+    this.velocityY = 2;
   }
 
   update() {
@@ -21,10 +26,8 @@ export class Ball {
   resetBall = () => {
     this.x = 1300 / 2;
     this.y = 700 / 2;
-    this.radius = 16;
-    this.speed = 6;
-    this.velocityX = 5;
-    this.velocityY = 5;
+    this.velocityX = -this.velocityX;
+    this.velocityY = 2;
   };
 
   toJSON() {
