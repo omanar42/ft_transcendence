@@ -15,11 +15,13 @@ import io from 'socket.io-client';
 import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, userInfo, setVerifed, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked, gameMode, setGameMode}:any = useContext(LoginInfo);
+  const {setuserInfo, setConnected, setVerifed, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked, gameMode, setGameMode}:any = useContext(LoginInfo);
 
   useEffect(()=>{
   fetchData();
-  console.log("App mounting...");
+  
+
+  
     // HandlScoket();
   },[]);
   
@@ -45,6 +47,10 @@ function App() {
         const gameSocket = io("127.0.0.1:3000/game", {
           query: {token:newtoken.data},
         })
+        newSocket.on("disconnect", () => {
+          
+          setConnected(false);
+        });
         setSocket(newSocket);
         setGameSocket(gameSocket);
         setVerifed(localStorage.getItem('verifed'));

@@ -5,14 +5,30 @@ import { RoomContext } from "../../../../Contexts/RoomContext";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import { FaGamepad } from "react-icons/fa6";
+import LoginInfo from "../../../../Contexts/LoginContext";
+
 
 function UserInfo() {
   const { avatar, roomName, currentRoom }: any = useContext(RoomContext);
+  const { gamesocket,  setGameMode }: any = useContext(LoginInfo);
   const navigate = useNavigate();
   const SeeProfile = () => {
     navigate(`/profile/${roomName}`);
   };
 
+  const handlePlayWithFriend = (username: string) => {
+    setGameMode("friend");
+    const dataToSend = {
+      friend: username,
+      status: "request",
+      level: "easy",
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
+    console.log(gamesocket)
+    navigate("/game");
+  };
+  
   const blockUser = async (userName: string) => {
     try {
       const url = `http://127.0.0.1:3000/users/block`;
@@ -48,7 +64,7 @@ function UserInfo() {
           />
           <img
             onClick={SeeProfile}
-            className="animate-bounce hover:duration-[0.2s] hover:scale-[1.1] rounded-full h-[15rem] border-4 border-pink-600 cursor-pointer"
+            className="animate-bounce hover:duration-[0.2s] hover:scale-[1.1] rounded-full h-[15rem] w-[15rem] border-4 border-pink-600 cursor-pointer"
             src={avatar}
           />
           <h1 className=" uppercase text-3xl font-bold">{roomName}</h1>
@@ -62,6 +78,10 @@ function UserInfo() {
           <div onClick={()=>blockUser(roomName)} className="flex cursor-pointer items-center hover:text-white gap-5 p-4 rounded-2xl hover:duration-[0.2s] hover:bg-pink-600">
             <MdOutlineBlock className="text-5xl text-"></MdOutlineBlock>
             <span  className="text-xl font-semibold">Block</span>
+          </div>
+          <div  onClick={()=>handlePlayWithFriend(roomName)} className="flex cursor-pointer items-center hover:text-white gap-5 p-4 rounded-2xl hover:duration-[0.2s] hover:bg-pink-600 ">
+          <h1 className="text-2xl">Invite to play</h1>
+          <FaGamepad  className="text-5xl"/>
           </div>
         </div>
         
