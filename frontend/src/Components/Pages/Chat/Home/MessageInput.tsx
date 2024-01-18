@@ -66,13 +66,11 @@ function MessageInput() {
         { roomId: currentRoom, newOwner: newOwner },
         { withCredentials: true }
       );
-      if (response.data === "") {
-        toast.error("Member not found");
-        return;
-      }
+        toast.success("You left the room");
+      
       window.location.reload();
     } catch (error) {
-      console.error(error);
+      toast.error(error.response.data.message);
     }
   };
   useEffect(() => {
