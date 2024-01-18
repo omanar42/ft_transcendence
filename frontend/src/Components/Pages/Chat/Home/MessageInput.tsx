@@ -87,7 +87,7 @@ function MessageInput() {
           roomId: currentRoom,
         },
         withCredentials: true,
-      });
+      }).catch((error) => { toast.warning(error.response.data.message); return;});
       setMessageList(messages.data.messages);
       setRoomName(messages.data.roomName);
       setRoomType(messages.data.roomType);

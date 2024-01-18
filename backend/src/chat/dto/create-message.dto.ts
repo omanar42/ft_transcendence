@@ -27,11 +27,13 @@ export class Room_Front_Dto {
     this.roomName = '';
     this.roomType = '';
     this.roomId = 0;
+    this.status = '';
   }
   Avatar: string;
   roomName: string;
   roomType: string;
   roomId: number;
+  status: string;
 }
 export class Message_Front_Dto {
   message: string;
