@@ -7,82 +7,6 @@ import { GrCaretPrevious } from "react-icons/gr";
 import { GrCaretNext } from "react-icons/gr";
 import { motion } from "framer-motion";
 
-// const History = [
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/3fe187b98b948c31ae17b534ea656927/omanar.jpg",
-//     username: "omanar",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/706afa441605e55226115a6b614145d2/omeslall.jpg",
-//     username: "omeslall",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/e3821355391cc0c7d0978731afe7f585/hobenaba.JPG",
-//     username: "hobenaba",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/6a531cbc0b00f0de3da69ab9b92951be/anlabchi.jpeg",
-//     username: "anlabchi",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/5d3b5cd692fb000c68b0824d435c4ef4/hoakoumi.JPG",
-//     username: "hoakoumi",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/4a4a69ca0ab2202fd3a3500c5ad40b88/achraiti.jpeg",
-//     username: "achraiti",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/90afa6925ae367098a0e5ea463c24b31/nolahmar.JPG",
-//     username: "nolahmar",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/a27acd192404aeb3bf7e76e0dd67cfd2/small_mezzine.jpeg",
-//     username: "small_mezzine",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/4ff059069ef903c70d7cb000f3bad7e0/small_amaarifa.jpg",
-//     username: "small_amaarifa",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/d0ac05e0e24c0d0a932a8c2ff83d833e/small_slouham.jpeg",
-//     username: "small_slouham",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/f108b3d2ad145657c753cd4caad243cb/small_nben-ais.jpeg",
-//     username: "small_nben-ais",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/a27acd192404aeb3bf7e76e0dd67cfd2/small_mezzine.jpeg",
-//     username: "small_mezzine",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/4ff059069ef903c70d7cb000f3bad7e0/small_amaarifa.jpg",
-//     username: "small_amaarifa",
-//   },
-//   {
-//     avatar:
-//       "https://cdn.intra.42.fr/users/d0ac05e0e24c0d0a932a8c2ff83d833e/small_slouham.jpeg",
-//     username: "small_slouham",
-//   },mrmedrobaii23241
-//     avatar:
-//       "https://cdn.intra.42.fr/users/f108b3d2ad145657c753cd4caad243cb/small_nben-ais.jpeg",
-//     username: "small_nben-ais",
-//   },
-// ];
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 
 const data = [
@@ -229,20 +153,32 @@ const ProgressBar = ({ bgColor, level }: any) => {
     </div>
   );
 };
-const Scoure = ({ userInfo, acheivments, level, GmStatus }: any) => {
+const Scoure = ({ Profile, acheivments, level, GmStatus, status }: any) => {
+  const {userInfo} = useContext(LoginInfo);
   return (
     <div className="flex flex-col items-center gap-[4rem]">
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
         <div className="flex  items-center justify-around w-full">
-          <img
-            className="h-[15rem] border-4 border-pink-600 w-[15rem] rounded-full cursor-pointer hover:scale-[1.1] hover:duration-[0.2s]"
-            src={userInfo.avatar}
-          />
+          <div className="relative">
+            <img
+              className="h-[15rem] border-4  border-pink-600 w-[15rem] rounded-full cursor-pointer hover:scale-[1.1] hover:duration-[0.2s]"
+              src={Profile.avatar}
+            />
+            <div
+              className={`absolute h-[2rem] left-[3rem] bottom-[0rem]  rounded-full w-[2rem] ${
+                status === "ONLINE"
+                  ? "bg-green-400"
+                  : status === "INGAME"
+                  ? "bg-yellow-500"
+                  : status === "OFFLINE" && userInfo.username === Profile.username ? "bg-green-500" : "bg-red-500"
+              }`}
+            ></div>
+          </div>
           <div className="flex flex-col gap-[2rem]">
             <h1 className="text-5xl uppercase text-white">
-              {userInfo.fullname}
+              {Profile.fullname}
             </h1>
-            <h1 className="text-3xl uppercase">@ {userInfo.username}</h1>
+            <h1 className="text-3xl uppercase">@ {Profile.username}</h1>
           </div>
         </div>
         {/* <LevelBar currentScore={50} maxScore={100} /> */}
@@ -337,6 +273,7 @@ function Profile() {
     { name: "Win", value: 0 },
     { name: "Lose", value: 0 },
   ]);
+  const [status, setStatus] = useState("");
   const { userInfo }: any = useContext(LoginInfo);
   if (userName.username === undefined || userName.username === "me") {
     userName.username = userInfo.username;
@@ -369,6 +306,7 @@ function Profile() {
             value: response.data.losses,
           },
         ]);
+        setStatus(response.data.status);
         console.log(GmStatus);
       } catch (error) {
         navigate("/404");
@@ -382,15 +320,16 @@ function Profile() {
     <div className="ml-auto mr-auto mt-4 text-white text-opacity-50  border-[1px] border-green-600 w-140 h-[70rem] overflow-hidden bg-white backdrop-blur-md bg-opacity-5 rounded-[2rem] flex flex-col items-center justify-center">
       <motion.div
         initial={{ width: 0 }}
-        animate={{ width: "100%" , transition: { duration: 0.3 }}}
+        animate={{ width: "100%", transition: { duration: 0.3 } }}
         exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
         className="grid grid-cols-2 gap-[6rem]  w-full p-[5rem] h-full"
       >
         <Scoure
-          userInfo={ProfileInfo}
+          Profile={ProfileInfo}
           acheivments={acheivments}
           level={level}
           GmStatus={GmStatus}
+          status={status}
         />
         <div className="grid-2 bg-black bg-opacity-40 rounded-3xl pl-8 pr-8 pt-5 overflow-auto">
           <nav className="flex gap-[3rem] text-3xl text-white font-bold">
