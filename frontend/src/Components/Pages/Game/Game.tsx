@@ -9,7 +9,8 @@ import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
 import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
-import gameover from '/gameover.png';
+import gameover from "/gameover.png";
+import { useNavigate } from "react-router-dom";
 interface Player {
   id: number;
   x: number;
@@ -44,7 +45,8 @@ interface GameState {
 }
 
 const Game = ({ imageUrl }: any) => {
-  const { userInfo, gamesocket, setGameMode, gameMode }: any = useContext(LoginInfo);
+  const { userInfo, gamesocket, setGameMode, gameMode }: any =
+    useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
@@ -59,7 +61,7 @@ const Game = ({ imageUrl }: any) => {
       width: 16,
       height: 128,
       color: "#41a5fc",
-      score: 0,
+      score: -1,
     },
     opponent: {
       id: 0,
@@ -68,7 +70,7 @@ const Game = ({ imageUrl }: any) => {
       width: 16,
       height: 128,
       color: "#f600d4",
-      score: 0,
+      score: -1,
     },
     net: {
       x: 1300 / 2 - 2,
@@ -87,7 +89,16 @@ const Game = ({ imageUrl }: any) => {
   });
   const [userScore, setUserScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
+  const [avatars, setAvatars] = useState({
+    userAvatar: "",
+    opponentAvatar: "",
+  });
+  const [Players, setPlayers] = useState({
+    user: "",
+    opponent: "",
+  });
   const [win, setwin] = useState(false);
+
   useEffect(() => {
     if (gamesocket) {
       gamesocket.on("start", handleStart);
@@ -125,6 +136,7 @@ const Game = ({ imageUrl }: any) => {
   };
 
   const handleGameState = (gameStateUpdate: any) => {
+    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
@@ -138,6 +150,14 @@ const Game = ({ imageUrl }: any) => {
         gameState.current.opponent.score = gameStateUpdate.playerTwo.score;
         setUserScore(gameStateUpdate.playerOne.score);
         setOpponentScore(gameStateUpdate.playerTwo.score);
+        setAvatars({
+          userAvatar: gameStateUpdate.playerOne.avatar,
+          opponentAvatar: gameStateUpdate.playerTwo.avatar,
+        });
+        setPlayers({
+          user: gameStateUpdate.playerOne.username,
+          opponent: gameStateUpdate.playerTwo.username,
+        });
         gameState.current.user.y = 700 / 2 - 100 / 2;
       }
     } else {
@@ -149,8 +169,17 @@ const Game = ({ imageUrl }: any) => {
       ) {
         gameState.current.opponent.score = gameStateUpdate.playerOne.score;
         gameState.current.user.score = gameStateUpdate.playerTwo.score;
-        setUserScore(gameStateUpdate.playerOne.score);
-        setOpponentScore(gameStateUpdate.playerTwo.score);
+        setUserScore(gameStateUpdate.playerTwo.score);
+        setOpponentScore(gameStateUpdate.playerOne.score);
+        setAvatars({
+          userAvatar: gameStateUpdate.playerTwo.avatar,
+          opponentAvatar: gameStateUpdate.playerOne.avatar,
+        });
+        setPlayers({
+          user: gameStateUpdate.playerTwo.username,
+          opponent: gameStateUpdate.playerOne.username,
+        });
+
         gameState.current.user.y = 700 / 2 - 100 / 2;
       }
     }
@@ -348,7 +377,7 @@ const Game = ({ imageUrl }: any) => {
     <>
       {status === "gameOver" ? (
         <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-          <img className="w- h-full" src={gameover}/>
+          <img className="w- h-full" src={gameover} />
           <button
             className="w-[20%] absolute top-[37rem] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
             onClick={() => setGameMode(null)}
@@ -362,10 +391,10 @@ const Game = ({ imageUrl }: any) => {
             <div className="b800 bg-white bg-opacity-[10%] backdrop-blur-sm flex items-center justify-between p-4 rounded-xl">
               <div className="flex-1 flex gap-[2rem] items-center text-white ">
                 <img
-                  src={avatar}
+                  src={avatars.userAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-4xl font-extrabold">Simo</h1>
+                <h1 className="text-4xl font-extrabold">{Players.user}</h1>
               </div>
               <div className="flex-1 flex items-center  text-white font-bold justify-between">
                 <span className="text-6xl">{userScore}</span>
@@ -373,9 +402,9 @@ const Game = ({ imageUrl }: any) => {
                 <span className="text-6xl">{opponentScore}</span>
               </div>
               <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-                <h1 className="text-4xl font-extrabold">Simo</h1>
+                <h1 className="text-4xl font-extrabold">{Players.opponent}</h1>
                 <img
-                  src={avatar}
+                  src={avatars.opponentAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
                 />
               </div>
@@ -500,9 +529,34 @@ const StartGame = ({ setImageUrl }: any) => {
   );
 };
 function LadingPage() {
-  const { gameMode, setGameMode }: any = useContext(LoginInfo);
+  const { gameMode, setGameMode, gamesocket }: any = useContext(LoginInfo);
   const [imageUrl, setImageUrl] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [isInvitation, setIsInvitation] = useState(false);
+  const navigate = useNavigate();
 
+  const handleAccept = () => {
+    const dataToSend = {
+      roomId: roomId,
+      status: "accept",
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
+    setIsInvitation(false);
+    setGameMode("friend");
+    navigate("/game");
+  };
+  useEffect(() => {
+    if (gamesocket) {
+      gamesocket.on("invitation", (data: any) => {
+        setRoomId(data.roomId);
+        setIsInvitation(true);
+      });
+
+      return () => {
+        gamesocket.off("invitation");
+      };
+    }
+  }, [gamesocket]);
   return (
     <AnimatePresence>
       <motion.div
@@ -524,6 +578,29 @@ function LadingPage() {
           theme="dark"
           className="text-4xl"
         />
+        {(isInvitation && !gameMode) &&   (
+          <div className=" absolute  z-50 top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-dark p-10 rounded-xl">
+              <h1 className="text-4xl font-bold text-white">
+                You have an invitation
+              </h1>
+              <div className="flex justify-between items-center gap-10 mt-10">
+                <button
+                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  onClick={() => handleAccept()}
+                >
+                  Accept
+                </button>
+                <button
+                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  onClick={() => setIsInvitation(false)}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         {!gameMode ? (
           <StartGame setImageUrl={setImageUrl} />
         ) : (

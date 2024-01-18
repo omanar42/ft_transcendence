@@ -90,7 +90,7 @@ function MainLayout() {
         <Outlet />
       </main>
       {isInvitation && (
-        <div className="fixed top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="fixed top-0 z-50 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-dark p-10 rounded-xl">
             <h1 className="text-4xl font-bold text-white">
               You have an invitation
