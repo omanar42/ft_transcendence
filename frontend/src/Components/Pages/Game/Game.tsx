@@ -1,8 +1,8 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
-import Friend from "./Assets/Friend.png";
-import Random from "./Assets/random.png";
+import Friend from "./Assets/Friend.jpg";
+import Random from "./Assets/random.jpg";
 import { motion, AnimatePresence } from "framer-motion";
 import avatar from "../../../assets/avatar.jpeg";
 import ReactCardFlip from "react-card-flip";
@@ -43,7 +43,7 @@ interface GameState {
   ball: Ball;
 }
 
-const Game = ({ setGameMode }: any) => {
+const Game = ({ setGameMode, imageUrl }: any) => {
   const { userInfo, gamesocket }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
@@ -62,6 +62,7 @@ const Game = ({ setGameMode }: any) => {
       score: 0,
     },
     opponent: {
+      id: 0,
       x: 1300 - 5 - 16,
       y: 700 / 2 - 100 / 2,
       width: 16,
@@ -86,39 +87,47 @@ const Game = ({ setGameMode }: any) => {
   });
   const [userScore, setUserScore] = useState<number>(0);
   const [opponentScore, setOpponentScore] = useState<number>(0);
+  const [win, setwin] = useState(false);
   useEffect(() => {
     if (gamesocket) {
       gamesocket.on("start", handleStart);
       gamesocket.on("gameState", handleGameState);
       gamesocket.on("gameOver", handleGameOver);
+      gamesocket.on("gameError", handleGameError);
 
       return () => {
-        gamesocket.off("start", handleStart);
-        gamesocket.off("gameState", handleGameState);
-        gamesocket.off("gameOver", handleGameOver);
+        gamesocket.off("start");
+        gamesocket.off("gameState");
+        gamesocket.off("gameOver");
+        gamesocket.off("gameError");
       };
     }
   }, [gamesocket]);
 
-  const handleGameOver = (data: any) => {
-    if (data.winner === userInfo.username) {
-      alert("You won!");
-    } else {
-      alert("You lost!");
-    }
-    setStatus("gameOver");
+  const handleGameError = (data: any) => {
+    toast.error(data.message);
+    setStatus("error");
     setGameMode(null);
   };
 
+  const handleGameOver = (data: any) => {
+    if (data.winner === userInfo.username) {
+      setwin(true);
+    } else {
+      setwin(false);
+    }
+    setStatus("gameOver");
+  };
+
   const handleStart = (data: any) => {
-    console.log('start');
+    console.log("start");
     console.log(data);
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log('gameStateUpdate');
+    console.log("gameStateUpdate");
     console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
@@ -261,6 +270,11 @@ const Game = ({ setGameMode }: any) => {
 
   const draw = (ctx: CanvasRenderingContext2D) => {
     ctx.clearRect(0, 0, 1300, 700);
+    if (imageUrl) {
+      let img = new Image();
+      img.src = imageUrl;
+      ctx.drawImage(img, 0, 0, 1300, 700);
+    }
     drawNet(ctx);
     drawPlayer(ctx, gameState.current.user);
     drawPlayer(ctx, gameState.current.opponent);
@@ -331,7 +345,10 @@ const Game = ({ setGameMode }: any) => {
   return (
     <>
       {status === "gameOver" ? (
-        <button className="playButton" onClick={() => setGameMode(null)}>
+        <button
+          className="playButton w-[20rem] h-[20rem] z-20 bg-pink-600 "
+          onClick={() => setGameMode(null)}
+        >
           Back to Menu
         </button>
       ) : (
@@ -372,15 +389,12 @@ const Game = ({ setGameMode }: any) => {
 };
 
 const images = [Background_1, Background_2];
-const StartGame = () => {
+const StartGame = ({ setImageUrl }: any) => {
   const { gamesocket, setGameMode }: any = useContext(LoginInfo);
   const [isFlipped, setIsFlipped] = useState(false);
   const [userName, setUserName] = useState("");
-  const [isEnabled, setIsEnabled] = useState(true);
   const [level, setLevel] = useState("Easy");
-  const [gameModeEnabled, setGameModeEnabled] = useState(false);
-  const [imageUrl, setImageUrl] = useState("");
-
+  const [isFlipped_1, setIsFlipped_1] = useState(false);
 
   const handlePlayRandom = () => {
     setGameMode("random");
@@ -392,7 +406,7 @@ const StartGame = () => {
     const dataToSend = {
       friend: username,
       status: "request",
-      level:level
+      level: level,
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
   };
@@ -402,19 +416,13 @@ const StartGame = () => {
       toast.error("Please enter a username");
       return;
     }
-    if (!gameModeEnabled){
-      handlePlayWithFriend(userName);
-      
-    }
-    else{
-      setIsEnabled(false);
-    }
+    handlePlayWithFriend(userName);
   };
 
-  const selectImage = (image:any)=>{
+  const selectImage = (image: any) => {
     setImageUrl(image);
-    handlePlayWithFriend(userName);
-  }
+    handlePlayRandom();
+  };
 
   return (
     <div className="flex justify-around w-[130rem] ml-auto mr-auto">
@@ -440,84 +448,68 @@ const StartGame = () => {
             src={Friend}
             alt="friend"
           />
-          {isEnabled ? (
-            <div className="cursor-pointer relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
-              {/* <div className="modal rounded-[4rem]"></div> */}
-              <button
-                onClick={() => setIsFlipped(!isFlipped)}
-                className="absolute text-8xl text-pink-600 top-[1rem] left-[2rem]"
-              >
-                &times;
-              </button>
-              <h1 className="text-5xl text-white">Username</h1>
-              <select  value={level} onChange={(e)=>setLevel(e.target.value)} className="w-[70%] h-[4rem] pl-4  font-bold text-3xl bg-dark-300">
-                <option value="Easy">Easy</option>
-                <option value="Medium">Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-              <div className=" flex justify-between w-[60%]">
-                <h1 className="text-3xl">Game mode</h1>
-                <input checked={gameModeEnabled} onChange={()=>setGameModeEnabled(!gameModeEnabled)} className="w-[3rem]" type="checkbox" />
-              </div>
-              <input
-                className="h-[4rem] w-[60%] rounded-2xl bg-dark-300 outline-none pl-4 text-4xl text-white"
-                placeholder="Enter a username..."
-                type="text"
-                value={userName}
-                onChange={(e) => setUserName(e.target.value)}
-              />
-              <button
-                onClick={startGame}
-                className="text-4xl p-4 bg-pink-600 rounded-3xl"
-              >
-                Confirm
-              </button>
-            </div>
-          ) : (
-            <div className="cursor-pointer overflow-hidden relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
-              <div className="w-full h-full flex flex-col justify-between gap-1">
-                {images.map((image) => (
-                  <img
-                    onClick={()=>selectImage(image)}
-                    className="h-full w-full hover:opacity-50 hover:duration-[0.2s] border-white border-opacity-20"
-                    src={image}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
+          <div className="cursor-pointer relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
+            {/* <div className="modal rounded-[4rem]"></div> */}
+            <button
+              onClick={() => setIsFlipped(!isFlipped)}
+              className="absolute text-8xl text-pink-600 top-[1rem] left-[2rem]"
+            >
+              &times;
+            </button>
+            <h1 className="text-5xl text-white">Username</h1>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="w-[70%] h-[4rem] pl-4  font-bold text-3xl bg-dark-300"
+            >
+              <option value="Easy">Easy</option>
+              <option value="Medium">Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+            <input
+              className="h-[4rem] w-[60%] rounded-2xl bg-dark-300 outline-none pl-4 text-4xl text-white"
+              placeholder="Enter a username..."
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+            />
+            <button
+              onClick={startGame}
+              className="text-4xl p-4 bg-pink-600 rounded-3xl"
+            >
+              Confirm
+            </button>
+          </div>
         </ReactCardFlip>
       </div>
       <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play Random</h1>
-        <img
-          onClick={handlePlayRandom}
-          className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]  h-[50rem] w-[45rem]"
-          src={Random}
-          alt="random"
-        />
+        <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped_1}>
+          <img
+            onClick={() => setIsFlipped_1(true)}
+            className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]  h-[50rem] w-[45rem]"
+            src={Random}
+            alt="random"
+          />
+          <div className="cursor-pointer overflow-hidden relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
+            <div className="w-full h-full flex flex-col justify-between gap-1">
+              {images.map((image) => (
+                <img
+                  onClick={() => selectImage(image)}
+                  className="h-full w-full hover:opacity-50 hover:duration-[0.2s] border-white border-opacity-20"
+                  src={image}
+                />
+              ))}
+            </div>
+          </div>
+        </ReactCardFlip>
       </div>
     </div>
   );
 };
 function LadingPage() {
-  const { gamesocket, gameMode, setGameMode }: any = useContext(LoginInfo);
-  const [friendUsername, setFriendUsername] = useState("");
-  const [prompt, setPrompt] = useState(false);
-
-  const handlePlayRandom = () => {
-    setGameMode("random");
-    gamesocket?.emit("addToRoom");
-  };
-
-  const handlePlayWithFriend = (username: string) => {
-    setGameMode("friend");
-    const dataToSend = {
-      friend: username,
-      status: "request",
-    };
-    gamesocket?.emit("PlayWithFriend", dataToSend);
-  };
+  const { gameMode, setGameMode }: any = useContext(LoginInfo);
+  const [imageUrl, setImageUrl] = useState("");
 
   return (
     <AnimatePresence>
@@ -528,10 +520,9 @@ function LadingPage() {
         className="h-screen flex justify-center items-center"
       >
         {!gameMode ? (
-          <StartGame
-          />
+          <StartGame setImageUrl={setImageUrl} />
         ) : (
-          <Game setGameMode={setGameMode} />
+          <Game setGameMode={setGameMode} imageUrl={imageUrl} />
         )}
       </motion.div>
     </AnimatePresence>
