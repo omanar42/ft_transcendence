@@ -23,7 +23,7 @@ function RenderMembers({
   status,
   handrommemebers,
 }: any) {
-  const { userInfo } = useContext(LoginInfo);
+  const { userInfo }:any = useContext(LoginInfo);
   const { ownerSheep }: any = useContext(RoomContext);
 
   const unBanedUser = async () => {
@@ -35,7 +35,7 @@ function RenderMembers({
       );
       window.location.reload();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response.data.message);
     }
   };
 
@@ -78,19 +78,7 @@ function RenderMembers({
     }
   };
 
-  const UnbannUser = async() => {
-    try{
-      const user ={
-        roomid: currentRoom,
-        target_username: username,
-      };
-      await axios.post("http://127.0.0.1:3000/chat/unban_user", user, {withCredentials: true});
-      window.location.reload();
-      }
-      catch(error){
-        toast.error(error.response.data.message);
-    }
-  }
+  
   return (
     <li className="flex mt-4 w-11/12 pl-4 pr-4 items-center justify-between cursor-pointer hover:bg-blue-600 hover:duration-[0.2s] rounded-xl  ">
       <div className="flex flex-col items-start gap-3">
