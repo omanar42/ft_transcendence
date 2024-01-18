@@ -272,7 +272,6 @@ export class UsersService {
   }
 
   async directMessage(userName: string, username_target: string) {
-    // use this function directly after accept friend request
     const user_1 = await this.findOneByUsername(userName);
     const user_2 = await this.findOneByUsername(username_target);
     const existingRoom = await this.prisma.room.findFirst({

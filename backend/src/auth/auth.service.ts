@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   HttpStatus,
   Injectable,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Status, User } from '@prisma/client';
@@ -13,7 +12,6 @@ import { generateFromEmail } from 'unique-username-generator';
 import { JwtPayload } from './types';
 import { Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
-import { stat } from 'fs';
 
 @Injectable()
 export class AuthService {
