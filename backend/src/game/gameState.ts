@@ -8,6 +8,7 @@ export class GameState {
   playerTwo: Player;
   gameMode: string;
   winner: string;
+  waiting: boolean;
 
   constructor() {
     this.playerOne = null;
@@ -16,6 +17,7 @@ export class GameState {
     this.roomId = '';
     this.gameMode = '';
     this.winner = '';
+    this.waiting = true;
   }
 
   init = (playerOneId: string, playerTwoId: string) => {
@@ -45,6 +47,13 @@ export class GameState {
   };
 
   update = () => {
+    // if (this.waiting) {
+    //   setTimeout(() => {
+    //     this.waiting = false;
+    //   }, 3000);
+    //   return;
+    // }
+
     this.ball.update();
 
     const player = this.ball.x < 1300 / 2 ? this.playerOne : this.playerTwo;
@@ -71,11 +80,13 @@ export class GameState {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
+      this.waiting = true;
     } else if (this.ball.x + this.ball.radius >= 1300) {
       this.playerOne.updateScore();
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
+      this.waiting = true;
     }
 
     if (this.playerOne.score === 4 || this.playerTwo.score === 4) {

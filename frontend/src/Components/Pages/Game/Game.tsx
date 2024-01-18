@@ -43,13 +43,13 @@ interface GameState {
   ball: Ball;
 }
 
-const Game = ({ setGameMode, imageUrl }: any) => {
-  const { userInfo, gamesocket }: any = useContext(LoginInfo);
+const Game = ({ imageUrl }: any) => {
+  const { userInfo, gamesocket, setGameMode, gameMode }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
   const paddleSpeed = 8;
-  const [status, setStatus] = useState("waiting");
+  const [status, setStatus] = useState<string>("waiting");
   const [roomId, setRoomId] = useState("");
   const gameState = useRef<GameState>({
     user: {
@@ -93,14 +93,22 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       gamesocket.on("start", handleStart);
       gamesocket.on("gameState", handleGameState);
       gamesocket.on("gameOver", handleGameOver);
+      gamesocket.on("gameError", handleGameError);
 
       return () => {
-        gamesocket.off("start", handleStart);
-        gamesocket.off("gameState", handleGameState);
-        gamesocket.off("gameOver", handleGameOver);
+        gamesocket.off("start");
+        gamesocket.off("gameState");
+        gamesocket.off("gameOver");
+        gamesocket.off("gameError");
       };
     }
   }, [gamesocket]);
+
+  const handleGameError = (data: any) => {
+    toast.error(data.message);
+    setStatus("error");
+    setGameMode(null);
+  };
 
   const handleGameOver = (data: any) => {
     if (data.winner === userInfo.username) {
@@ -109,19 +117,14 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       setwin(false);
     }
     setStatus("gameOver");
-    // setGameMode(null);
   };
 
   const handleStart = (data: any) => {
-    console.log("start");
-    console.log(data);
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log("gameStateUpdate");
-    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
@@ -305,6 +308,11 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
+    let animationFrameId: number;
+
+    const stopAnimation = () => {
+      cancelAnimationFrame(animationFrameId);
+    };
 
     // if (ctx && canvas && status === "gameOver") {
     //   drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
@@ -321,7 +329,7 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       const render = () => {
         update();
         draw(ctx);
-        requestAnimationFrame(render);
+        animationFrameId = requestAnimationFrame(render);
       };
 
       render();
@@ -329,11 +337,12 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       return () => {
         window.removeEventListener("keydown", handleKeyDown);
         window.removeEventListener("keyup", handleKeyUp);
+        stopAnimation();
       };
     }
 
     return () => {};
-  }, [handleKeyDown, handleKeyUp, status]);
+  }, [status]);
 
   return (
     <>
