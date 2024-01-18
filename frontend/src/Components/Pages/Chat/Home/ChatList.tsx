@@ -21,22 +21,22 @@ function ListAvatars({ avatar }: ListAvatars) {
 interface ListConversations {
     avatar: string,
     username: string,
-    message: string,
-    time: string,
     roomId: string
+    status: string
 }
 
-function ListConversations({ avatar, username, message, time, roomId }:ListConversations) {
+function ListConversations({ avatar, username,  roomId, status }:ListConversations) {
   const {setCurrentRoom}:any = useContext(RoomContext);
 
   return (
     <li onClick={()=>setCurrentRoom(roomId)} className="flex items-center gap-[3rem] p-2 hover:bg-pink-600 hover:duration-[0.2s] rounded-2xl mb-6 cursor-pointer">
+      <div className="relative">
       <img className="h-[6rem] w-[6rem] rounded-full" src={avatar} alt="avatar" />
+      <div className={`absolute bottom-0 right-0 w-[1rem] h-[1rem] rounded-full   ${status === "ONLINE" ? "bg-green-500" : status === "OFFLINE" ? "bg-red-500" : "bg-yellow-500" }`}></div>
+      </div>
       <div className="overflow-hidden">
         <h1 className="text-2xl pb-2 font-extrabold uppercase">{username}</h1>
-        <p className="text-xl">{message}</p>
       </div>
-      <span className="text-xl font-semibold">{time}</span>
     </li>
   );
 }
@@ -50,17 +50,18 @@ function ChatList({chatUser}:any) {
           placeholder="search"
         />
         <ul className="flex gap-5 w-11/12">
-          {avatars.map((avatar) => (
-            <ListAvatars  avatar={avatar} />
+          {avatars.map((avatar, i) => (
+            <ListAvatars key={i} avatar={avatar} />
           ))}
         </ul>
       </div>
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {chatUser.map((conv, i) => (
+        {chatUser.map((conv:any, i) => (
           <ListConversations
             avatar={conv.Avatar}
             username={conv.roomName}
             roomId={conv.roomId}
+            status={conv.status}
             key={i}
           />
         ))}

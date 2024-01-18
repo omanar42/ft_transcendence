@@ -47,7 +47,7 @@ export const LoginInfoContext = ({ children }: any) => {
   const [gamesocket, setGameSocket] = useState<Socket | null>(null);
   const [verifed, setVerifed] = useState<boolean>(false);
   const [gameMode, setGameMode] = useState<string>("");
-
+  const[connected, setConnected] = useState<boolean>(true);
   const value = {
     isLogged,
     setIsLogged,
@@ -67,7 +67,10 @@ export const LoginInfoContext = ({ children }: any) => {
     setVerifed,
     verifed,
     gameMode,
-    setGameMode
+    setGameMode,
+    connected,
+    setConnected
+    
   };
 
   return <LoginInfo.Provider value={value}>{children}</LoginInfo.Provider>;
