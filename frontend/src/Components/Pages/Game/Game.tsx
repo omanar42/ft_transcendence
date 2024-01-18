@@ -3,14 +3,17 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 import Friend from "./Assets/Friend.jpg";
 import Random from "./Assets/random.jpg";
+import AI from './Assets/Ai.jpeg';
 import { motion, AnimatePresence } from "framer-motion";
-import avatar from "../../../assets/avatar.jpeg";
 import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
 import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import gameover from "/gameover.png";
 import { useNavigate } from "react-router-dom";
+import GameAI from "./GameAI";
+
+
 interface Player {
   id: number;
   x: number;
@@ -45,8 +48,7 @@ interface GameState {
 }
 
 const Game = ({ imageUrl }: any) => {
-  const { userInfo, gamesocket, setGameMode, gameMode }: any =
-    useContext(LoginInfo);
+  const { userInfo, gamesocket, setGameMode }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
@@ -343,11 +345,6 @@ const Game = ({ imageUrl }: any) => {
       cancelAnimationFrame(animationFrameId);
     };
 
-    // if (ctx && canvas && status === "gameOver") {
-    //   drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
-    //   return () => {};
-    // }
-
     if (ctx && canvas && status !== "start") {
       drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
     }
@@ -429,6 +426,8 @@ const StartGame = ({ setImageUrl }: any) => {
   const [userName, setUserName] = useState("");
   const [level, setLevel] = useState("Easy");
   const [isFlipped_1, setIsFlipped_1] = useState(false);
+  const [isFlipped_2, setIsFlipped_2] = useState(false);
+
 
   const handlePlayRandom = () => {
     setGameMode("random");
@@ -458,8 +457,14 @@ const StartGame = ({ setImageUrl }: any) => {
     handlePlayRandom();
   };
 
+  const PlayAi = (image: any) => {
+    setImageUrl(image);
+    setGameMode("AI");
+  };
+
+
   return (
-    <div className="flex justify-around w-[130rem] ml-auto mr-auto">
+    <div className="flex justify-around w-[150rem] ml-auto mr-auto">
       <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With Friend</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped}>
@@ -525,6 +530,28 @@ const StartGame = ({ setImageUrl }: any) => {
           </div>
         </ReactCardFlip>
       </div>
+       <div className="flex flex-col items-center gap-[2rem]">
+        <h1 className="text-5xl text-white">Play With AI</h1>
+        <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped_2}>
+          <img
+            onClick={() => setIsFlipped_2(true)}
+            className="cursor-pointer rounded-[4rem]  hover:opacity-75 hover:duration-[0.4s]  h-[50rem] w-[45rem]"
+            src={AI}
+            alt="Ai"
+          />
+          <div className="cursor-pointer overflow-hidden relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
+            <div className="w-full h-full flex flex-col justify-between gap-1">
+              {images.map((image) => (
+                <img
+                  onClick={() => PlayAi(image)}
+                  className="h-full w-full hover:opacity-50 hover:duration-[0.2s] border-white border-opacity-20"
+                  src={image}
+                />
+              ))}
+            </div>
+          </div>
+        </ReactCardFlip>
+      </div>
     </div>
   );
 };
@@ -578,7 +605,7 @@ function LadingPage() {
           theme="dark"
           className="text-4xl"
         />
-        {(isInvitation && !gameMode) &&   (
+        {isInvitation && !gameMode && (
           <div className=" absolute  z-50 top-0 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-dark p-10 rounded-xl">
               <h1 className="text-4xl font-bold text-white">
@@ -603,6 +630,8 @@ function LadingPage() {
         )}
         {!gameMode ? (
           <StartGame setImageUrl={setImageUrl} />
+        ) : gameMode === "AI" ? (
+          <GameAI imageUrl={imageUrl} />
         ) : (
           <Game setGameMode={setGameMode} imageUrl={imageUrl} />
         )}

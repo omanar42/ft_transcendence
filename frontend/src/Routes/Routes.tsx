@@ -22,6 +22,7 @@ import { useContext } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
 import NotFound from "../Components/Pages/404/NotFound";
+import GameAI from "../Components/Pages/Game/GameAI";
 
 const ProtectedRoutes = () => {
   const location = useLocation();
@@ -67,6 +68,7 @@ export const routermin = createBrowserRouter(
       <Route element={<ProtectedRoutes />}>
         <Route element={<Protect2fa />}>
         <Route path="/game" element={<LadingPage />} />
+        <Route path="/game/ai" element={<GameAI />} />
 
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
@@ -87,7 +89,7 @@ export const routermin = createBrowserRouter(
             <Route path="Profile" element={<Profile />}>
               <Route path=":username" element={<Profile />} />
             </Route>
-          </Route>
+          toR</Route>
           <Route path="*" element={<NotFound />} />
         </Route>
       </Route>
