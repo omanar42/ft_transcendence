@@ -9,7 +9,7 @@ import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
 import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
-import gameover from '/gameover.png';
+import gameover from "/gameover.png";
 interface Player {
   id: number;
   x: number;
@@ -44,7 +44,7 @@ interface GameState {
 }
 
 const Game = ({ imageUrl }: any) => {
-  const { userInfo, gamesocket, setGameMode, gameMode }: any = useContext(LoginInfo);
+  const { userInfo, gamesocket, setGameMode }: any = useContext(LoginInfo);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
@@ -314,11 +314,6 @@ const Game = ({ imageUrl }: any) => {
       cancelAnimationFrame(animationFrameId);
     };
 
-    // if (ctx && canvas && status === "gameOver") {
-    //   drawText(ctx, "Game Over", 1300 / 2 - 200, 700 / 2, "#fff");
-    //   return () => {};
-    // }
-
     if (ctx && canvas && status !== "start") {
       drawText(ctx, "Waiting for opponent...", 1300 / 2 - 300, 700 / 2, "#fff");
     }
@@ -348,7 +343,7 @@ const Game = ({ imageUrl }: any) => {
     <>
       {status === "gameOver" ? (
         <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-          <img className="w- h-full" src={gameover}/>
+          <img className="w- h-full" src={gameover} />
           <button
             className="w-[20%] absolute top-[37rem] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
             onClick={() => setGameMode(null)}
