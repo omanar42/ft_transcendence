@@ -6,6 +6,7 @@ export class GameState {
   ball: Ball;
   playerOne: Player;
   playerTwo: Player;
+  gameMode: string;
   winner: string;
 
   constructor() {
@@ -13,6 +14,7 @@ export class GameState {
     this.playerTwo = null;
     this.ball = null;
     this.roomId = '';
+    this.gameMode = '';
     this.winner = '';
   }
 
@@ -58,7 +60,10 @@ export class GameState {
       this.ball.velocityX = direction * this.ball.speed * Math.cos(angleRad);
       this.ball.velocityY = this.ball.speed * Math.sin(angleRad);
 
-      // this.ball.speed += 0.1;
+      if (this.gameMode === 'medium')
+        this.ball.speed += 0.1;
+      else if (this.gameMode === 'hard')
+        this.ball.speed += 0.2;
     }
 
     if (this.ball.x - this.ball.radius <= 0) {
@@ -86,6 +91,7 @@ export class GameState {
       playerOne: this.playerOne.toJSON(),
       playerTwo: this.playerTwo.toJSON(),
       ball: this.ball.toJSON(),
+      gameMode: this.gameMode,
     };
   };
 }

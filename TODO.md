@@ -6,17 +6,23 @@ Project Description
 
 ### Todo
 
-- [ ] xp && level  
-- [ ] achivments  
-- [ ] Matching players  
-- [ ] Match History  
+- [ ] change scores before push and remove .env  
+- [ ] invite game from chat  
+- [ ] docker in prod mode  
+- [ ] gameMods  
+- [ ] Ledder  
 
 ### In Progress
 
-- [ ] play with friends  
 
 ### Done ✓
 
+- [x] Avatars in game  
+- [x] play with friends  
+- [x] Match History  
+- [x] Matching players  
+- [x] achivments  
+- [x] xp && level  
 - [x] status (online, offline, in a game, and so forth)  
 - [x] server-side validation for forms and any user  
 - [x] Protectec 2fa in cookies  

@@ -62,6 +62,7 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       score: 0,
     },
     opponent: {
+      id: 0,
       x: 1300 - 5 - 16,
       y: 700 / 2 - 100 / 2,
       width: 16,
@@ -102,8 +103,6 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   }, [gamesocket]);
 
   const handleGameOver = (data: any) => {
-    console.log("game over");
-    console.log(data);
     if (data.winner === userInfo.username) {
       setwin(true);
     } else {
@@ -114,12 +113,15 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   };
 
   const handleStart = (data: any) => {
-    console.log("----------------dkhaal----------------");
+    console.log('start');
+    console.log(data);
     setStatus(data.status);
     setRoomId(data.roomId);
   };
 
   const handleGameState = (gameStateUpdate: any) => {
+    console.log('gameStateUpdate');
+    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
@@ -260,7 +262,7 @@ const Game = ({ setGameMode, imageUrl }: any) => {
   };
 
   const draw = (ctx: CanvasRenderingContext2D) => {
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.clearRect(0, 0, 1300, 700);
     if (imageUrl) {
       let img = new Image();
       img.src = imageUrl;
@@ -277,15 +279,9 @@ const Game = ({ setGameMode, imageUrl }: any) => {
       gameState.current.ball.color,
       gameState.current.user.id
     );
-    const canvasMidPoint = 1300 / 2;
-    const userScore = gameState.current.user.score;
-    const opponentScore = gameState.current.opponent.score;
-    drawText(ctx, userScore.toString(), canvasMidPoint - 190, 100, "#fff");
-    drawText(ctx, opponentScore.toString(), canvasMidPoint + 100, 100, "#fff");
   };
 
   const update = () => {
-    console.log(status);
     if (isUpPressed.current) {
       gameState.current.user.y = Math.max(
         0,
