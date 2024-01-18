@@ -141,14 +141,14 @@ export class ChatService {
     if (cachedSocket) {
       return cachedSocket;
     }
-    const user = await this.prisma.user.findUnique({
-      where: {
-        oauthId: oauthid,
-      },
-    });
-    if (!user) {
-      throw new Error('User not found');
-    }
+    // const user = await this.prisma.user.findUnique({
+    //   where: {
+    //     oauthId: oauthid,
+    //   },
+    // });
+    // if (!user) {
+    //   throw new Error('User not found');
+    // }
   }
   async DeleteOauthIdSocket(client: Socket) {
     const cacheKey = `socket:${client.id}`;
@@ -459,6 +459,12 @@ export class ChatService {
     );
     if (!room) {
       throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
+    if (target_user.status === UserStatusInRoom['OWNER']) {
+      throw new HttpException(
+        'You cant set admin for the owner',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
     if (!seter_user || !target_user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

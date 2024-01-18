@@ -19,12 +19,13 @@ import { subscribe } from 'diagnostics_channel';
 import { UsersService } from 'src/users/users.service';
 import { disconnect, emit } from 'process';
 import { Status } from '@prisma/client';
+import e from 'express';
 
 @WebSocketGateway({
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    method: ['GET', 'POST'],
+    // method: ['GET', 'POST'],
   },
   namespace: 'game',
 })
@@ -43,20 +44,21 @@ export class GameGateway
   async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
-      const oauthId = this.gameService.GetoauthId(client);
-      const gameState = this.gameService.GetRoom(
-        this.gameService.GetRoomIdByOauthId(oauthId),
-      );
-      if (gameState) {
-        if (gameState.playerOne.id === oauthId) {
-          gameState.winner = 'playerTwo';
-        } else if (gameState.playerTwo.id === oauthId) {
-          gameState.winner = 'playerOne';
-        }
-        this.gameService.HandleEndGame(gameState, this.server);
-      }
-      this.gameService.set_offline(oauthId);
-      this.gameService.DeleteSocket(client);
+      this.gameService.handledisconnect(client, this.server);
+      // const oauthId = this.gameService.GetoauthId(client);
+      // const gameState = this.gameService.GetRoom(
+      //   this.gameService.GetRoomIdByOauthId(oauthId),
+      // );
+      // if (gameState) {
+      //   if (gameState.playerOne.id === oauthId) {
+      //     gameState.winner = 'playerTwo';
+      //   } else if (gameState.playerTwo.id === oauthId) {
+      //     gameState.winner = 'playerOne';
+      //   }
+      //   this.gameService.HandleEndGame(gameState, this.server);
+      // }
+      // this.gameService.set_offline(oauthId);
+      // this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
     }
@@ -104,14 +106,14 @@ export class GameGateway
     @MessageBody() data_in,
   ) {
     try {
-      // console.log(data_in);
       console.log(data_in);
       if (data_in.status === 'request') {
         console.log('request');
         await this.gameService.invatefriend(client, data_in.friend);
-      }
-      //demo
-      else if (data_in.status === 'accept') {
+      } else if (data_in.status === 'reject') {
+        console.log('reject');
+        throw new Error('your friend reject your invation');
+      } else if (data_in.status === 'accept') {
         console.log('accept');
         const data = {
           // status: 'waiting',
@@ -131,7 +133,8 @@ export class GameGateway
         this.server.to(data_in.roomId).emit('start', data);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      this.server.to(client.id).emit('gameError', { message: error.message });
       // this.logger.log(error);
     }
   }
