@@ -14,10 +14,12 @@ export class RoomUser_front_Dto {
   constructor(data: any) {
     this.UserName = data.username;
     this.Avatar = data.avatar;
+    this.user_status = data.status;
   }
   UserName: string;
   Avatar: string;
   status: string;
+  user_status: string;
 }
 export class Room_Front_Dto {
   constructor() {
@@ -25,11 +27,13 @@ export class Room_Front_Dto {
     this.roomName = '';
     this.roomType = '';
     this.roomId = 0;
+    this.status = '';
   }
   Avatar: string;
   roomName: string;
   roomType: string;
   roomId: number;
+  status: string;
 }
 export class Message_Front_Dto {
   message: string;
