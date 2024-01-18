@@ -28,7 +28,7 @@ export class ChatController {
         req.user.sub.toString(),
       );
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('leaveroom')

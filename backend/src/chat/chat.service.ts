@@ -114,6 +114,7 @@ export class ChatService {
     DM_front.roomName = user.username;
     DM_front.roomType = DM.type;
     DM_front.roomId = DM.id;
+    DM_front.status = user.status;
     return DM_front;
   }
 
@@ -202,10 +203,22 @@ export class ChatService {
     });
     const messages = Room_messages_model.messages;
     if (!Room_messages_model) {
-      throw new Error('Room not found');
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
     }
     const Messages_Front = new Messages_Front_Dto(Room_messages_model);
     const room_users = await this.GetRoomById(roomId);
+    const the_user_is_banned = room_users.roomuser.find(
+      (roomuser) => roomuser.userId === oauthId,
+    );
+    if (
+      the_user_is_banned &&
+      the_user_is_banned.status === UserStatusInRoom['BANNED']
+    ) {
+      throw new HttpException(
+        'You are banned from this room',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
     const room_users_filtered = await this.filter_blocked_users(
       { oauthId: oauthId },
       room_users.roomuser,
@@ -539,7 +552,6 @@ export class ChatService {
           throw new HttpException('New owner not found', HttpStatus.NOT_FOUND);
         }
         if (newOwner.oauthId === oauthId) {
-
           throw new HttpException(
             'neta zaml bel wera9',
             HttpStatus.NOT_ACCEPTABLE,
