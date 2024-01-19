@@ -8,6 +8,7 @@ import { TbCurrencyPoundOff } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { BiSolidVolumeMute } from "react-icons/bi";
+import { VscUnmute } from "react-icons/vsc";
 
 const owner = false;
 
@@ -17,6 +18,7 @@ interface RoomMembers {
   status: string;
   currentUser: string;
   user_status: string;
+  muted: boolean;
 }
 
 function RenderMembers({
@@ -26,6 +28,7 @@ function RenderMembers({
   status,
   handrommemebers,
   user_status,
+  muted,
 }: any) {
   const { userInfo }:any = useContext(LoginInfo);
   const { ownerSheep }: any = useContext(RoomContext);
@@ -105,6 +108,22 @@ const MuteUser = async () => {
     const response = await axios.post(
       "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
       handrommemebers(response.data);
+      console.log('++++++++++++++++++++++++++++++++',response.data);
+}catch(error){
+  toast.error(error?.response.data.message);
+}
+}
+
+const unMuteUser = async () => {
+  try {
+    const user = {
+      roomId: currentRoom,
+      target_username: username,
+    };
+    const response = await axios.post(
+      "http://127.0.0.1:3000/chat/unmute_user", user, { withCredentials: true});
+      handrommemebers(response.data);
+      console.log('++++++++++++++++++++++++++++++++',response.data);
 }catch(error){
   toast.error(error?.response.data.message);
 }
@@ -127,8 +146,8 @@ const MuteUser = async () => {
                 className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full"
               />
               <MdAdminPanelSettings onClick={setAdmin} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full"/>
-              <BiSolidVolumeMute onClick={MuteUser} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full" />
-
+              { !muted ? <BiSolidVolumeMute onClick={MuteUser} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full" />
+             : < VscUnmute onClick={unMuteUser} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full" />}
             </div>
           )}
         {(ownerSheep === "OWNER" || ownerSheep === "ADMIN" )&&
@@ -158,8 +177,8 @@ const MuteUser = async () => {
 
 function RoomMembers() {
   const [roomMembers, setRoomMembers] = useState<RoomMembers[]>([]);
-  const { currentRoom, setOwnersheep, ownerSheep }:any = useContext(RoomContext);
-  const { userInfo }:any = useContext(LoginInfo);
+  const { currentRoom, setOwnersheep, setStatus }:any = useContext(RoomContext);
+  const { userInfo,  }:any = useContext(LoginInfo);
 
   useEffect(() => {
     const fetchRoommemebers = async () => {
@@ -172,7 +191,11 @@ function RoomMembers() {
         const user = response.data.find(
           (member: RoomMembers) => member.UserName === userInfo.username
         );
-        if (user) setOwnersheep(user.status);
+        if (user){
+          console.log('user', user);
+          setOwnersheep(user.status);
+          setStatus(user.muted);
+        } 
         console.log(response.data);
       } catch (error) {
         console.error(error);
@@ -197,6 +220,7 @@ function RoomMembers() {
             status={memeber.status}
             handrommemebers={handrommemebers}
             user_status={memeber.user_status}
+            muted={memeber.muted}
             key={i}
           />
         ))}

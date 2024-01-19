@@ -35,7 +35,7 @@ function MessageInput({setChannelsList}:any) {
   const [inviteFriend, setFriend] = useState("");
   const [addIsopen, setAddIsOpen] = useState(false);
   const [newOwner, setNewowner] = useState("");
-  const { ownerSheep, setMessageList, messageList, setAvatar, avatar, setRoomName, roomName}:any = useContext(RoomContext);
+  const { ownerSheep, setMessageList, messageList, setAvatar, avatar, setRoomName, roomName, status}:any = useContext(RoomContext);
   const scrollRef = useAutoScroll();
   const sendMessage = () => {
     if (currentMessage !== "") {
@@ -230,7 +230,7 @@ function MessageInput({setChannelsList}:any) {
             })}
             <div ref={scrollRef}/>
           </div>
-          {ownerSheep !== "BANNED" && (
+          {ownerSheep !== "BANNED" && !status ? (
             <div className="h-[6rem] pl-10 pr-10 border-t-2 border-opacity-20 border-white flex justify-between items-center gap-3">
               <input
                 className="h-14 flex-1 outline-none rounded-3xl pl-10 text-white bg-black bg-opacity-50 text-2xl"
@@ -247,7 +247,10 @@ function MessageInput({setChannelsList}:any) {
                 className="text-6xl text-pink-600 cursor-pointer"
               />
             </div>
-          )}
+           
+          ): <div className="flex justify-center">
+          {status === true ?<h1 className="text-5xl">You are Muted</h1>: <h1 className="text-5xl">You are Banned</h1>}
+        </div>}
         </>
       ) : (
         <div></div>

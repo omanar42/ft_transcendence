@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import avatar from "../../../../assets/avatar.jpeg";
+import avatar from "../../../../assets/avatar.png"
 import { ToastContainer, toast } from "react-toastify";
 import "./CreateRoom.css";
 import { motion } from "framer-motion";
+
 export interface UnjoinedRoom {
   avatar: string; // assuming avatar is a string URL or similar
   time?: string;
@@ -13,7 +14,7 @@ export interface UnjoinedRoom {
   roomPassword?: string;
   userName?: string;
   roomId: string;
-  setRooms?: Function;
+  setRooms: Function;
 }
 function ListRooms({
   avatar,
