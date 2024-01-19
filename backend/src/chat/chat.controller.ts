@@ -103,6 +103,29 @@ export class ChatController {
       const response = await this.chatService.MuteUserFromRoom(
         req.user.sub.toString(),
         body,
+        'MUTE',
+      );
+      return res.json(response);
+    } catch (error) {
+      throw error;
+    }
+  }
+  @Post('unmute_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async unmuteUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.MuteUserFromRoom(
+        req.user.sub.toString(),
+        body,
+        'UNMUTE',
       );
       return res.json(response);
     } catch (error) {
