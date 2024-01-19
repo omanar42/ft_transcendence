@@ -132,11 +132,9 @@ export class AuthService {
 
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: true,
     });
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      secure: true,
     });
 
     if (found.twoFactor) redirectUrl = process.env.FRONTEND_URL + '/two-factor';

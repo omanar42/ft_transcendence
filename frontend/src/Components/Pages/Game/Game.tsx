@@ -51,7 +51,7 @@ const Game = ({ imageUrl }: any) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
-  const paddleSpeed = 8;
+  const paddleSpeed = 11;
   const [status, setStatus] = useState<string>("waiting");
   const [roomId, setRoomId] = useState("");
   const gameState = useRef<GameState>({
