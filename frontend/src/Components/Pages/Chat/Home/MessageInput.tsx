@@ -47,7 +47,6 @@ function MessageInput({setChannelsList}:any) {
       setMessageList((list:any) => [...list, messageData]);
       setcurrentMessage("");
       socket.emit("message", messageData);
-      // console.log(messageData);
     }
   };
 
@@ -111,7 +110,7 @@ function MessageInput({setChannelsList}:any) {
     setAddIsOpen(false);
     setFriend("");
     setCurrentRoom(0);
-    toast.success("User added");
+    // toast.success("User added");
   };
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">

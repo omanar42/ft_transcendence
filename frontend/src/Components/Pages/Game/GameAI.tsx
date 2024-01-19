@@ -284,8 +284,8 @@ const GameAI = ({ imageUrl }: any) => {
     }
 
     if (
-      gameState.current.ai.score === 4 ||
-      gameState.current.user.score === 4
+      gameState.current.ai.score === 11 ||
+      gameState.current.user.score === 11
     ) {
       setGameEnd(true);
       resetGame(canvas);
@@ -341,18 +341,18 @@ const GameAI = ({ imageUrl }: any) => {
                 src={userInfo.avatar}
                 className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
               />
-              <h1 className="text-4xl font-extrabold">{userInfo.username}</h1>
+              <h1 className="text-4xl font-extrabold text-blue-400">{userInfo.username}</h1>
             </div>
             <div className="flex-1 flex items-center  text-white font-bold justify-between">
-              <span className="text-6xl">{userScore}</span>
-              <h1 className="text-8xl">VS</h1>
-              <span className="text-6xl">{aiScore}</span>
+              <span className="text-6xl text-blue-400">{userScore}</span>
+              <h1 className="text-8xl text-violet-400">VS</h1>
+              <span className="text-6xl text-pink-600">{aiScore}</span>
             </div>
             <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-              <h1 className="text-4xl font-extrabold">CyberPonk</h1>
+              <h1 className="text-4xl font-extrabold text-pink-600">CyberPonk</h1>
               <img
                 src={robot}
-                className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                className="w-[6rem] h-[6rem]"
               />
             </div>
           </div>
@@ -362,6 +362,14 @@ const GameAI = ({ imageUrl }: any) => {
             height="700"
             ref={canvasRef}
           ></canvas>
+          <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
+            <button
+              className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+              onClick={() => setGameMode(null)}
+            >
+              Back to menu
+            </button>
+          </div>
         </div>
       )}
     </>

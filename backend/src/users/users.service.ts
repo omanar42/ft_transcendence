@@ -684,7 +684,7 @@ export class UsersService {
     const loserAchievementsToPush = [];
 
     if (
-      winner.score === 4 &&
+      winner.score === 11 &&
       loser.score === 0 &&
       !winnerStats.achievements.includes('PERFECT_WIN')
     )

@@ -8,6 +8,4 @@ export class Message {
 export class Room{
     id : number;
     name : string;
-    // messages : Message[];
-    // usersId : string[];
 }
