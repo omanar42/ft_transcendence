@@ -20,6 +20,7 @@ export class RoomUser_front_Dto {
   Avatar: string;
   status: string;
   user_status: string;
+  muted: boolean;
 }
 export class Room_Front_Dto {
   constructor() {

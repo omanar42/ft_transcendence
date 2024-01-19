@@ -264,6 +264,7 @@ export class ChatService {
       );
       const roomuser_front = new RoomUser_front_Dto(user);
       roomuser_front.status = room_user.status;
+      roomuser_front.muted = room_user.muted;
       front_members.push(roomuser_front);
     }
     return front_members;
@@ -385,7 +386,7 @@ export class ChatService {
       },
     });
     if (!room) {
-      throw new Error('Room not found');
+      null;
     }
     // this.cacheService.set(cacheKey, room);
     return room;
@@ -397,6 +398,9 @@ export class ChatService {
     // if (cachedUser) {
     //   return cachedUser;
     // }
+    if (username == null) {
+      return null;
+    }
     const user = await this.prisma.user.findUnique({
       where: {
         username: username,
@@ -465,6 +469,9 @@ export class ChatService {
   async setAdminForRoom(roomId: number, seter: string, target: string) {
     const room = await this.GetRoomById(roomId);
     const target_userModel = await this.GetUserByUsername(target);
+    if (!target_userModel) {
+      throw new HttpException('User not found admin', HttpStatus.NOT_FOUND);
+    }
     target = target_userModel.oauthId;
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter,
@@ -605,10 +612,8 @@ export class ChatService {
     // this.cacheService.delete(`user:${oauthId}`);
     // this.cacheService.delete(`user:${user.username}`);
   }
-  async MuteUserFromRoom(oauthId: string, data: any) {
+  async MuteUserFromRoom(oauthId: string, data: any, status: string) {
     // console.log(data.target_username);
-    // console.log('===================================');
-    // return;
     const room = await this.GetRoomById(data.roomId);
     const user = await this.GetUserByOauthId(oauthId);
     const target_user = await this.GetUserByUsername(data.target_username);
@@ -618,6 +623,12 @@ export class ChatService {
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === oauthId,
     );
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
+    if (!roomuser.muted && status === 'UNMUTE') {
+      throw new HttpException('User is not muted', HttpStatus.NOT_ACCEPTABLE);
+    }
     if (target_user.oauthId === oauthId) {
       throw new HttpException(
         'You cant mute yourself',
@@ -651,21 +662,32 @@ export class ChatService {
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    if (roomuser.muted) {
+    if (roomuser.muted && status === 'MUTE') {
       throw new HttpException(
         'User is already muted',
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
-    await this.prisma.roomUser.update({
-      where: {
-        id: roomuser.id,
-      },
-      data: {
-        muted: true,
-      },
-    });
-    return this.GetRoomUsers(parseInt(data.roomId));
+    if (status === 'MUTE') {
+      await this.prisma.roomUser.update({
+        where: {
+          id: roomuser.id,
+        },
+        data: {
+          muted: true,
+        },
+      });
+    } else {
+      await this.prisma.roomUser.update({
+        where: {
+          id: roomuser.id,
+        },
+        data: {
+          muted: false,
+        },
+      });
+    }
+    return this.GetRoomUsers(data.roomId);
   }
   async BanUserFromRoom(
     roomId: number,
