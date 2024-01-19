@@ -81,8 +81,10 @@ export class ChatService {
     return await this.getRooms(oauthId);
   }
   async getRooms(oauthId: string) {
-    // to do : test this function
     const user = await this.GetUserByOauthId(oauthId);
+    if (!user) {
+      return [];
+    }
     const rooms = user.roomsuser;
     if (!rooms) {
       return [];
@@ -254,7 +256,7 @@ export class ChatService {
     let front_members = [];
     const room = await this.GetRoomById(roomId);
     if (!room) {
-      throw new Error('Room not found');
+      return [];
     }
     const room_users = room.roomuser;
     for (const roomuser of room.roomuser) {
