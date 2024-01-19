@@ -89,7 +89,7 @@ function RenderMembers({
         username: username,
       };
       const response = await axios.post(
-        "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
+        "http://127.0.0.1:3000/chat/setadmin", user, { withCredentials: true});
         handrommemebers(response.data);
   }catch(error){
     toast.error(error?.response.data.message);
@@ -103,7 +103,7 @@ const MuteUser = async () => {
       target_username: username,
     };
     const response = await axios.post(
-      "http://127.0.0.1:3000/chat/setadmin", user, { withCredentials: true});
+      "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
       handrommemebers(response.data);
 }catch(error){
   toast.error(error?.response.data.message);

@@ -90,13 +90,16 @@ function MainLayout() {
               </NavigationLink>
             </ul>
           </nav>
-          <FaBell className="text-4xl" />
-          <ProfileAvatar
+
+        </div>
+        <div className="relative">
+        <ProfileAvatar
             src={userInfo.avatar}
             className="h-[6rem] w-[6rem] cursor-pointer border-4  rounded-full hover:scale-[1.2] duration-100 border-pink-100 hover:border-4"
             onClick={() => setisDropDown(!isDropDown)}
           />
           {isDropDown && <DropDwonMenu  CloseDropMenu={CloseDropMenu}/>}
+
         </div>
       </div>
       <main>
