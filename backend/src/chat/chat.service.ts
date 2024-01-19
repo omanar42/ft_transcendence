@@ -78,7 +78,7 @@ export class ChatService {
       },
     });
 
-    return await this.GetRoomUsers(data.roomId);
+    return await this.getRooms(oauthId);
   }
   async getRooms(oauthId: string) {
     // to do : test this function
@@ -524,13 +524,14 @@ export class ChatService {
   }
   async Leaveroom(oauthId: string, data: any) {
     const room = await this.GetRoomById(data.roomId);
-    const user = await this.GetUserByOauthId(oauthId);
+    // const user = await this.GetUserByOauthId(oauthId);
     const roomuser = room.roomuser.find(
       (roomuser) => roomuser.userId === oauthId,
     );
     const RoomMembers = room.roomuser;
-    // if (roomuser.status === UserStatusInRoom['OWNER']) {
-    // }
+    if (!roomuser) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     if (roomuser && room.type !== RoomType['DIRECT_MESSAGE']) {
       if (roomuser.status === UserStatusInRoom['BANNED']) {
         throw new HttpException(
@@ -598,6 +599,7 @@ export class ChatService {
           },
         });
       }
+      return this.getRooms(oauthId);
     }
     // this.cacheService.delete(`room:${data.roomId}`);
     // this.cacheService.delete(`user:${oauthId}`);
