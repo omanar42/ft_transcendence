@@ -6,6 +6,8 @@ import ProfileAvatar from "../Utils/ProfileAvatar";
 import Avatar from "../assets/avatar.jpeg";
 import { useContext, useEffect, useState } from "react";
 import LoginInfo from "../Contexts/LoginContext";
+import { MdOutlineWarning } from "react-icons/md";
+
 
 function DropDwonMenu({CloseDropMenu}:any) {
   const { Logout }: any = useContext(LoginInfo);
@@ -28,6 +30,8 @@ function MainLayout() {
   const [isInvitation, setIsInvitation] = useState(false);
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
+  const {connected}:any = useContext(LoginInfo)
+
 
   useEffect(() => {
     if (gamesocket) {
@@ -87,7 +91,19 @@ function MainLayout() {
         </div>
       </div>
       <main>
-        <Outlet />
+      {!connected ? <div className="modal h-screen flex justify-center items-center">
+            <div className="w-[50%] h-[20%] bg-dark-300 rounded-3xl flex flex-col justify-around items-center">
+              <h1 className="text-8xl text-pink-600">You lost Connection</h1>
+              <div className="flex items-center gap-[1rem]">
+              <MdOutlineWarning  className="text-7xl text-yellow-400"/>
+              <h2 className="text-2xl wrap"><strong>CyberPonk</strong>k is open in another window. Click <strong className="text-4xl text-pink-600">Use Here</strong> to use <strong>CyberPonk</strong>  in this window</h2>
+              </div>
+              <button className="text-5xl uppercase p-4 bg-pink-600 rounded-3xl hover:opacity-60 hover:duration-[0.2s]" onClick={()=>window.location.reload()}>Use Here</button>
+            </div>
+          </div>
+          :
+            <Outlet />
+            }
       </main>
       {isInvitation && (
         <div className="fixed top-0 z-50 left-0 w-screen h-screen bg-black bg-opacity-50 flex justify-center items-center">

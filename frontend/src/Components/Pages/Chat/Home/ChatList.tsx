@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import Avatar from "../assets/avatar.jpeg";
+import Avatar from "../assets/avatar.png";
 import './Chatlist.css';
 import LoginInfo from "../../../../Contexts/LoginContext";
 import { RoomContext } from "../../../../Contexts/RoomContext";

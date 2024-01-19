@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./CreateRoom.css";
-import Avatar from "../assets/avatar.jpeg";
+import Avatar from "../assets/avatar.png";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
 

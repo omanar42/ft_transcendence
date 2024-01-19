@@ -1,4 +1,4 @@
-import Avatar from "../assets/avatar.jpeg";
+import Avatar from "../assets/avatar.png";
 import "./RoomList.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useContext, useState } from "react";
@@ -19,7 +19,7 @@ interface ListAvatars {
 
 function ListAvatars({ avatar }: ListAvatars) {
   return (
-    <li>
+    <li className="bg-white">
       <img className="rounded-full" src={avatar} alt="avatar" />
     </li>
   );
@@ -133,7 +133,7 @@ function ListRooms({roomName, roomType, roomId }: Room) {
       }}
     >
       <div className="overflow-hidden flex items-center gap-5">
-        <img className="h-[5rem] rounded-full" src={Avatar} alt="avatar" />
+        <img className="h-[5rem] w-[5rem] bg-white rounded-full" src={Avatar} alt="avatar" />
         <h1 className="text-2xl overflow-hidden w-[8rem] pb-2 text-ellipsis font-extrabold">
           {roomName}
         </h1>
@@ -162,18 +162,7 @@ function RoomList({ handeltoggelModal, List }: any) {
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden border-2 border-white border-opacity-20 rounded-2xl">
       {settingsIsOpen && <RoomSettings />}
 
-      <div className=" border-b-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
-        <input
-          className="w-11/12 h-[2.5rem] rounded-full pl-10 text-white bg-black bg-opacity-80 text-xl outline-none border-2 border-white border-opacity-20"
-          type="text"
-          placeholder="search"
-        />
-        <ul className="flex gap-5 w-11/12">
-          {avatars.map((avatar, i) => (
-            <ListAvatars avatar={avatar} key={i} />
-          ))}
-        </ul>
-      </div>
+
       <button
         onClick={handeltoggelModal}
         className="w-11/12 flex items-center justify-center gap-10 bg-dark flex-shrink-0 flex-grow-0 basis-[5rem] text-2xl tracking-4 font-bold rounded-xl hover:bg-white hover:text-dark duration-[0.2s]"

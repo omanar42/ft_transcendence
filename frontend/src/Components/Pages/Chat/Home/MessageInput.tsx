@@ -7,7 +7,7 @@ import { IoLogOutSharp } from "react-icons/io5";
 import "../Rooms/CreateRoom.css";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdPersonAdd } from "react-icons/io";
-
+import Avatar from "../assets/avatar.png";
 
 
 interface messageData {
@@ -92,6 +92,8 @@ function MessageInput() {
       setRoomName(messages.data.roomName);
       setRoomType(messages.data.roomType);
       setAvatar(messages.data.Avatar);
+      if(!messages.data.Avatar)
+        setAvatar(Avatar);
     };
     if (currentRoom) {
       fetchMessages();
@@ -127,7 +129,7 @@ function MessageInput() {
         <>
           <div className=" bg-dark  chat-header flex items-center justify-between pl-[5rem] pr-[5rem] h-[8rem]">
             <img
-              className="h-[6rem] w-[6rem] rounded-full"
+              className="h-[6rem] w-[6rem] bg-white rounded-full"
               src={avatar}
               alt="avatar"
             />
