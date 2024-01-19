@@ -1,25 +1,33 @@
 .game {
-  background: linear-gradient(90deg, rgba(190,129,247,1) 0%, rgba(124,77,255,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(190, 129, 247, 1) 0%,
+    rgba(124, 77, 255, 1) 100%
+  );
   border-image-slice: 1;
   border-width: 7px;
-	border-style: solid;
+  border-style: solid;
   overflow: hidden;
 }
 
 .canvasStyle {
-  border: 5px solid #BE81F7;
-  box-shadow: 0 0 20px #BE81F7;
+  border: 5px solid #be81f7;
+  box-shadow: 0 0 20px #be81f7;
   border-radius: 15px;
   overflow: hidden;
 }
 
 .playButton {
-  background: linear-gradient(90deg, rgba(190,129,247,1) 0%, rgba(124,77,255,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(190, 129, 247, 1) 0%,
+    rgba(124, 77, 255, 1) 100%
+  );
   border-image-slice: 1;
   border-width: 7px;
   border-style: solid;
   border-radius: 15px;
-  box-shadow: 0 0 20px #BE81F7;
+  box-shadow: 0 0 20px #be81f7;
   color: #fff;
   font-size: 1.5rem;
   padding: 0.5rem 1rem;

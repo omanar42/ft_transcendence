@@ -3,7 +3,7 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
 import Friend from "./Assets/Friend.jpg";
 import Random from "./Assets/random.jpg";
-import AI from './Assets/Ai.jpeg';
+import AI from "./Assets/Ai.jpeg";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
@@ -12,7 +12,6 @@ import { ToastContainer, toast } from "react-toastify";
 import gameover from "/gameover.png";
 import { useNavigate } from "react-router-dom";
 import GameAI from "./GameAI";
-
 
 interface Player {
   id: number;
@@ -346,13 +345,19 @@ const Game = ({ imageUrl }: any) => {
     };
 
     if (ctx && canvas && status !== "start") {
-      drawText(ctx, "Waiting for opponent...", 1300 / 2 - 450, 700 / 2 + 20, "#6574cd");
+      drawText(
+        ctx,
+        "Waiting for opponent...",
+        1300 / 2 - 450,
+        700 / 2 + 20,
+        "#6574cd"
+      );
     }
 
     if (ctx && canvas && status === "start") {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
-  
+
       const render = () => {
         update();
         draw(ctx);
@@ -392,7 +397,9 @@ const Game = ({ imageUrl }: any) => {
                   src={avatars.userAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-4xl font-extrabold text-blue-400">{Players.user}</h1>
+                <h1 className="text-4xl font-extrabold text-blue-400">
+                  {Players.user}
+                </h1>
               </div>
               <div className="flex-1 flex items-center  text-white font-bold justify-between">
                 <span className="text-6xl text-blue-400">{userScore}</span>
@@ -400,7 +407,9 @@ const Game = ({ imageUrl }: any) => {
                 <span className="text-6xl text-pink-600">{opponentScore}</span>
               </div>
               <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-                <h1 className="text-4xl font-extrabold text-pink-600">{Players.opponent}</h1>
+                <h1 className="text-4xl font-extrabold text-pink-600">
+                  {Players.opponent}
+                </h1>
                 <img
                   src={avatars.opponentAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
@@ -462,7 +471,6 @@ const StartGame = ({ setImageUrl }: any) => {
     setImageUrl(image);
     setGameMode("AI");
   };
-
 
   return (
     <div className="flex justify-around w-[150rem] ml-auto mr-auto">
@@ -539,7 +547,7 @@ const StartGame = ({ setImageUrl }: any) => {
           </button>
         </div>
       </div>
-       <div className="flex flex-col items-center gap-[2rem]">
+      <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With AI</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped_2}>
           <img
@@ -585,11 +593,11 @@ function LadingPage() {
   const handleReject = () => {
     const dataToSend = {
       roomId: roomId,
-      status: 'reject'
+      status: "reject",
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
     setIsInvitation(false);
-  }
+  };
 
   useEffect(() => {
     if (gamesocket) {

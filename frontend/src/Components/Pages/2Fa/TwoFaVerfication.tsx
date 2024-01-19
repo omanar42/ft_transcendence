@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { login } from "../Login";
 import axios from "axios";
 import LoginInfo from "../../../Contexts/LoginContext";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function TwoFaVerfication() {
     const [code, setCode] = useState("");

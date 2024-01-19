@@ -131,7 +131,7 @@ export class ProfileService {
 
     const matchHistoryUpdated = await this.getmatchHistoryUpdated(matchHistory);
     if (!matchHistoryUpdated) return null;
-  
+
     return {
       relation: relations.status,
       actions: relations.actions,

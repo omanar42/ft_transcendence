@@ -26,11 +26,11 @@ services:
     volumes:
       - ./backend/src:/usr/src/app/src:ro
       - ./backend/uploads:/usr/src/app/uploads
+      - ./backend/prisma/migrations:/usr/src/app/prisma/migrations
     networks:
       - transcendence
     ports:
       - 3000:3000
-      - 5555:5555
   client:
     image: client
     container_name: client
