@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { BiSolidVolumeMute } from "react-icons/bi";
 import { VscUnmute } from "react-icons/vsc";
+import { useNavigate } from "react-router-dom";
 
 const owner = false;
 
@@ -32,7 +33,7 @@ function RenderMembers({
 }: any) {
   const { userInfo }:any = useContext(LoginInfo);
   const { ownerSheep }: any = useContext(RoomContext);
-
+  const navigate = useNavigate();
   const unBanedUser = async () => {
     try {
      const response =  await axios.post(
@@ -165,7 +166,8 @@ const unMuteUser = async () => {
       </div>
       <div className="relative">
       <img
-        className="w-[6rem] h-[6rem] rounded-full status"
+       onClick={()=>navigate(`/Profile/${username}`)} 
+        className="w-[6rem] hover:opacity-60 hover:border-2 border-pink-600 hover:duration-[0.2s] h-[6rem] rounded-full status"
         src={avatar}
         alt="avatar"
       />
