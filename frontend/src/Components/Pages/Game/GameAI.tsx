@@ -283,8 +283,8 @@ const GameAI = ({ imageUrl }: any) => {
     }
 
     if (
-      gameState.current.ai.score === 4 ||
-      gameState.current.user.score === 4
+      gameState.current.ai.score === 11 ||
+      gameState.current.user.score === 11
     ) {
       setGameEnd(true);
       resetGame(canvas);
@@ -324,27 +324,6 @@ const GameAI = ({ imageUrl }: any) => {
     <>
       {gameEnd ? (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
-          <div className="b800 bg-white bg-opacity-[10%] backdrop-blur-sm flex items-center justify-between p-4 rounded-xl">
-            <div className="flex-1 flex gap-[2rem] items-center text-white ">
-              <img
-                src={userInfo.avatar}
-                className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
-              />
-              <h1 className="text-4xl font-extrabold">{userInfo.username}</h1>
-            </div>
-            <div className="flex-1 flex items-center  text-white font-bold justify-between">
-              <span className="text-6xl">{userScore}</span>
-              <h1 className="text-8xl">VS</h1>
-              <span className="text-6xl">{aiScore}</span>
-            </div>
-            <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-              <h1 className="text-4xl font-extrabold">AI</h1>
-              <img
-                src={avatar}
-                className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
-              />
-            </div>
-          </div>
           <div className="flex flex-col items-center justify-center gap-4">
             <h1 className="text-6xl font-extrabold text-white">Game Over</h1>
             <button
