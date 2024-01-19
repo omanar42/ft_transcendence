@@ -186,18 +186,27 @@ export class UsersService {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot add yourself';
+      return {
+        status: 400,
+        message: `Can't add yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
 
     const existingFriend = friends.find((f) => f.friendId === friend.oauthId);
     if (existingFriend) {
-      return 'Cannot add twice';
+      return {
+        status: 400,
+        message: 'This user cannot be added for some reason',
+      };
     }
 
     await this.prisma.friend.create({
@@ -225,18 +234,27 @@ export class UsersService {
         actions: [FriendActions['ACCEPT'], FriendActions['REJECT']],
       },
     });
-    return 'Friend request sent';
+    return {
+      status: 200,
+      message: 'Friend request sent',
+    };
   }
 
   async removeFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot remove yourself';
+      return {
+        status: 400,
+        message: `Can't remove yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -247,7 +265,10 @@ export class UsersService {
         f.actions.includes(FriendActions['REMOVE']),
     );
     if (!existingFriend) {
-      return 'Cannot remove this user';
+      return {
+        status: 400,
+        message: 'This user cannot be removed for some reason',
+      };
     }
 
     await this.prisma.friend.deleteMany({
@@ -268,7 +289,10 @@ export class UsersService {
       },
     });
 
-    return 'Friend removed';
+    return {
+      status: 200,
+      message: 'Friend removed',
+    };
   }
 
   async directMessage(userName: string, username_target: string) {
@@ -306,11 +330,17 @@ export class UsersService {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot accept yourself';
+      return {
+        status: 400,
+        message: `Can't accept yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -321,7 +351,10 @@ export class UsersService {
         f.actions.includes(FriendActions['ACCEPT']),
     );
     if (!existingFriend) {
-      return 'No friend request to accept';
+      return {
+        status: 400,
+        message: 'No friend request to accept',
+      };
     }
 
     await this.prisma.friend.updateMany({
@@ -351,18 +384,27 @@ export class UsersService {
     });
 
     this.directMessage(user.username, friend.username);
-    return 'Friend accepted';
+    return {
+      status: 200,
+      message: 'Friend accepted',
+    };
   }
 
   async rejectFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      }
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot reject yourself';
+      return {
+        status: 400,
+        message: `Can't reject yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -373,7 +415,10 @@ export class UsersService {
         f.actions.includes(FriendActions['REJECT']),
     );
     if (!existingFriend) {
-      return 'No friend request to reject';
+      return {
+        status: 400,
+        message: 'No friend request to reject',
+      };
     }
 
     await this.prisma.friend.deleteMany({
@@ -394,18 +439,27 @@ export class UsersService {
       },
     });
 
-    return 'Friend rejected';
+    return {
+      status: 200,
+      message: 'Friend request rejected',
+    };
   }
 
   async revokeFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot revoke yourself';
+      return {
+        status: 400,
+        message: `Can't revoke yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -416,7 +470,10 @@ export class UsersService {
         f.actions.includes(FriendActions['REVOKE']),
     );
     if (!existingFriend) {
-      return 'No friend request to revoke';
+      return {
+        status: 400,
+        message: 'No friend request to revoke',
+      };
     }
 
     await this.prisma.friend.deleteMany({
@@ -437,18 +494,27 @@ export class UsersService {
       },
     });
 
-    return 'Friend request revoked';
+    return {
+      status: 200,
+      message: 'Friend request revoked',
+    };
   }
 
   async blockFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot block yourself';
+      return {
+        status: 400,
+        message: `Can't block yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -459,7 +525,10 @@ export class UsersService {
         f.actions.includes(FriendActions['BLOCK']),
     );
     if (!existingFriend) {
-      return 'Cannot block this user';
+      return {
+        status: 400,
+        message: 'This user cannot be blocked'
+      };
     }
 
     await this.prisma.friend.updateMany({
@@ -488,18 +557,27 @@ export class UsersService {
       },
     });
 
-    return 'Friend blocked';
+    return {
+      status: 200,
+      message: 'Friend blocked',
+    };
   }
 
   async unblockFriend(userId: string, friendUser: string) {
     const user = await this.findOneById(userId);
     const friend = await this.findOneByUsername(friendUser);
     if (!user || !friend) {
-      return 'User not found';
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
-      return 'Cannot unblock yourself';
+      return {
+        status: 400,
+        message: `Can't unblock yourself`,
+      };
     }
 
     const friends = await this.getAllFriends(user.oauthId);
@@ -510,7 +588,10 @@ export class UsersService {
         f.actions.includes(FriendActions['UNBLOCK']),
     );
     if (!existingFriend) {
-      return 'Cannot unblock this user';
+      return {
+        status: 400,
+        message: 'This user cannot be unblocked',
+      };
     }
 
     await this.prisma.friend.updateMany({
@@ -539,16 +620,30 @@ export class UsersService {
       },
     });
 
-    return 'Friend unblocked';
+    return {
+      status: 200,
+      message: 'Friend unblocked',
+    };
   }
 
   async verify2FA(id: string, token: string) {
     const user = await this.findOneById(id);
-    if (!user) return 'User not found';
-    if (!user.twoFaSec) return '2FA not enabled';
+    if (!user) return {
+      status: 404,
+      message: 'User not found',
+    };
+    if (!user.twoFaSec) {
+      return {
+        status: 400,
+        message: '2FA is not enabled',
+      };
+    }
 
     const isValid = otplib.authenticator.check(token, user.twoFaSec);
-    if (!isValid) return 'Invalid code';
+    if (!isValid) return {
+      status: 400,
+      message: 'Invalid token',
+    };
 
     await this.prisma.user.update({
       where: { oauthId: id },
@@ -557,7 +652,10 @@ export class UsersService {
       },
     });
 
-    return '2FA verified successfully';
+    return {
+      status: 200,
+      message: '2FA verified successfully',
+    };
   }
 
   async getMatchHistory(id: string) {
