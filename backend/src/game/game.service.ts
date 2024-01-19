@@ -28,23 +28,16 @@ export class GameService {
       data_in.friend,
     );
     const user = await this.usersService.findOneById(oauthId);
-    if (!friend_user || !user) {
-      throw new Error('this user is not exist');
-    }
-    if (this.gameMapService.get(oauthId)) {
-      throw new Error('you are in game');
-    }
-    if (this.gameMapService.get(friend_user.oauthId)) {
-      throw new Error('this user is in game');
-    }
-    if (friend_user.status === 'INGAME' || user.status === 'INGAME') {
-      throw new Error(
-        "you can't invite this user because he is on another game",
-      );
-    }
-    if (data_in.friend === user.username) {
-      throw new Error("you can't invite yourself");
-    }
+    if (!friend_user || !user)
+      throw new Error('User not found');
+    if (this.gameMapService.get(oauthId))
+      throw new Error('You are already in game');
+    if (this.gameMapService.get(friend_user.oauthId))
+      throw new Error('Can not invite this user');
+    if (friend_user.status === 'INGAME' || user.status === 'INGAME')
+      throw new Error('This user is already in game');
+    if (data_in.friend === user.username)
+      throw new Error("You can't invite yourself");
     const friendSocket = this.GetSocket(friend_user.oauthId);
     if (friendSocket) {
       const data = {
@@ -62,7 +55,7 @@ export class GameService {
       // };
       // client.emit('invitation', data2);
     } else {
-      client.emit('gameError', 'this user is offline');
+      client.emit('gameError', 'Can not play with offline user');
       // throw new Error('this user is offline');
     }
   };
@@ -96,7 +89,7 @@ export class GameService {
     const user = await this.usersService.findOneById(oauthId);
     if (user.status === 'INGAME' || value.includes(oauthId)) {
       console.log(user.status);
-      throw new Error("you can't play because you are on another game");
+      throw new Error("You can't play now");
     }
     // if (value.includes(oauthId)) {
     //   return;
@@ -112,11 +105,11 @@ export class GameService {
         if (game.playerOne.id === oauthId) {
           server
             .to(this.GetSocket(game.playerTwo.id).id)
-            .emit('gameError', { message: 'your friend reject your invation' });
+            .emit('gameError', { message: 'Request rejected' });
         }
         if (game.playerTwo.id === oauthId) {
           server.to(this.GetSocket(game.playerOne.id).id).emit('gameError', {
-            message: 'your friend reject your invitation',
+            message: 'Request rejected',
           });
         }
         this.gameMapService.delete(game.playerOne.id);
