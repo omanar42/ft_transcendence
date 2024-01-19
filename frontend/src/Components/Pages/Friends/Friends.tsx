@@ -29,14 +29,10 @@ export const friendAction = async (
       { friendUser: frUser },
       { withCredentials: true }
     );
-    if (res.data === "Friend accepted") toast.success("Friend accepted");
-    else if (res.data === "Friend removed") toast.success("Friend removed");
-    else if (res.data === "Friend blocked") toast.success("Friend blocked");
-    else if (res.data === "Friend unblocked") toast.success("Friend unblocked");
-
+    toast.success(res.data.message);
     handlUpdate(id);
   } catch (e) {
-    console.error(e);
+    toast.success(e.response.data.message);
   }
 };
 
@@ -126,16 +122,14 @@ function Friends() {
         { friendUser: addFriend },
         { withCredentials: true }
       );
-      if (res.data === "Friend request sent")
         toast.success("Friend request sent");
-      else if (res.data === "Already friends")
-        toast.warn("Already friends");
-      else toast.error("User not found");
+
+
 
       setIsOpened(false);
       setAddFriend("");
     } catch (e) {
-      console.error(e);
+      toast.error(e.response.data.message);
     }
   };
 
