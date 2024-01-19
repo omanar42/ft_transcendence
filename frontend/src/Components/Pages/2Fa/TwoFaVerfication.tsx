@@ -16,7 +16,6 @@ function TwoFaVerfication() {
                 { token: code },
                 { withCredentials: true }
                 );
-                console.log(confirm);
           if (confirm.data === "2FA verified successfully") {
             setVerifed(true);
             localStorage.setItem('verifed', JSON.stringify(true));
@@ -33,7 +32,6 @@ function TwoFaVerfication() {
           <img className="w-full h-full" src={login} />
         </div>
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
-          {/* <img className="absolute top-40" src={Logo} alt="logo" /> */}
           <div className="text-white  flex flex-col gap-10 justify-center items-center  p-10">
             <h1 className="text-white  text-3xl font-bold">
               Two-Factor Verficiation

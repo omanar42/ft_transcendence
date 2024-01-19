@@ -144,26 +144,31 @@ export class AuthService {
     return res.redirect(redirectUrl);
   }
 
-  async logout(oauthId: string) {
-    await this.prisma.user.updateMany({
-      where: {
-        oauthId: oauthId,
-        hashedRt: {
-          not: null,
+  async logout(oauthId: string): Promise<boolean> {
+    try {
+      await this.prisma.user.updateMany({
+        where: {
+          oauthId: oauthId,
+          hashedRt: {
+            not: null,
+          },
         },
-      },
-      data: {
-        hashedRt: null,
-        status: Status['OFFLINE'],
-      },
-    });
+        data: {
+          hashedRt: null,
+          status: Status['OFFLINE'],
+        },
+      });
+    } catch {
+      return false;
+    }
     return true;
   }
 
-  token = (req: Request): string => {
+  token = (req: Request): string | null => {
     let token = null;
     if (req && req.cookies) {
       token = req.cookies['access_token'];
+      if (!token) return null;
       try {
         this.jwtService.verify(token, {
           secret: process.env.AT_SECRET,
