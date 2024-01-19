@@ -2,7 +2,8 @@ import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import ai from "../../../assets/ai.png";
 import "./Game.css";
-import gameover from "/gameover.png";
+import victory from "./Assets/victory.png";
+import defeat from "./Assets/defeat.png";
 
 interface Player {
   x: number;
@@ -47,6 +48,7 @@ const GameAI = ({ imageUrl }: any) => {
   const [userScore, setUserScore] = useState<number>(0);
   const [aiScore, setaiScore] = useState<number>(0);
   const [gameEnd, setGameEnd] = useState<boolean>(false);
+  const [win, setwin] = useState(false);
   const gameState = useRef<GameState>({
     user: {
       x: 4,
@@ -285,6 +287,11 @@ const GameAI = ({ imageUrl }: any) => {
       gameState.current.ai.score === 11 ||
       gameState.current.user.score === 11
     ) {
+      if (gameState.current.ai.score === 11) {
+        setwin(false);
+      } else {
+        setwin(true);
+      }
       setGameEnd(true);
       resetGame(canvas);
     }
@@ -322,15 +329,18 @@ const GameAI = ({ imageUrl }: any) => {
   return (
     <>
       {gameEnd ? (
-        <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-          <img className="w- h-full" src={gameover} />
+        <div className="flex flex-col items-center gap-[2rem]">
+        <img className="rounded-[5rem] hover:opacity-75 hover:duration-[0.4s] w-[80rem]"
+        src={win ? victory : defeat} />
+        <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="w-[20%] absolute top-[50%] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
+            className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => setGameMode(null)}
-          >
-            Menu
+            >
+            Back to Menu
           </button>
         </div>
+      </div>
       ) : (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
           <div className="b800 bg-white bg-opacity-[10%] backdrop-blur-sm flex items-center justify-between p-4 rounded-xl">
@@ -363,7 +373,7 @@ const GameAI = ({ imageUrl }: any) => {
           ></canvas>
           <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
             <button
-              className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+              className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
               onClick={() => setGameMode(null)}
             >
               Back to menu
