@@ -102,7 +102,27 @@ export class GameService {
     value.push(oauthId);
     this.gameMapService.set(key, value);
   };
-
+  Deletegamesatate = (oauthId: string, server: any) => {
+    const key = this.gameMapService.get(oauthId);
+    if (key) {
+      const game = this.gameMapService.get(key);
+      if (game) {
+        if (game.playerOne.id === oauthId) {
+          server
+            .to(this.GetSocket(game.playerTwo.id).id)
+            .emit('gameError', { message: 'your friend reject your invation' });
+        }
+        if (game.playerTwo.id === oauthId) {
+          server.to(this.GetSocket(game.playerOne.id).id).emit('gameError', {
+            message: 'your friend reject your invitation',
+          });
+        }
+        this.gameMapService.delete(game.playerOne.id);
+        this.gameMapService.delete(game.playerTwo.id);
+        this.gameMapService.delete(key);
+      }
+    }
+  };
   GetTwoPlayersWaitingList = () => {
     const key = 'waitingList';
     const value = this.gameMapService.get(key);
