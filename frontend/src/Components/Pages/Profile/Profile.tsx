@@ -84,7 +84,6 @@ const ImageSlider = ({ images }) => {
     <ul className="ml-[4rem] flex items-center justify-between gap-[2rem]">
       <div>
         {images.map((image, index) => {
-          // console.log()
           return (
             <div
               className={`
@@ -136,7 +135,6 @@ const ProgressBar = ({ bgColor, level }: any) => {
   };
 
   const labelStyles = {
-    // padding: 5,
     color: "white",
     fontWeight: "bold",
   };

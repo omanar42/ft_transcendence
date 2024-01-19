@@ -7,7 +7,6 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Response, Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ChatService } from './chat.service';
@@ -28,9 +27,6 @@ export class ChatController {
   @Get('Messages')
   async getMessages(@Req() req) {
     try {
-      // this.cacheService.delete(
-      //   `messages:${req.query.roomId.toString()}${req.user.sub.toString()}`,
-      // );
       return await this.chatService.GetMessagesByRoomId(
         parseInt(req.query.roomId),
         req.user.sub.toString(),
@@ -76,14 +72,12 @@ export class ChatController {
   })
   async kickUser(@Req() req, @Res() res: Response, @Body() body) {
     try {
-      // console.log(body.target_username);
       const response = await this.chatService.KickUserFromRoom(
         parseInt(body.roomid),
         req.user.sub.toString(),
         body.target_username,
       );
       return res.json(response);
-      // return res.json(this.chatService.GetRoomUsers(parseInt(body.roomid)));
     } catch (error) {
       console.log(error);
     }
@@ -228,7 +222,6 @@ export class ChatController {
       properties: {
         roomId: { type: 'number' },
         roomName: { type: 'string' },
-        // username: { type: 'string' },
         type: { type: 'string' },
         password: { type: 'string' },
       },

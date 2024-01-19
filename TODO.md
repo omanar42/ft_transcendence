@@ -7,22 +7,24 @@ Project Description
 ### Todo
 
 - [ ] remove swagger  
-- [ ] unmute and ban  
 - [ ] remove .env  
 - [ ] victory defeat  
 - [ ] docker in prod mode  
 
 ### In Progress
 
-- [ ] Ai avatar  
 - [ ] add types and clean unused variabes  
 - [ ] Clean all console logs and comments  
-- [ ] nontification icon  
 - [ ] internal servers in chat  
 - [ ] throws to response  
 
 ### Done ✓
 
+- [x] back home in game  
+- [x] color in game navbar  
+- [x] unmute and ban  
+- [x] nontification icon  
+- [x] Ai avatar  
 - [x] 2fa title  
 - [x] change scores before push  
 - [x] avatars in chat  

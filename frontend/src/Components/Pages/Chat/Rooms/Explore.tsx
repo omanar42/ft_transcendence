@@ -43,7 +43,6 @@ function ListRooms({
         setRooms(response.data);
       })
       .catch((error) => {
-        // toast.error("Wrong Password");
         console.error("Error:", error);
       });
     setPassword("");

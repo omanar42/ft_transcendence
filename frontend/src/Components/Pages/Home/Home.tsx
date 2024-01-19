@@ -39,14 +39,9 @@ function Home() {
       return value;
     }
 
-    // Usage
     const token = getCookie("access_token");
     console.log("here is the token", token);
   }, []);
-
-  // useEffect(()=>{
-  //     console.log(userInfo);
-  // }, [userInfo])
 
   return (
     <motion.div
