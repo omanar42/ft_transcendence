@@ -52,6 +52,7 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
   return (
     <div className="modal flex justify-center items-center text-white font-bold">
       <div className="flex p-[2rem] bg-black relative border-white border-2 border-opacity-20 rounded-2xl w-[95rem] h-[50rem] flex-col items-center justify-center gap-[5rem]">
+        <h1 className="text-6xl">Enable Two Virification Step</h1>
         <img className="w-[20rem] h-[20rem]" src={qrCode} />
         <input
           onChange={(e) => setCode(e.target.value)}
