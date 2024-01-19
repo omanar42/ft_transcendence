@@ -1,21 +1,15 @@
 import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  Link,
   RouterProvider,
-  Navigate,
 } from "react-router-dom";
 import "./App.css";
 import { routermin } from "./Routes/Routes";
-import LoginInfo, { LoginInfoContext } from "./Contexts/LoginContext";
-import { useContext, useEffect, useState } from "react";
+import LoginInfo from "./Contexts/LoginContext";
+import { useContext, useEffect } from "react";
 import axios from "axios";
 import io from 'socket.io-client';
-import { useNavigate } from "react-router-dom";
 
 function App() {
-  const {setuserInfo, setConnected, setVerifed, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked, gameMode, setGameMode}:any = useContext(LoginInfo);
+  const {setuserInfo, setConnected, setVerifed, setIsLoading, setToken, setSocket, setGameSocket}:any = useContext(LoginInfo);
 
   useEffect(()=>{
     fetchData();

@@ -324,15 +324,15 @@ const GameAI = ({ imageUrl }: any) => {
   return (
     <>
       {gameEnd ? (
-         <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-         <img className="w- h-full" src={gameover} />
-         <button
-           className="w-[20%] absolute top-[50%] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
-           onClick={() => setGameMode(null)}
-         >
-           Menu
-         </button>
-       </div>
+        <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
+          <img className="w- h-full" src={gameover} />
+          <button
+            className="w-[20%] absolute top-[50%] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
+            onClick={() => setGameMode(null)}
+          >
+            Menu
+          </button>
+        </div>
       ) : (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
           <div className="b800 bg-white bg-opacity-[10%] backdrop-blur-sm flex items-center justify-between p-4 rounded-xl">
@@ -341,7 +341,9 @@ const GameAI = ({ imageUrl }: any) => {
                 src={userInfo.avatar}
                 className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
               />
-              <h1 className="text-4xl font-extrabold text-blue-400">{userInfo.username}</h1>
+              <h1 className="text-4xl font-extrabold text-blue-400">
+                {userInfo.username}
+              </h1>
             </div>
             <div className="flex-1 flex items-center  text-white font-bold justify-between">
               <span className="text-6xl text-blue-400">{userScore}</span>
@@ -349,11 +351,10 @@ const GameAI = ({ imageUrl }: any) => {
               <span className="text-6xl text-pink-600">{aiScore}</span>
             </div>
             <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-              <h1 className="text-4xl font-extrabold text-pink-600">CyberPonk</h1>
-              <img
-                src={robot}
-                className="w-[6rem] h-[6rem]"
-              />
+              <h1 className="text-4xl font-extrabold text-pink-600">
+                CyberPonk
+              </h1>
+              <img src={robot} className="w-[6rem] h-[6rem]" />
             </div>
           </div>
           <canvas

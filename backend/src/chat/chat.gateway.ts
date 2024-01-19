@@ -11,16 +11,13 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
-import {
-  CreateMessageDto,
-  CreateRoomDto,
-} from './dto/create-message.dto';
+import { CreateMessageDto, CreateRoomDto } from './dto/create-message.dto';
 import * as jwt from 'jsonwebtoken';
 
 @WebSocketGateway({
   port: 3000,
   cors: {
-    origin: 'http://127.0.0.1:5173',
+    origin: process.env.FRONTEND_URL,
   },
   namespace: 'chat',
 })
@@ -29,9 +26,7 @@ export class ChatGateway
 {
   @WebSocketServer()
   server: Server;
-  constructor(
-    private readonly messagesService: ChatService,
-  ) {}
+  constructor(private readonly messagesService: ChatService) {}
   private logger: Logger = new Logger('ChatGateway');
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);

@@ -397,7 +397,7 @@ export class UsersService {
       return {
         status: 404,
         message: 'User not found',
-      }
+      };
     }
 
     if (user.oauthId === friend.oauthId) {
@@ -527,7 +527,7 @@ export class UsersService {
     if (!existingFriend) {
       return {
         status: 400,
-        message: 'This user cannot be blocked'
+        message: 'This user cannot be blocked',
       };
     }
 
@@ -628,10 +628,11 @@ export class UsersService {
 
   async verify2FA(id: string, token: string) {
     const user = await this.findOneById(id);
-    if (!user) return {
-      status: 404,
-      message: 'User not found',
-    };
+    if (!user)
+      return {
+        status: 404,
+        message: 'User not found',
+      };
     if (!user.twoFaSec) {
       return {
         status: 400,
@@ -640,10 +641,11 @@ export class UsersService {
     }
 
     const isValid = otplib.authenticator.check(token, user.twoFaSec);
-    if (!isValid) return {
-      status: 400,
-      message: 'Invalid token',
-    };
+    if (!isValid)
+      return {
+        status: 400,
+        message: 'Invalid token',
+      };
 
     await this.prisma.user.update({
       where: { oauthId: id },

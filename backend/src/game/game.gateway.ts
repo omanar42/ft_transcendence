@@ -24,7 +24,7 @@ import e from 'express';
 @WebSocketGateway({
   port: 3000,
   cors: {
-    origin: 'http://127.0.0.1:5173',
+    origin: process.env.FRONTEND_URL,
   },
   namespace: 'game',
 })

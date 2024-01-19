@@ -24,8 +24,7 @@ export class GameService {
       data_in.friend,
     );
     const user = await this.usersService.findOneById(oauthId);
-    if (!friend_user || !user)
-      throw new Error('User not found');
+    if (!friend_user || !user) throw new Error('User not found');
     if (this.gameMapService.get(oauthId))
       throw new Error('You are already in game');
     if (this.gameMapService.get(friend_user.oauthId))

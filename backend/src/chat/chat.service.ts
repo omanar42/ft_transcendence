@@ -727,7 +727,7 @@ export class ChatService {
       }
       throw new Error('Room type not correct');
     }
-  
+
     const room = await this.prisma.room.create({
       data: {
         name: createRoomDto.roomName,

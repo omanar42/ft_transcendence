@@ -9,7 +9,14 @@ import { GameModule } from './game/game.module';
 import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [PrismaModule, UsersModule, AuthModule, ProfileModule,ChatModule ,GameModule],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    ProfileModule,
+    ChatModule,
+    GameModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

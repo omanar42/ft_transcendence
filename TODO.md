@@ -6,6 +6,7 @@ Project Description
 
 ### Todo
 
+- [ ] validation forms  
 - [ ] remove swagger  
 - [ ] remove .env  
 - [ ] victory defeat  
