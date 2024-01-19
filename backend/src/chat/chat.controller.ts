@@ -79,7 +79,7 @@ export class ChatController {
       );
       return res.json(response);
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
   @Post('mute_user')

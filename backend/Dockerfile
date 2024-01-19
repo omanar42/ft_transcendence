@@ -10,8 +10,8 @@ COPY . .
 
 RUN npx prisma generate
 
-RUN npm run build
+# RUN npm run build
 
 EXPOSE 3000
 
-CMD npm run migrate:prod && npm run start:prod
+CMD npm run migrate:dev && npm run start:dev
