@@ -6,7 +6,7 @@ Project Description
 
 ### Todo
 
-- [ ] Ai avatar  
+- [ ] remove swagger  
 - [ ] unmute and ban  
 - [ ] remove .env  
 - [ ] victory defeat  
@@ -14,15 +14,16 @@ Project Description
 
 ### In Progress
 
+- [ ] Ai avatar  
 - [ ] add types and clean unused variabes  
 - [ ] Clean all console logs and comments  
-- [ ] 2fa title  
 - [ ] nontification icon  
 - [ ] internal servers in chat  
 - [ ] throws to response  
 
 ### Done ✓
 
+- [x] 2fa title  
 - [x] change scores before push  
 - [x] avatars in chat  
 - [x] gameMode  
