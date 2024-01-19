@@ -87,9 +87,9 @@ export class ChatGateway
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
     try {
-      console.log(createMessageDto);
-      const user =  await this.messagesService.GetUserByUsername(createMessageDto.userName);
-      this.messagesService.GetOauthIdSocket(user.oauthId).then((socket) => console.log(socket.id));
+      // console.log(createMessageDto);
+      // const user =  await this.messagesService.GetUserByUsername(createMessageDto.userName);
+      // this.messagesService.GetOauthIdSocket(user.oauthId).then((socket) => console.log(socket.id));
       await this.messagesService.createMessage(this.server, createMessageDto);
     } catch (error) {
       this.logger.log(error);
