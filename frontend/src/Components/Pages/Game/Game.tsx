@@ -9,7 +9,8 @@ import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
 import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
-import gameover from "/gameover.png";
+import victory from "./Assets/victory.png";
+import defeat from "./Assets/defeat.png";
 import { useNavigate } from "react-router-dom";
 import GameAI from "./GameAI";
 
@@ -378,15 +379,18 @@ const Game = ({ imageUrl }: any) => {
   return (
     <>
       {status === "gameOver" ? (
-        <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-          <img className="w- h-full" src={gameover} />
+      <div className="flex flex-col items-center gap-[2rem]">
+        <img className="rounded-[5rem] hover:opacity-75 hover:duration-[0.4s] w-[80rem]"
+        src={win ? victory : defeat} />
+        <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="w-[20%] absolute top-[37rem] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
+            className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => setGameMode(null)}
-          >
-            Menu
+            >
+            Back to Menu
           </button>
         </div>
+      </div>
       ) : (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
           {status === "start" && (
@@ -486,7 +490,7 @@ const StartGame = ({ setImageUrl }: any) => {
             {/* <div className="modal rounded-[4rem]"></div> */}
             <button
               onClick={() => setIsFlipped(!isFlipped)}
-              className="absolute text-8xl text-pink-600 top-[1rem] left-[2rem]"
+              className="absolute text-8xl text-blue-400 top-[1rem] left-[2rem]"
             >
               &times;
             </button>
@@ -539,7 +543,7 @@ const StartGame = ({ setImageUrl }: any) => {
         </ReactCardFlip>
         <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+            className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => navigate("/")}
           >
             Back Home
@@ -639,13 +643,13 @@ function LadingPage() {
               </h1>
               <div className="flex justify-between items-center gap-10 mt-10">
                 <button
-                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  className="bg-blue-400 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
                   onClick={() => handleAccept()}
                 >
                   Accept
                 </button>
                 <button
-                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  className="bg-blue-400 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
                   onClick={() => handleReject()}
                 >
                   Reject
