@@ -15,6 +15,7 @@ export function RoomContextProvider({ children }: any) {
   const [avatar, setAvatar] = useState<string>(
     "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
   );
+  const [status, setStatus] = useState<boolean>(false);
   const [roomName, setRoomName] = useState("");
   const value = {
     currentRoom,
@@ -28,7 +29,9 @@ export function RoomContextProvider({ children }: any) {
     setRoomName,
     roomName,
     settingsIsOpen,
-    setSettingsIsOpen
+    setSettingsIsOpen,
+    setStatus,
+    status
   };
 
   return <RoomContext.Provider value={value}>{children}</RoomContext.Provider>;
