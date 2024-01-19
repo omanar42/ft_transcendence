@@ -47,7 +47,6 @@ function MessageInput({setChannelsList}:any) {
       setMessageList((list:any) => [...list, messageData]);
       setcurrentMessage("");
       socket.emit("message", messageData);
-      // console.log(messageData);
     }
   };
 

@@ -16,7 +16,6 @@ function Chat() {
           withCredentials: true,
         });
         setUsersRoom(response.data);
-        console.log('}}}}}++++++++++++++++++',response.data);
       } catch (error) {
         console.error(error);
       }

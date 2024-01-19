@@ -2,8 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { GameState } from './gameState';
 import { GameMapService } from './gamemap.service';
 import { UsersService } from 'src/users/users.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { use } from 'passport';
 import { Status } from '@prisma/client';
 
 interface PlayerState {
@@ -18,8 +16,6 @@ export class GameService {
   constructor(
     private gameMapService: GameMapService,
     private usersService: UsersService,
-    private gameState: GameState,
-    private prisma: PrismaService,
   ) {}
 
   invatefriend = async (client: any, data_in: any) => {
@@ -48,15 +44,8 @@ export class GameService {
       client.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.emit('invitation', data);
-      // const data2 = {
-      // meslalla9082062
-      //   status: 'waiting',
-      //   roomId: `room:${oauthId}${friend_user.oauthId}`,
-      // };
-      // client.emit('invitation', data2);
     } else {
       client.emit('gameError', 'Can not play with offline user');
-      // throw new Error('this user is offline');
     }
   };
   update = (gameState: GameState) => {
@@ -91,9 +80,6 @@ export class GameService {
       console.log(user.status);
       throw new Error("You can't play now");
     }
-    // if (value.includes(oauthId)) {
-    //   return;
-    // }
     value.push(oauthId);
     this.gameMapService.set(key, value);
   };
@@ -184,12 +170,8 @@ export class GameService {
     this.gameMapService.set(key, value);
   };
 
-  // handelDisconnect = async (socket: any) => {
-  // };
-
   GetRoom = (roomId: string) => {
     const key = roomId;
-    // console.log(this.gameMapService.get(key));
     return this.gameMapService.get(key);
   };
 
@@ -207,21 +189,6 @@ export class GameService {
   set_online = async (oauthId: string) => {
     await this.usersService.setStatus(oauthId, Status['ONLINE']);
   };
-  // checkoffline = async (gamestate: GameState) => {
-  //   const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
-  //   const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
-  //   if (player1.status === 'OFFLINE') {
-  //     console.log('player1 offline');
-  //     gamestate.winner = 'playerTwo';
-  //     return true;
-  //   }
-  //   if (player2.status === 'OFFLINE') {
-  //     console.log('player2 offline');
-  //     gamestate.winner = 'playerOne';
-  //     return true;
-  //   }
-  //   return false;
-  // };
   Ingame = async (gamestate: GameState) => {
     const player1 = await this.usersService.findOneById(gamestate.playerOne.id);
     const player2 = await this.usersService.findOneById(gamestate.playerTwo.id);
@@ -231,7 +198,6 @@ export class GameService {
   HandleEndGame = async (gameState: GameState, server: any) => {
     let winner: PlayerState;
     let loser: PlayerState;
-    // console.log(gameState);
     if (!this.GetRoom(gameState.roomId)) {
       return;
     }
@@ -263,33 +229,10 @@ export class GameService {
         score: gameState.playerOne.score,
       };
     }
-    // await this.usersService.setStatus(winner.id, Status['ONLINE']);
-    // await this.usersService.setStatus(loser.id, Status['ONLINE']);
-    // await this.prisma.user.update({
-    //   where: { oauthId: winner.id },
-    //   data: { status: 'ONLINE' },
-    // });
-    // await this.prisma.user.update({
-    //   where: { oauthId: loser.id },
-    //   data: { status: 'ONLINE' },
-    // });
-    // console.log(
-    //   await this.usersService.findOneById(winner.id).then((user) => user.status),
-    // );
-    // console.log(
-    //   await this.usersService.findOneById(winner.id).then((user) => user.username),
-    // );
-    // console.log(
-    //   await this.usersService.findOneById(loser.id).then((user) => user.status),
-    // );
-    // console.log(
-    //   await this.usersService.findOneById(loser.id).then((user) => user.username),
-    // );
     this.gameMapService.delete(winner.id);
     this.gameMapService.delete(loser.id);
     this.usersService.HandleEndGame(winner, loser);
     server.to(gameState.roomId).emit('gameOver', { winner: winner.username });
-    // just the online player will leave the room
     const user1 = await this.usersService.findOneById(winner.id);
     const user2 = await this.usersService.findOneById(loser.id);
     if (user1.status !== 'OFFLINE') {
@@ -298,7 +241,5 @@ export class GameService {
     if (user2.status !== 'OFFLINE') {
       await this.usersService.setStatus(user2.oauthId, Status['ONLINE']);
     }
-    //delete room from server
-    // server.delete(gameState.roomId);
   };
 }

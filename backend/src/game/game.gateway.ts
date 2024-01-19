@@ -25,7 +25,6 @@ import e from 'express';
   port: 3000,
   cors: {
     origin: 'http://127.0.0.1:5173',
-    // method: ['GET', 'POST'],
   },
   namespace: 'game',
 })
@@ -45,20 +44,6 @@ export class GameGateway
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
       this.gameService.handledisconnect(client, this.server);
-      // const oauthId = this.gameService.GetoauthId(client);
-      // const gameState = this.gameService.GetRoom(
-      //   this.gameService.GetRoomIdByOauthId(oauthId),
-      // );
-      // if (gameState) {
-      //   if (gameState.playerOne.id === oauthId) {
-      //     gameState.winner = 'playerTwo';
-      //   } else if (gameState.playerTwo.id === oauthId) {
-      //     gameState.winner = 'playerOne';
-      //   }
-      //   this.gameService.HandleEndGame(gameState, this.server);
-      // }
-      // this.gameService.set_offline(oauthId);
-      // this.gameService.DeleteSocket(client);
     } catch (error) {
       this.logger.log(error);
     }
@@ -71,13 +56,6 @@ export class GameGateway
         client.handshake.query.token.toString(),
         process.env.AT_SECRET,
       );
-      // the expered token
-      // const client_is_connected = this.gameService.GetSocket(id.sub.toString());
-      // if (client_is_connected) {
-      // client_is_connected.disconnect(true);
-      // this.gameService.DeleteSocket(this.gameService.GetSocket(id.sub));
-      // disconnect
-      // }
       if (id.sub) {
         this.gameService.SaveSocket(id.sub.toString(), client, this.server);
         this.gameService.set_online(id.sub.toString());
@@ -90,16 +68,6 @@ export class GameGateway
   afterInit(@ConnectedSocket() client: Socket) {
     this.logger.log('Initialized!');
   }
-  // @SubscribeMessage('addToRoom')
-  // async handleAddToRoom(@ConnectedSocket() client: Socket){
-  //   console.log('add to room');
-  //   try {
-  //   } catch (error) {
-  //     this.logger.log(error);
-  //   }
-  // }
-  // @SubscribeMessage('startgame')
-  // @SubscribeMessage('playrandom')
   @SubscribeMessage('PlayWithFriend')
   async handlePlayWithFriend(
     @ConnectedSocket() client: Socket,
@@ -117,30 +85,19 @@ export class GameGateway
           this.server,
         );
         return;
-        // throw new Error('your friend reject your invation');
       } else if (data_in.status === 'accept') {
         console.log('accept');
         const data = {
-          // status: 'waiting',
           status: 'start',
           roomId: data_in.roomId,
           gameState: this.gameService.GetRoom(data_in.roomId),
         };
-        // await this.prismaService.user.update({
-        //   where: { oauthId: data_in.gameState.playerOne.id },
-        //   data: { status: Status['INGAME'] },
-        // });
-        // await this.prismaService.user.update({
-        //   where: { oauthId: data_in.gameState.playerTwo.id },
-        //   data: { status: Status['INGAME'] },
-        // });
         await this.gameService.Ingame(data.gameState);
         this.server.to(data_in.roomId).emit('start', data);
       }
     } catch (error) {
       console.log(error);
       this.server.to(client.id).emit('gameError', { message: error.message });
-      // this.logger.log(error);
     }
   }
   @SubscribeMessage('addToRoom')
@@ -150,11 +107,6 @@ export class GameGateway
       await this.gameService.PushOnWaitingList(oauthId);
       const randomPlayers = this.gameService.GetTwoPlayersWaitingList();
       if (randomPlayers) {
-        // await this.prismaService.user.update({
-        //   where: { oauthId: oauthId },
-        //   data: { status: Status['INGAME'] },
-        // });
-        //if clent disconnect remove from waiting list
         await this.gameService.CreateRoom(
           randomPlayers[0],
           randomPlayers[1],
@@ -193,7 +145,6 @@ export class GameGateway
       if (gamestate) {
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
-        // const checkoffline = await this.gameService.checkoffline(gamestate);
         if (gamestate.winner) {
           console.log('end game');
           this.gameService.HandleEndGame(gamestate, this.server);
