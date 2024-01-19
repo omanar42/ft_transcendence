@@ -573,6 +573,16 @@ function LadingPage() {
     setGameMode("friend");
     navigate("/game");
   };
+
+  const handleReject = () => {
+    const dataToSend = {
+      roomId: roomId,
+      status: 'reject'
+    };
+    gamesocket?.emit("PlayWithFriend", dataToSend);
+    setIsInvitation(false);
+  }
+
   useEffect(() => {
     if (gamesocket) {
       gamesocket.on("invitation", (data: any) => {
@@ -621,7 +631,7 @@ function LadingPage() {
                 </button>
                 <button
                   className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
-                  onClick={() => setIsInvitation(false)}
+                  onClick={() => handleReject()}
                 >
                   Reject
                 </button>
