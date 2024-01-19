@@ -440,7 +440,7 @@ const StartGame = ({ setImageUrl }: any) => {
     const dataToSend = {
       friend: username,
       status: "request",
-      level: level,
+      gameMode: level,
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
   };

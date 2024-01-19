@@ -88,8 +88,8 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.addFriend(req.user.sub, friendUser);
-    return res.json(message);
+    const obj = await this.usersService.addFriend(req.user.sub, friendUser);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('remove')
@@ -108,11 +108,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.removeFriend(
+    const obj = await this.usersService.removeFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('accept')
@@ -131,11 +131,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.acceptFriend(
+    const obj = await this.usersService.acceptFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('reject')
@@ -154,11 +154,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.rejectFriend(
+    const obj = await this.usersService.rejectFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('revoke')
@@ -177,11 +177,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.revokeFriend(
+    const obj = await this.usersService.revokeFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('block')
@@ -200,11 +200,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.blockFriend(
+    const obj = await this.usersService.blockFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('unblock')
@@ -223,11 +223,11 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const message = await this.usersService.unblockFriend(
+    const obj = await this.usersService.unblockFriend(
       req.user.sub,
       friendUser,
     );
-    return res.json(message);
+    return res.status(obj.status).json(obj);
   }
 
   @Post('verify2fa')
@@ -246,7 +246,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('token') token: string,
   ) {
-    const message = await this.usersService.verify2FA(req.user.sub, token);
-    return res.json(message);
+    const obj = await this.usersService.verify2FA(req.user.sub, token);
+    return res.status(obj.status).json(obj);
   }
 }

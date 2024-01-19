@@ -8,7 +8,7 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(private readonly usersService: UsersService) {
-    const extractJwtFromCookie = (req: Request) => {
+    const extractJwtFromCookie = (req: Request | any) => {
       let token = null;
       if (req && req.cookies) {
         token = req.cookies['refresh_token'];
