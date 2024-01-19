@@ -112,7 +112,12 @@ export class GameGateway
         await this.gameService.invatefriend(client, data_in.friend);
       } else if (data_in.status === 'reject') {
         console.log('reject');
-        throw new Error('your friend reject your invation');
+        this.gameService.Deletegamesatate(
+          this.gameService.GetoauthId(client),
+          this.server,
+        );
+        return;
+        // throw new Error('your friend reject your invation');
       } else if (data_in.status === 'accept') {
         console.log('accept');
         const data = {
@@ -133,7 +138,7 @@ export class GameGateway
         this.server.to(data_in.roomId).emit('start', data);
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       this.server.to(client.id).emit('gameError', { message: error.message });
       // this.logger.log(error);
     }
