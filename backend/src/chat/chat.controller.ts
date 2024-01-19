@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Response, Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -78,6 +86,27 @@ export class ChatController {
       // return res.json(this.chatService.GetRoomUsers(parseInt(body.roomid)));
     } catch (error) {
       console.log(error);
+    }
+  }
+  @Post('mute_user')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        roomId: { type: 'number' },
+        target_username: { type: 'string' },
+      },
+    },
+  })
+  async muteUser(@Req() req, @Res() res: Response, @Body() body) {
+    try {
+      const response = await this.chatService.MuteUserFromRoom(
+        req.user.sub.toString(),
+        body,
+      );
+      return res.json(response);
+    } catch (error) {
+      throw error;
     }
   }
   @Post('ban_user')

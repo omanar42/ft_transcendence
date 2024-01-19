@@ -21,6 +21,7 @@ import { ConnectedSocket, MessageBody } from '@nestjs/websockets';
 import { RoomType, UserStatusInRoom } from '@prisma/client';
 import { CacheService } from './cache.service';
 import { parse } from 'path';
+import { use } from 'passport';
 // import { send } from 'process';
 @Injectable()
 export class ChatService {
@@ -367,6 +368,7 @@ export class ChatService {
         },
       });
     }
+    return await this.getRooms(oauthId);
   }
   async GetRoomById(roomId: number) {
     // const cacheKey = `room:${roomId}`;
@@ -601,6 +603,68 @@ export class ChatService {
     // this.cacheService.delete(`user:${oauthId}`);
     // this.cacheService.delete(`user:${user.username}`);
   }
+  async MuteUserFromRoom(oauthId: string, data: any) {
+    // console.log(data.target_username);
+    // console.log('===================================');
+    // return;
+    const room = await this.GetRoomById(data.roomId);
+    const user = await this.GetUserByOauthId(oauthId);
+    const target_user = await this.GetUserByUsername(data.target_username);
+    const roomuser = room.roomuser.find(
+      (roomuser) => roomuser.userId === target_user.oauthId,
+    );
+    const seter_user = room.roomuser.find(
+      (roomuser) => roomuser.userId === oauthId,
+    );
+    if (target_user.oauthId === oauthId) {
+      throw new HttpException(
+        'You cant mute yourself',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    if (!roomuser) {
+      throw new HttpException(
+        'User not a member of this room',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (roomuser.status === UserStatusInRoom['BANNED']) {
+      throw new HttpException(
+        'User is banned from this room',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    if (roomuser.status === UserStatusInRoom['OWNER']) {
+      throw new HttpException(
+        'You cant mute the owner',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    if (seter_user.status === UserStatusInRoom['MEMBER']) {
+      throw new HttpException(
+        'You are not allowed to mute users',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    if (roomuser.muted) {
+      throw new HttpException(
+        'User is already muted',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    await this.prisma.roomUser.update({
+      where: {
+        id: roomuser.id,
+      },
+      data: {
+        muted: true,
+      },
+    });
+    return this.GetRoomUsers(parseInt(data.roomId));
+  }
   async BanUserFromRoom(
     roomId: number,
     seter_oauthId: string,
@@ -688,6 +752,9 @@ export class ChatService {
     const sender_rommuser = room.roomuser.find(
       (roomuser) => roomuser.userId === sender.oauthId,
     );
+    if (sender_rommuser.muted) {
+      return;
+    }
     if (
       !(await this.identifyUser(createMessageDto)) ||
       sender_rommuser.status === UserStatusInRoom['BANNED']
