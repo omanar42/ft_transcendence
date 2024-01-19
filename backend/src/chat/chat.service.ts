@@ -30,11 +30,23 @@ export class ChatService {
   ) {}
 
   async AddUserToRoom(oauthId: string, data: any) {
+    if (oauthId == null || data.roomId < 1 || data.username == null) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const owner = await this.GetUserByOauthId(oauthId);
+    if (!owner) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const room_user = owner.roomsuser.find(
       (roomuser) => roomuser.roomId === data.roomId,
     );
-    if (!room_user || room_user.status !== 'OWNER') {
+    if (!room_user) {
+      throw new HttpException(
+        'The User is not a member of this room',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    if (room_user.status !== 'OWNER') {
       throw new HttpException(
         'The User is not the owner of this room',
         HttpStatus.NOT_ACCEPTABLE,
@@ -153,6 +165,9 @@ export class ChatService {
   }
 
   async GetMessagesByRoomId(roomId: number, oauthId: string) {
+    if (!roomId || oauthId == null) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const Room_messages_model = await this.prisma.room.findUnique({
       where: {
         id: roomId,
@@ -166,10 +181,10 @@ export class ChatService {
         },
       },
     });
-    const messages = Room_messages_model.messages;
     if (!Room_messages_model) {
       throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
     }
+    const messages = Room_messages_model.messages;
     const Messages_Front = new Messages_Front_Dto(Room_messages_model);
     const room_users = await this.GetRoomById(roomId);
     const the_user_is_banned = room_users.roomuser.find(
@@ -214,7 +229,7 @@ export class ChatService {
     return Messages_Front;
   }
   async GetRoomUsers(roomId: number) {
-    let front_members = [];
+    const front_members = [];
     const room = await this.GetRoomById(roomId);
     if (!room) {
       return [];
@@ -276,17 +291,28 @@ export class ChatService {
     }
   }
   async UpdateRoom(oauthId: string, data: any) {
+    if (
+      oauthId == null ||
+      data.roomId < 1 ||
+      data.roomName == null ||
+      data.type == null
+    ) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const roomTypes = ['public', 'private', 'protected'];
     const room = await this.GetRoomById(data.roomId);
     if (!room) {
       throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
     }
     const user = await this.GetUserByOauthId(oauthId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const roomuser = room.roomuser.find(
       (roomuser) => roomuser.userId === user.oauthId,
     );
     if (!roomuser) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not member of this room', 403);
     }
     if (roomuser.status !== UserStatusInRoom['OWNER']) {
       throw new HttpException(
@@ -363,7 +389,7 @@ export class ChatService {
   }
 
   async GetBlockedUsers(oauthId: string) {
-    let blocked_users = [];
+    const blocked_users = [];
     const blocked = await this.usersService.getBlocked(oauthId);
     for (const block of blocked) {
       blocked_users.push(await this.GetUserByOauthId(block.friendId));
@@ -374,26 +400,41 @@ export class ChatService {
     return blocked_users;
   }
   async KickUserFromRoom(roomId: number, seter: string, target: string) {
+    if (roomId < 1 || seter == null || target == null) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const room = await this.GetRoomById(roomId);
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
     const target_userModel = await this.GetUserByUsername(target);
+    if (!target_userModel) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const target_user = room.roomuser.find(
       (roomuser) => roomuser.userId === target_userModel.oauthId,
     );
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter,
     );
-    if (!room || !seter_user || !target_user) {
-      throw new Error('User or Room not found');
+    if (!seter_user || !target_user) {
+      throw new HttpException(
+        'User not member of this room',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
     if (target_user.status === UserStatusInRoom['OWNER']) {
-      throw new Error('You cant kick the owner');
+      throw new HttpException(
+        'You cant kick the owner',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
     }
     if (
       seter_user.status === UserStatusInRoom['MEMBER'] ||
       (seter_user.status === UserStatusInRoom['ADMIN'] &&
         target_user.status === UserStatusInRoom['ADMIN'])
     ) {
-      throw new Error('You are not allowed to kick users');
+      throw new HttpException('You are not allowed to kick this user', 403);
     }
     await this.prisma.roomUser.delete({
       where: {
@@ -404,6 +445,9 @@ export class ChatService {
   }
   async setAdminForRoom(roomId: number, seter: string, target: string) {
     const room = await this.GetRoomById(roomId);
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
     const target_userModel = await this.GetUserByUsername(target);
     if (!target_userModel) {
       throw new HttpException('User not found admin', HttpStatus.NOT_FOUND);
@@ -415,17 +459,14 @@ export class ChatService {
     const target_user = room.roomuser.find(
       (roomuser) => roomuser.userId === target,
     );
-    if (!room) {
-      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    if (!seter_user || !target_user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (target_user.status === UserStatusInRoom['OWNER']) {
       throw new HttpException(
         'You cant set admin for the owner',
         HttpStatus.NOT_ACCEPTABLE,
       );
-    }
-    if (!seter_user || !target_user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     if (seter_user.status !== UserStatusInRoom['OWNER']) {
       throw new HttpException('You are not the owner of this room', 403);
@@ -445,7 +486,7 @@ export class ChatService {
   }
   async filter_blocked_users(sender: { oauthId: string }, roomUsers: any[]) {
     const blockedlist_sender = await this.GetBlockedUsers(sender.oauthId);
-    let users_list_not_blocked = [];
+    const users_list_not_blocked = [];
     for (const roomuser of roomUsers) {
       if (roomuser.status === UserStatusInRoom['BANNED']) {
         continue;
@@ -464,13 +505,16 @@ export class ChatService {
     return users_list_not_blocked;
   }
   async Leaveroom(oauthId: string, data: any) {
+    if (oauthId == null || data.roomId < 1 || data.newOwner == null) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const room = await this.GetRoomById(data.roomId);
     const roomuser = room.roomuser.find(
       (roomuser) => roomuser.userId === oauthId,
     );
     const RoomMembers = room.roomuser;
     if (!roomuser) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('this user is not a member of this room', 403);
     }
     if (roomuser && room.type !== RoomType['DIRECT_MESSAGE']) {
       if (roomuser.status === UserStatusInRoom['BANNED']) {
@@ -539,17 +583,37 @@ export class ChatService {
     }
   }
   async MuteUserFromRoom(oauthId: string, data: any, status: string) {
+    if (
+      oauthId == null ||
+      data.roomId < 1 ||
+      data.target_username == null ||
+      status == null
+    ) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const room = await this.GetRoomById(data.roomId);
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
     const user = await this.GetUserByOauthId(oauthId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const target_user = await this.GetUserByUsername(data.target_username);
+    if (!target_user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const roomuser = room.roomuser.find(
       (roomuser) => roomuser.userId === target_user.oauthId,
     );
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === oauthId,
     );
-    if (!room) {
-      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    if (!seter_user || !roomuser) {
+      throw new HttpException(
+        'User not a member of this room',
+        HttpStatus.NOT_FOUND,
+      );
     }
     if (!roomuser.muted && status === 'UNMUTE') {
       throw new HttpException('User is not muted', HttpStatus.NOT_ACCEPTABLE);
@@ -558,15 +622,6 @@ export class ChatService {
       throw new HttpException(
         'You cant mute yourself',
         HttpStatus.NOT_ACCEPTABLE,
-      );
-    }
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    if (!roomuser) {
-      throw new HttpException(
-        'User not a member of this room',
-        HttpStatus.NOT_FOUND,
       );
     }
     if (roomuser.status === UserStatusInRoom['BANNED']) {
@@ -620,18 +675,31 @@ export class ChatService {
     target_username: string,
     status: string,
   ) {
+    if (
+      roomId < 1 ||
+      seter_oauthId == null ||
+      target_username == null ||
+      status == null
+    ) {
+      throw new HttpException('Invalid Input', HttpStatus.NOT_ACCEPTABLE);
+    }
     const room = await this.GetRoomById(roomId);
-
+    if (!room) {
+      throw new HttpException('Room not found', HttpStatus.NOT_FOUND);
+    }
     const seter_user = room.roomuser.find(
       (roomuser) => roomuser.userId === seter_oauthId,
     );
+    if (!seter_user) {
+      throw new HttpException('User not member of this room', 403);
+    }
     const target_user_model = await this.GetUserByUsername(target_username);
+    if (!target_user_model) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const target_user = room.roomuser.find(
       (roomuser) => roomuser.userId === target_user_model.oauthId,
     );
-    if (!room || !seter_user || !target_user) {
-      throw new HttpException('User or Room not found', HttpStatus.NOT_FOUND);
-    }
     if (
       seter_user.status === UserStatusInRoom['MEMBER'] ||
       target_user.status === UserStatusInRoom['OWNER'] ||
@@ -730,7 +798,7 @@ export class ChatService {
       }
       throw new Error('Room type not correct');
     }
-  
+
     const room = await this.prisma.room.create({
       data: {
         name: createRoomDto.roomName,
