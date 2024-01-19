@@ -74,19 +74,15 @@ export class GameGateway
     @MessageBody() data_in,
   ) {
     try {
-      console.log(data_in);
       if (data_in.status === 'request') {
-        console.log('request');
         await this.gameService.invatefriend(client, data_in);
       } else if (data_in.status === 'reject') {
-        console.log('reject');
         this.gameService.Deletegamesatate(
           this.gameService.GetoauthId(client),
           this.server,
         );
         return;
       } else if (data_in.status === 'accept') {
-        console.log('accept');
         const data = {
           status: 'start',
           roomId: data_in.roomId,
@@ -96,7 +92,6 @@ export class GameGateway
         this.server.to(data_in.roomId).emit('start', data);
       }
     } catch (error) {
-      console.log(error);
       this.server.to(client.id).emit('gameError', { message: error.message });
     }
   }
@@ -146,7 +141,6 @@ export class GameGateway
         gamestate.paddleMove(oauthId, data.position);
         gamestate.update();
         if (gamestate.winner) {
-          console.log('end game');
           this.gameService.HandleEndGame(gamestate, this.server);
           return;
         }

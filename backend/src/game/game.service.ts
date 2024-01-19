@@ -55,7 +55,6 @@ export class GameService {
     let waitingList = this.gameMapService.get('waitingList');
     if (waitingList.includes(oauthId)) {
       waitingList = waitingList.filter((item) => item !== oauthId);
-      console.log(waitingList);
       this.gameMapService.set('waitingList', waitingList);
     }
     const game = this.GetRoom(this.gameMapService.get(oauthId));
@@ -76,7 +75,6 @@ export class GameService {
     const value = this.gameMapService.get(key);
     const user = await this.usersService.findOneById(oauthId);
     if (user.status === 'INGAME' || value.includes(oauthId)) {
-      console.log(user.status);
       throw new Error("You can't play now");
     }
     value.push(oauthId);

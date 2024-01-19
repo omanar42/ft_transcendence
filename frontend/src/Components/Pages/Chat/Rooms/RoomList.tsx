@@ -1,4 +1,4 @@
-import Avatar from "../assets/avatar.png";
+import Avatar from "../../../../assets/roomIcon.png";
 import "./RoomList.css";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { useContext, useState } from "react";
@@ -11,8 +11,6 @@ import { toast } from "react-toastify";
 import { FaLock } from "react-icons/fa";
 import { MdOutlinePublic } from "react-icons/md";
 import { SiPrivateinternetaccess } from "react-icons/si";
-const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
-
 
 export interface Room {
   avatar: string;

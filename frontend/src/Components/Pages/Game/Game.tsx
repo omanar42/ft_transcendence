@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
-import Friend from "./Assets/Friend.jpg";
-import Random from "./Assets/random.jpg";
-import AI from "./Assets/Ai.jpeg";
+import Friend from "./Assets/Friend.png";
+import Random from "./Assets/Random.png";
+import AI from "./Assets/Ai.png";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";

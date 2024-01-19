@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import avatar from "../../../../assets/avatar.jpeg";
+import roomIcon from "../../../../assets/roomIcon.png";
 import { ToastContainer, toast } from "react-toastify";
 import "./CreateRoom.css";
 import { motion } from "framer-motion";
+
 export interface UnjoinedRoom {
   avatar: string; // assuming avatar is a string URL or similar
   time?: string;
@@ -13,7 +14,7 @@ export interface UnjoinedRoom {
   roomPassword?: string;
   userName?: string;
   roomId: string;
-  setRooms?: Function;
+  setRooms: Function;
 }
 function ListRooms({
   avatar,
@@ -155,7 +156,7 @@ function Explore() {
         <ul className=" flex gap-[3rem] flex-wrap justify-center">
           {rooms.map((room, index) => (
             <ListRooms
-              avatar={avatar}
+              avatar={roomIcon}
               roomName={room.roomName}
               roomType={room.roomType}
               roomId={room.roomId}
