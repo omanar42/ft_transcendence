@@ -18,11 +18,7 @@ function App() {
   const {setuserInfo, setConnected, setVerifed, setIsLoading, setIsLogged, setToken, setSocket, socket, token, gamesocket, setGameSocket, setIsCheked, gameMode, setGameMode}:any = useContext(LoginInfo);
 
   useEffect(()=>{
-  fetchData();
-  
-
-  
-    // HandlScoket();
+    fetchData();
   },[]);
   
   const fetchData = async ()=>{
@@ -58,10 +54,8 @@ function App() {
       }
     }
     catch(error){
-      // console.error(error);
       setIsLoading(false);
     }
-
   }
 
   return (  

@@ -95,12 +95,12 @@ export class GameState {
       this.playerTwo.reset();
     }
 
-    if (this.playerOne.score === 4 || this.playerTwo.score === 4) {
+    if (this.playerOne.score === 11 || this.playerTwo.score === 11) {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
       this.waiting = true;
-      this.winner = this.playerOne.score === 4 ? 'playerOne' : 'playerTwo';
+      this.winner = this.playerOne.score === 11 ? 'playerOne' : 'playerTwo';
     }
   };
 

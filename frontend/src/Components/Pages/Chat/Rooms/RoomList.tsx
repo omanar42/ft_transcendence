@@ -15,7 +15,7 @@ const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
 
 export interface Room {
-  avatar: string; // assuming avatar is a string URL or similar
+  avatar: string;
   time: string;
   roomName: string;
   roomType: string;

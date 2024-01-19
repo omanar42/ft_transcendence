@@ -6,22 +6,30 @@ Project Description
 
 ### Todo
 
-- [ ] user not found  
-- [ ] add types and clean unused variabes  
-- [ ] Clean all console logs and comments  
+- [ ] remove swagger  
+- [ ] remove .env  
 - [ ] victory defeat  
-- [ ] change scores before push and remove .env  
 - [ ] docker in prod mode  
 
 ### In Progress
 
+- [ ] add types and clean unused variabes  
+- [ ] Clean all console logs and comments  
 - [ ] internal servers in chat  
 - [ ] throws to response  
-- [ ] gameMode  
-- [ ] avatars in chat  
 
 ### Done ✓
 
+- [x] back home in game  
+- [x] color in game navbar  
+- [x] unmute and ban  
+- [x] nontification icon  
+- [x] Ai avatar  
+- [x] 2fa title  
+- [x] change scores before push  
+- [x] avatars in chat  
+- [x] gameMode  
+- [x] user not found  
 - [x] online status in chat  
 - [x] 2 misiftoch accept in the same time  
 - [x] reject  
