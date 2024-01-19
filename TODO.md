@@ -6,17 +6,26 @@ Project Description
 
 ### Todo
 
+- [ ] user not found  
+- [ ] add types and clean unused variabes  
+- [ ] Clean all console logs and comments  
+- [ ] victory defeat  
 - [ ] change scores before push and remove .env  
-- [ ] invite game from chat  
 - [ ] docker in prod mode  
-- [ ] gameMods  
-- [ ] Ledder  
 
 ### In Progress
 
+- [ ] internal servers in chat  
+- [ ] throws to response  
+- [ ] gameMode  
+- [ ] avatars in chat  
 
 ### Done ✓
 
+- [x] online status in chat  
+- [x] 2 misiftoch accept in the same time  
+- [x] reject  
+- [x] invite game from chat  
 - [x] Avatars in game  
 - [x] play with friends  
 - [x] Match History  

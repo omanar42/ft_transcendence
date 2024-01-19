@@ -8,7 +8,7 @@ import { Request } from 'express';
 @Injectable()
 export class AtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly usersService: UsersService) {
-    const extractJwtFromCookie = (req: Request) => {
+    const extractJwtFromCookie = (req: Request | any) => {
       let token = null;
       if (req && req.cookies) {
         token = req.cookies['access_token'];
