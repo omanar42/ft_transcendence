@@ -6,6 +6,8 @@ import axios from "axios";
 import { GrCaretPrevious } from "react-icons/gr";
 import { GrCaretNext } from "react-icons/gr";
 import { motion } from "framer-motion";
+import { IoMdPersonAdd } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
 
 import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
 
@@ -42,7 +44,7 @@ const renderCustomizedLabel = ({
     </text>
   );
 };
-const WinLose = ({ GmStatus }) => {
+const WinLose = ({ GmStatus }:any) => {
   return (
     <div className="absolute  top-[1.5em] right-[-1rem]">
       <PieChart width={300} height={300}>
@@ -65,7 +67,7 @@ const WinLose = ({ GmStatus }) => {
     </div>
   );
 };
-const ImageSlider = ({ images }) => {
+const ImageSlider = ({ images }:any) => {
   const [current, setCurrent] = useState(0);
   const length = images.length;
   const url = "../../../../public/achievements/";
@@ -151,8 +153,24 @@ const ProgressBar = ({ bgColor, level }: any) => {
     </div>
   );
 };
-const Scoure = ({ Profile, acheivments, level, GmStatus, status }: any) => {
-  const {userInfo} = useContext(LoginInfo);
+const Scoure = ({ Profile, acheivments, level, GmStatus, status, actions, setActions }: any) => {
+  const {userInfo}:any = useContext(LoginInfo);
+
+
+  const AddFriend = async () => {
+    try {
+      const res = await axios.post(
+        "http://127.0.0.1:3000/users/add",
+        { friendUser: Profile.username },
+        { withCredentials: true }
+      );
+        toast.success("Friend request sent");
+        setActions(null);
+    } catch (e) {
+     
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-[4rem]">
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
@@ -170,7 +188,10 @@ const Scoure = ({ Profile, acheivments, level, GmStatus, status }: any) => {
                   ? "bg-yellow-500"
                   : status === "OFFLINE" && userInfo.username === Profile.username ? "bg-green-500" : "bg-red-500"
               }`}
-            ></div>
+            
+            >
+            {actions?.includes('ADD') && <IoMdPersonAdd onClick={AddFriend} className=" absolute left-[10rem] top-[-13rem] text-white cursor-pointer hover:opacity-60 text-5xl" />}
+            </div>
           </div>
           <div className="flex flex-col gap-[2rem]">
             <h1 className="text-5xl uppercase text-white">
@@ -186,6 +207,7 @@ const Scoure = ({ Profile, acheivments, level, GmStatus, status }: any) => {
         <ImageSlider images={acheivments} />
         <WinLose GmStatus={GmStatus} />
       </div>
+
     </div>
   );
 };
@@ -276,6 +298,7 @@ function Profile() {
   if (userName.username === undefined || userName.username === "me") {
     userName.username = userInfo.username;
   }
+  const [actions, setActions] = useState([]);
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -289,11 +312,11 @@ function Profile() {
           avatar: response.data.avatar,
           fullname: response.data.fullname,
         }));
-        console.log("==================", response.data);
         setFriends(response.data.friends);
         setAcheivments(response.data.achievements);
         setHistory(response.data.MatchHistory);
         setLevel(response.data.level);
+        setActions(response.data.actions);
         setGmStatus(() => [
           {
             name: "Win",
@@ -311,7 +334,6 @@ function Profile() {
       }
     };
     fetchProfile();
-    console.log(userName);
   }, [userName]);
 
   return (
@@ -328,6 +350,8 @@ function Profile() {
           level={level}
           GmStatus={GmStatus}
           status={status}
+          actions={actions}
+          setActions={setActions}
         />
         <div className="grid-2 bg-black bg-opacity-40 rounded-3xl pl-8 pr-8 pt-5 overflow-auto">
           <nav className="flex gap-[3rem] text-3xl text-white font-bold">
