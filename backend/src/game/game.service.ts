@@ -22,9 +22,11 @@ export class GameService {
     private prisma: PrismaService,
   ) {}
 
-  invatefriend = async (client: any, friend: string) => {
+  invatefriend = async (client: any, data_in: any) => {
     const oauthId = this.GetoauthId(client);
-    const friend_user = await this.usersService.findOneByUsername(friend);
+    const friend_user = await this.usersService.findOneByUsername(
+      data_in.friend,
+    );
     const user = await this.usersService.findOneById(oauthId);
     if (!friend_user || !user) {
       throw new Error('this user is not exist');
@@ -40,7 +42,7 @@ export class GameService {
         "you can't invite this user because he is on another game",
       );
     }
-    if (friend === user.username) {
+    if (data_in.friend === user.username) {
       throw new Error("you can't invite yourself");
     }
     const friendSocket = this.GetSocket(friend_user.oauthId);
@@ -49,7 +51,7 @@ export class GameService {
         status: 'req',
         roomId: `room:${oauthId}${friend_user.oauthId}`,
       };
-      await this.CreateRoom(oauthId, friend_user.oauthId);
+      await this.CreateRoom(oauthId, friend_user.oauthId, data_in.gameMode);
       client.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.join(`room:${oauthId}${friend_user.oauthId}`);
       friendSocket.emit('invitation', data);
@@ -60,8 +62,8 @@ export class GameService {
       // };
       // client.emit('invitation', data2);
     } else {
-      client.emit('invitation', 'this user is offline');
-      throw new Error('this user is offline');
+      client.emit('gameError', 'this user is offline');
+      // throw new Error('this user is offline');
     }
   };
   update = (gameState: GameState) => {
@@ -173,13 +175,14 @@ export class GameService {
     this.gameMapService.delete(key);
   };
 
-  CreateRoom = async (oauthId1: string, oauthId2: string) => {
+  CreateRoom = async (oauthId1: string, oauthId2: string, gameMode: string) => {
     const key = `room:${oauthId1}${oauthId2}`;
     const value = new GameState();
     value.init(oauthId1, oauthId2);
     const user1 = await this.usersService.findOneById(oauthId1);
     value.playerOne.username = user1.username;
     value.playerOne.avatar = user1.avatar;
+    value.gameMode = gameMode;
     const user2 = await this.usersService.findOneById(oauthId2);
     value.playerTwo.username = user2.username;
     value.playerTwo.avatar = user2.avatar;

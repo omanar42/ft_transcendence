@@ -109,7 +109,7 @@ export class GameGateway
       console.log(data_in);
       if (data_in.status === 'request') {
         console.log('request');
-        await this.gameService.invatefriend(client, data_in.friend);
+        await this.gameService.invatefriend(client, data_in);
       } else if (data_in.status === 'reject') {
         console.log('reject');
         this.gameService.Deletegamesatate(
@@ -155,7 +155,11 @@ export class GameGateway
         //   data: { status: Status['INGAME'] },
         // });
         //if clent disconnect remove from waiting list
-        await this.gameService.CreateRoom(randomPlayers[0], randomPlayers[1]);
+        await this.gameService.CreateRoom(
+          randomPlayers[0],
+          randomPlayers[1],
+          'Easy',
+        );
         const client_1 = this.gameService.GetSocket(randomPlayers[0]);
         client_1.join(`room:${randomPlayers[0]}${randomPlayers[1]}`);
         const client_2 = this.gameService.GetSocket(randomPlayers[1]);
