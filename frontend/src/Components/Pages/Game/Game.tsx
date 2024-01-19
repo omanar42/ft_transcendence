@@ -392,15 +392,15 @@ const Game = ({ imageUrl }: any) => {
                   src={avatars.userAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-4xl font-extrabold">{Players.user}</h1>
+                <h1 className="text-4xl font-extrabold text-blue-400">{Players.user}</h1>
               </div>
               <div className="flex-1 flex items-center  text-white font-bold justify-between">
-                <span className="text-6xl">{userScore}</span>
-                <h1 className="text-8xl">VS</h1>
-                <span className="text-6xl">{opponentScore}</span>
+                <span className="text-6xl text-blue-400">{userScore}</span>
+                <h1 className="text-8xl text-violet-400">VS</h1>
+                <span className="text-6xl text-pink-600">{opponentScore}</span>
               </div>
               <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-                <h1 className="text-4xl font-extrabold">{Players.opponent}</h1>
+                <h1 className="text-4xl font-extrabold text-pink-600">{Players.opponent}</h1>
                 <img
                   src={avatars.opponentAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
@@ -428,7 +428,7 @@ const StartGame = ({ setImageUrl }: any) => {
   const [level, setLevel] = useState("Easy");
   const [isFlipped_1, setIsFlipped_1] = useState(false);
   const [isFlipped_2, setIsFlipped_2] = useState(false);
-
+  const navigate = useNavigate();
 
   const handlePlayRandom = () => {
     setGameMode("random");
@@ -530,6 +530,14 @@ const StartGame = ({ setImageUrl }: any) => {
             </div>
           </div>
         </ReactCardFlip>
+        <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
+          <button
+            className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+            onClick={() => navigate("/")}
+          >
+            Back Home
+          </button>
+        </div>
       </div>
        <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With AI</h1>

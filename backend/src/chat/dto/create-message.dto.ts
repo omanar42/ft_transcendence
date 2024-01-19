@@ -64,7 +64,6 @@ export class CreateRoomDto {
 export class JoinRoomDto {
   username: string;
   roomId: number;
-  // password: string;
 }
 
 export class Data {
