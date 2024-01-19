@@ -137,7 +137,6 @@ const Game = ({ imageUrl }: any) => {
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {

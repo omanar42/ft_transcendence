@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
-import robot from "../../../assets/Robot.png";
+import ai from "../../../assets/ai.png";
 import "./Game.css";
 import gameover from "/gameover.png";
 
@@ -251,9 +251,7 @@ const GameAI = ({ imageUrl }: any) => {
     if (gameState.current.ai.y <= 0) gameState.current.ai.y = 0;
     if (gameState.current.ai.y >= canvas.height - gameState.current.ai.height)
       gameState.current.ai.y = canvas.height - gameState.current.ai.height;
-
-    console.log(gameState.current.ball.velocityX);
-    console.log(gameState.current.ball.velocityY);
+    
     let player =
       gameState.current.ball.x < canvas.width / 2
         ? gameState.current.user
@@ -354,7 +352,7 @@ const GameAI = ({ imageUrl }: any) => {
               <h1 className="text-4xl font-extrabold text-pink-600">
                 CyberPonk
               </h1>
-              <img src={robot} className="w-[6rem] h-[6rem]" />
+              <img src={ai} className="w-[6rem] h-[6rem]" />
             </div>
           </div>
           <canvas
