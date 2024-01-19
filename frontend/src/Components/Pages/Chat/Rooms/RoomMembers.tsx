@@ -89,11 +89,25 @@ function RenderMembers({
         username: username,
       };
       const response = await axios.post(
-        "http://127.0.0.1:3000/chat/setadmin", user, { withCredentials: true});
+        "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
         handrommemebers(response.data);
   }catch(error){
-    console.log(error);
+    toast.error(error?.response.data.message);
   }
+}
+
+const MuteUser = async () => {
+  try {
+    const user = {
+      roomId: currentRoom,
+      target_username: username,
+    };
+    const response = await axios.post(
+      "http://127.0.0.1:3000/chat/setadmin", user, { withCredentials: true});
+      handrommemebers(response.data);
+}catch(error){
+  toast.error(error?.response.data.message);
+}
 }
   
   return (
@@ -102,7 +116,7 @@ function RenderMembers({
         <h1 className="text-xl font-bold tracking-2">{username}</h1>
         {(ownerSheep === "OWNER" || ownerSheep === "ADMIN" )&&
           userInfo.username !== username &&
-          status !== "OWNER" && status != "BANNED" && (
+          status !== "OWNER" && status != "BANNED"  && (
             <div className="flex gap-4 items-center">
               <FaBan
                 onClick={BanUser}
@@ -113,7 +127,7 @@ function RenderMembers({
                 className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full"
               />
               <MdAdminPanelSettings onClick={setAdmin} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full"/>
-              <BiSolidVolumeMute className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full" />
+              <BiSolidVolumeMute onClick={MuteUser} className="text-4xl cursor-pointer  hover:text-red-600 hover:bg-white hover:duration-[0.2s] rounded-full" />
 
             </div>
           )}

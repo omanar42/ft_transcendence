@@ -44,8 +44,8 @@ export default function Rooms() {
               CloseModal={() => setToggelModal(false)}
             />
           )}
-          <RoomList handeltoggelModal={handeltoggelModal} List={channelsList} />
-          <MessageInput />
+          <RoomList handeltoggelModal={handeltoggelModal} List={channelsList} setChannelsList={setChannelsList} />
+          <MessageInput setChannelsList={setChannelsList} />
           <RoomMembers />
         </div>
       </RoomContextProvider>

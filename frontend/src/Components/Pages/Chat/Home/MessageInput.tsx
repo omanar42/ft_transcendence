@@ -26,7 +26,7 @@ const useAutoScroll = () => {
   return bottomRef;
 };
 
-function MessageInput() {
+function MessageInput({setChannelsList}:any) {
   const [currentMessage, setcurrentMessage] = useState("");
   const { currentRoom, setCurrentRoom }: any = useContext(RoomContext);
   const { userInfo, socket }: any = useContext(LoginInfo);
@@ -68,7 +68,8 @@ function MessageInput() {
       );
         toast.success("You left the room");
       
-      window.location.reload();
+    setChannelsList(response.data);
+      
     } catch (error) {
       toast.error(error.response.data.message);
     }
@@ -106,9 +107,11 @@ function MessageInput() {
       return;
     }
     await axios.post("http://127.0.0.1:3000/chat/add_user", {roomId: currentRoom, username:inviteFriend},
-     {withCredentials: true}).then(()=>window.location.reload()).catch((error) => { toast.warning(error.response.data.message); return;});
+     {withCredentials: true}).then((res)=>setChannelsList(res.data)).catch((error) => { toast.warning(error.response.data.message); return;});
     setAddIsOpen(false);
     setFriend("");
+    setCurrentRoom(0);
+    toast.success("User added");
   };
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">

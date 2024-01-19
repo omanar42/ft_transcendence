@@ -13,17 +13,6 @@ import { MdOutlinePublic } from "react-icons/md";
 import { SiPrivateinternetaccess } from "react-icons/si";
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
-interface ListAvatars {
-  avatar: string;
-}
-
-function ListAvatars({ avatar }: ListAvatars) {
-  return (
-    <li className="bg-white">
-      <img className="rounded-full" src={avatar} alt="avatar" />
-    </li>
-  );
-}
 
 export interface Room {
   avatar: string; // assuming avatar is a string URL or similar
@@ -36,11 +25,11 @@ export interface Room {
   message?: string;
 }
 
-function RoomSettings() {
+function RoomSettings({setChannelsList}:any) {
   const [roomName, setroomName] = useState("");
   const [roomType, setRoomtype] = useState("Public");
   const [roomPassword, setroomPassword] = useState("");
-  const { setSettingsIsOpen, currentRoom }: any = useContext(RoomContext);
+  const { setSettingsIsOpen, currentRoom, setCurrentRoom }: any = useContext(RoomContext);
 
   const handlSubmit = async (event: any) => {
     event.preventDefault();
@@ -59,7 +48,10 @@ function RoomSettings() {
         .post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
           withCredentials: true,
         })
-        .then(() => window.location.reload())
+        .then((res) =>{
+          setChannelsList(res.data);
+          setCurrentRoom(0);
+        })
         .catch((err) => toast.error(err.response.data.message));
 
       setSettingsIsOpen(false);
@@ -155,12 +147,12 @@ function ListRooms({roomName, roomType, roomId }: Room) {
   );
 }
 
-function RoomList({ handeltoggelModal, List }: any) {
+function RoomList({ handeltoggelModal, List, setChannelsList }: any) {
   const reversList = [...List].reverse();
   const { settingsIsOpen }: any = useContext(RoomContext);
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden border-2 border-white border-opacity-20 rounded-2xl">
-      {settingsIsOpen && <RoomSettings />}
+      {settingsIsOpen && <RoomSettings setChannelsList={setChannelsList} />}
 
 
       <button
