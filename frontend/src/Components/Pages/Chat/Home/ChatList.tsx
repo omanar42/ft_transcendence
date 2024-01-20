@@ -42,18 +42,9 @@ function ListConversations({ avatar, username,  roomId, status }:ListConversatio
 function ChatList({chatUser}:any) {
   return (
     <div className="col-span-1 flex flex-col items-center gap-5 overflow-hidden  border-2 border-white border-opacity-20 rounded-2xl font-sans">
-      <div className=" border-2 border-white border-opacity-20 rounded-lg flex flex-col items-center gap-5 pt-4 pb-4">
-        <input
-          className="w-11/12 h-[2.5rem] rounded-full pl-10 text-black outline-none"
-          type="text"
-          placeholder="search"
-        />
-        <ul className="flex gap-5 w-11/12">
-          {avatars.map((avatar, i) => (
-            <ListAvatars key={i} avatar={avatar} />
-          ))}
-        </ul>
-      </div>
+    {chatUser.length === 0 ? <div className="flex flex-col items-center justify-center h-full w-full">
+      <h1 className="text-4xl font-extrabold text-white uppercase animate-bounce font-Orbitron">You have no friend</h1>
+    </div> :
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
         {chatUser.map((conv:any, i:number) => (
           <ListConversations
@@ -64,7 +55,7 @@ function ChatList({chatUser}:any) {
             key={i}
           />
         ))}
-      </ul>
+      </ul>}
     </div>
   );
 }
