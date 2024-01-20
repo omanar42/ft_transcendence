@@ -50,7 +50,7 @@ export class GameService {
   update = (gameState: GameState) => {
     gameState.update();
   };
-  handledisconnect = async (client: any, server: any) => {
+  handledisconnect = async (client: any, server: any, disconnect: boolean) => {
     const oauthId = this.GetoauthId(client);
     let waitingList = this.gameMapService.get('waitingList');
     if (waitingList.includes(oauthId)) {
@@ -59,16 +59,23 @@ export class GameService {
     }
     const game = this.GetRoom(this.gameMapService.get(oauthId));
     if (game) {
-      if (game.playerOne.id === oauthId) {
-        game.winner = 'playerTwo';
+      const Ingame = await this.usersService.findOneById(oauthId);
+      if (Ingame.status === 'INGAME') {
+        if (game.playerOne.id === oauthId) {
+          game.winner = 'playerTwo';
+        }
+        if (game.playerTwo.id === oauthId) {
+          game.winner = 'playerOne';
+        }
+        this.HandleEndGame(game, server);
+      } else {
+        this.DeleteRoom(game.roomId);
       }
-      if (game.playerTwo.id === oauthId) {
-        game.winner = 'playerOne';
-      }
-      this.HandleEndGame(game, server);
     }
-    this.set_offline(oauthId);
-    this.DeleteSocket(client);
+    if (disconnect) {
+      this.set_offline(oauthId);
+      this.DeleteSocket(client);
+    }
   };
   PushOnWaitingList = async (oauthId: string) => {
     const key = 'waitingList';
@@ -95,9 +102,10 @@ export class GameService {
             message: 'Request rejected',
           });
         }
-        this.gameMapService.delete(game.playerOne.id);
-        this.gameMapService.delete(game.playerTwo.id);
-        this.gameMapService.delete(key);
+        // this.gameMapService.delete(game.playerOne.id);
+        // this.gameMapService.delete(game.playerTwo.id);
+        // this.gameMapService.delete(key);
+        this.DeleteRoom(key);
       }
     }
   };
@@ -178,6 +186,9 @@ export class GameService {
 
   DeleteRoom = (roomId: string) => {
     const key = roomId;
+    const game = this.gameMapService.get(key);
+    this.gameMapService.delete(game.playerOne.id);
+    this.gameMapService.delete(game.playerTwo.id);
     this.gameMapService.delete(key);
   };
   set_offline = async (oauthId: string) => {
