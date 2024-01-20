@@ -75,7 +75,7 @@ function MessageInput({setChannelsList}:any) {
     setChannelsList(response.data);
       
     } catch (error) {
-      toast.error(error?.response.data.message);
+      toast.error("You can't leave the room");
     }
   };
   useEffect(() => {
@@ -127,7 +127,7 @@ function MessageInput({setChannelsList}:any) {
   }
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
-      <ToastContainer
+             <ToastContainer
         position="top-center"
         autoClose={5000}
         hideProgressBar={false}
