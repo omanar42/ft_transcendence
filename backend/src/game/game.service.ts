@@ -102,9 +102,6 @@ export class GameService {
             message: 'Request rejected',
           });
         }
-        // this.gameMapService.delete(game.playerOne.id);
-        // this.gameMapService.delete(game.playerTwo.id);
-        // this.gameMapService.delete(key);
         this.DeleteRoom(key);
       }
     }
