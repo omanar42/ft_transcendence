@@ -620,8 +620,11 @@ function LadingPage() {
   useEffect(() => {
 
     return () => {
-    gamesocket?.emit("Back");
-
+      setGameMode(null);
+      const dataToSend = {
+        roomId: roomId,
+      };
+      gamesocket?.emit("leave", dataToSend);
     };
   },[location]);
   return (

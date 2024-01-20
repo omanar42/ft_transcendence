@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { PrismaFilter } from './prisma/prisma.filter';
+import { HttpExceptionFilter } from './http-exception.filter';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
@@ -27,7 +28,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaFilter(httpAdapter));
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new PrismaFilter(httpAdapter),
+  );
 
   app.use(cookieParser());
 

@@ -5,9 +5,8 @@ import { HiUserRemove } from "react-icons/hi";
 import { ImBlocked } from "react-icons/im";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
-import { motion } from "framer-motion"
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
 
 export const friendAction = async (
   frUser: any,
@@ -54,7 +53,7 @@ function ListFriends({ avatar, username, handlUpdate, id, actions, status }: any
         <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
           {username}
         </h1>
-        {actions.find((action)=> action === "ACCEPT") && (
+        {actions.find((action) => action === "ACCEPT") && (
           <button
             onClick={() => friendAction(username, "accept", handlUpdate, id)}
             className="text-2xl cursor-pointer rounded-lg p-2 border-2 border-white border-opacity-20 mr-1 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
@@ -62,19 +61,22 @@ function ListFriends({ avatar, username, handlUpdate, id, actions, status }: any
             Accept
           </button>
         )}
-        {(actions.find((action)=> action === "REMOVE") && actions.find((action)=> action === "BLOCK"))&& (
-          <div className="flex items-center gap-[1rem]">
-            <HiUserRemove
-              onClick={() => friendAction(username, "remove", handlUpdate, id)}
-              className="text-5xl text-green cursor-pointer rounded-full hover:bg-pink-600 hover:bg-opacity-40 hover:duration-[0.2s]"
-            />
-            <ImBlocked
-              onClick={() => friendAction(username, "block", handlUpdate, id)}
-              className="text-4xl text-red-600 cursor-pointer hover:bg-white rounded-full hover:bg-opacity-20 hover:duration-[0.2s]"
-            />
-          </div>
-        )}
-        {actions.find((action)=> action === "UNBLOCK") && (
+        {actions.find((action) => action === "REMOVE") &&
+          actions.find((action) => action === "BLOCK") && (
+            <div className="flex items-center gap-[1rem]">
+              <HiUserRemove
+                onClick={() =>
+                  friendAction(username, "remove", handlUpdate, id)
+                }
+                className="text-5xl text-green cursor-pointer rounded-full hover:bg-pink-600 hover:bg-opacity-40 hover:duration-[0.2s]"
+              />
+              <ImBlocked
+                onClick={() => friendAction(username, "block", handlUpdate, id)}
+                className="text-4xl text-red-600 cursor-pointer hover:bg-white rounded-full hover:bg-opacity-20 hover:duration-[0.2s]"
+              />
+            </div>
+          )}
+        {actions.find((action) => action === "UNBLOCK") && (
           <button
             onClick={() => friendAction(username, "unblock", handlUpdate, id)}
             className="text-2xl cursor-pointer border-2 border-white border-opacity-20 rounded-lg p-2 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
@@ -82,7 +84,7 @@ function ListFriends({ avatar, username, handlUpdate, id, actions, status }: any
             Unblock
           </button>
         )}
-        {actions.find((action)=> action === "REVOKE") && (
+        {actions.find((action) => action === "REVOKE") && (
           <button
             onClick={() => friendAction(username, "revoke", handlUpdate, id)}
             className="text-2xl cursor-pointer border-2 border-white border-opacity-20 rounded-lg p-2 font-bold hover:bg-white hover:text-black hover:duration-[0.2s]"
@@ -98,7 +100,7 @@ function Friends() {
   const [Friends, setFriends] = useState([]);
   const [isOpened, setIsOpened] = useState(false);
   const [addFriend, setAddFriend] = useState("");
-  const [ setActions] = useState("");
+  const [setActions] = useState("");
 
   useEffect(() => {
     getFriendsAction("friends");
@@ -118,8 +120,7 @@ function Friends() {
       const res = await axios.get(url, { withCredentials: true });
       setFriends(res.data);
       setActions(res.data.actions);
-    } catch (e) {
-    }
+    } catch (e) {}
   };
 
   const AddFriend = async () => {
@@ -129,9 +130,7 @@ function Friends() {
         { friendUser: addFriend },
         { withCredentials: true }
       );
-        toast.success("Friend request sent");
-
-
+      toast.success("Friend request sent");
 
       setIsOpened(false);
       setAddFriend("");
@@ -141,11 +140,12 @@ function Friends() {
   };
 
   return (
-    <motion.div 
-    initial={{ width: 0 }}
-    animate={{ width: "140rem" }}
-    exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
-    className="ml-auto mr-auto w-[140rem] h-[62rem] rounded-xl bg-black bg-opacity-20 backdrop-blur-sm p-[3rem] border-2 border-white border-opacity-20">
+    <motion.div
+      initial={{ width: 0 }}
+      animate={{ width: "140rem" }}
+      exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+      className="ml-auto mr-auto w-[140rem] h-[62rem] rounded-xl bg-black bg-opacity-20 backdrop-blur-sm p-[3rem] border-2 border-white border-opacity-20"
+    >
       <ToastContainer
         position="top-center"
         autoClose={5000}
@@ -159,11 +159,12 @@ function Friends() {
         theme="dark"
         className="text-3xl"
       />
-      <motion.div 
-         initial={{ width: 0 }}
-         animate={{ width: "100%" }}
-         exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
-      className=" flex flex-col border-opacity-20">
+      <motion.div
+        initial={{ width: 0 }}
+        animate={{ width: "100%" }}
+        exit={{ x: window.innerWidth, transition: { duration: 0.2 } }}
+        className=" flex flex-col border-opacity-20"
+      >
         <header className="h-[7rem] bg-dark-300 bg-opacity-60 rounded-xl text-white flex items-center justify-around">
           <nav className="flex justify-between  w-2/3 text-2xl pr-[3rem] font-bold pl-[3rem]">
             <button
@@ -201,7 +202,6 @@ function Friends() {
                 <input
                   onChange={(e) => setAddFriend(e.target.value)}
                   onKeyPress={(e) => e.key === "Enter" && AddFriend()}
-                  
                   value={addFriend}
                   className=" text-2xl w-[20rem] outline-none pl-4 h-[3rem] bg-dark-200 rounded-xl border-2 border-white border-opacity-20"
                 />
