@@ -1,11 +1,10 @@
-import React, { useContext, useEffect } from "react";
 import login from "./assets/login.png";
 import intra from "./assets/42.png";
 import google from "./assets/Google.png";
 import Logo from "../../../assets/logo.png";
-import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
 import {motion} from "framer-motion";
+import { toast } from "react-toastify";
 interface ButtonType {
   icon: string;
   text: string;
@@ -28,10 +27,9 @@ function Login() {
   
   const handLogging = async () =>{
     try{
-      const response = await axios.get("http://127.0.0.1:3000/auth/token");
-      console.log(response);
+      await axios.get("http://127.0.0.1:3000/auth/token");
     }catch(error){
-      console.error(error);
+      toast.error(error.response.data.message);
     }
   }
   return (
@@ -40,7 +38,7 @@ function Login() {
     animate={{width:"100%"}}
     exit={{width:0}}className="h-screen flex justify-center items-center pl-10 pr-10">
       <div className="grid grid-cols-3 max-w-140">
-        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
+        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
 
           <a onClick={handLogging} href="http://127.0.0.1:3000/auth/42">

@@ -40,7 +40,6 @@ function RoomSettings({setChannelsList}:any) {
         type: roomType,
         password: roomPassword,
       };
-      console.log("---------------------------");
 
       await axios
         .post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
@@ -75,8 +74,11 @@ function RoomSettings({setChannelsList}:any) {
           placeholder="Name your Room..."
           type="text"
           custom="outline-none font-bold"
-          onChange={(event) => {
-            setroomName(event.target.value);
+          onChange={(e) =>{ 
+            const value = e.target.value;
+            if(value.length <= 20)
+              setroomName(e.target.value)
+            else toast.error("Room Name must be less than 20 characters")
           }}
           value={roomName}
         >

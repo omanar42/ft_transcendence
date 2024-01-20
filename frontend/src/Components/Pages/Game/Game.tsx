@@ -531,11 +531,12 @@ const StartGame = ({ setImageUrl }: any) => {
           />
           <div className="cursor-pointer overflow-hidden relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
             <div className="w-full h-full flex flex-col justify-between gap-1">
-              {images.map((image) => (
+              {images.map((image, index) => (
                 <img
                   onClick={() => selectImage(image)}
                   className="h-full w-full hover:opacity-50 hover:duration-[0.2s] border-white border-opacity-20"
                   src={image}
+                  key={index}
                 />
               ))}
             </div>
@@ -561,11 +562,12 @@ const StartGame = ({ setImageUrl }: any) => {
           />
           <div className="cursor-pointer overflow-hidden relative text-white rounded-[4rem] flex-col flex items-center justify-around  h-[50rem] w-[45rem] bg-dark">
             <div className="w-full h-full flex flex-col justify-between gap-1">
-              {images.map((image) => (
+              {images.map((image,index) => (
                 <img
                   onClick={() => PlayAi(image)}
                   className="h-full w-full hover:opacity-50 hover:duration-[0.2s] border-white border-opacity-20"
                   src={image}
+                  key={index}
                 />
               ))}
             </div>

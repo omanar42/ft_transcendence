@@ -11,7 +11,6 @@ import { BiSolidVolumeMute } from "react-icons/bi";
 import { VscUnmute } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
 
-const owner = false;
 
 interface RoomMembers {
   Avatar: string;
@@ -61,7 +60,7 @@ function RenderMembers({
       });
       handrommemebers(response.data);
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response.data.message);
     }
   };
   const KickUser = async () => {
@@ -82,7 +81,7 @@ function RenderMembers({
       );
       handrommemebers(response.data);
     } catch (error) {
-      console.error(error);
+      toast.error(error?.response.data.message);
     }
   };
 
@@ -109,7 +108,6 @@ const MuteUser = async () => {
     const response = await axios.post(
       "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
       handrommemebers(response.data);
-      console.log('++++++++++++++++++++++++++++++++',response.data);
 }catch(error){
   toast.error(error?.response.data.message);
 }
@@ -124,7 +122,6 @@ const unMuteUser = async () => {
     const response = await axios.post(
       "http://127.0.0.1:3000/chat/unmute_user", user, { withCredentials: true});
       handrommemebers(response.data);
-      console.log('++++++++++++++++++++++++++++++++',response.data);
 }catch(error){
   toast.error(error?.response.data.message);
 }
@@ -194,13 +191,12 @@ function RoomMembers() {
           (member: RoomMembers) => member.UserName === userInfo.username
         );
         if (user){
-          console.log('user', user);
           setOwnersheep(user.status);
           setStatus(user.muted);
         } 
-        console.log(response.data);
+        
       } catch (error) {
-        console.error(error);
+        toast.error(error?.response.data.message);
       }
     };
     if (currentRoom) fetchRoommemebers();

@@ -7,9 +7,9 @@ import { GrCaretPrevious } from "react-icons/gr";
 import { GrCaretNext } from "react-icons/gr";
 import { motion } from "framer-motion";
 import { IoMdPersonAdd } from "react-icons/io";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from "recharts";
+import { PieChart, Pie,  Cell } from "recharts";
 
 const data = [
   { name: "Group A", value: 400 },
@@ -25,7 +25,7 @@ const renderCustomizedLabel = ({
   innerRadius,
   outerRadius,
   percent,
-  index,
+
 }) => {
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -59,7 +59,7 @@ const WinLose = ({ GmStatus }:any) => {
           fill="#16a34a"
           dataKey="value"
         >
-          {data.map((entry, index) => (
+          {data.map((index:any) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
@@ -159,7 +159,7 @@ const Scoure = ({ Profile, acheivments, level, GmStatus, status, actions, setAct
 
   const AddFriend = async () => {
     try {
-      const res = await axios.post(
+     await axios.post(
         "http://127.0.0.1:3000/users/add",
         { friendUser: Profile.username },
         { withCredentials: true }
@@ -174,7 +174,7 @@ const Scoure = ({ Profile, acheivments, level, GmStatus, status, actions, setAct
   return (
     <div className="flex flex-col items-center gap-[4rem]">
       <div className="flex flex-col w-full items-center gap-[3rem] bg-black bg-opacity-40 rounded-3xl p-8">
-        <div className="flex  items-center justify-around w-full">
+        <div className="flex  items-center justify-around w-full ">
           <div className="relative">
             <img
               className="h-[15rem] border-4  border-pink-600 w-[15rem] rounded-full cursor-pointer hover:scale-[1.1] hover:duration-[0.2s]"
@@ -328,7 +328,6 @@ function Profile() {
           },
         ]);
         setStatus(response.data.status);
-        console.log(GmStatus);
       } catch (error) {
         navigate("/404");
       }
@@ -378,7 +377,7 @@ function Profile() {
           <main className="mt-[2rem]">
             {openMatch && (
               <div className="flex flex-col text-white gap-[0.7rem]">
-                {History.map((user) => (
+                {History.map((user, index) => (
                   <MatchHistory
                     username={user.opponentUser}
                     avatar={user.opponentAvatar}
@@ -386,6 +385,7 @@ function Profile() {
                     OpunentScore={user.opponentScore}
                     xp={user.xpGain}
                     win={user.win}
+                    key={index}
                   />
                 ))}
               </div>
