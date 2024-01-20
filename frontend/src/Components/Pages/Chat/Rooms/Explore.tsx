@@ -5,7 +5,7 @@ import roomIcon from "../../../../assets/roomIcon.png";
 import { ToastContainer, toast } from "react-toastify";
 import "./CreateRoom.css";
 import { motion } from "framer-motion";
-
+import { BACKEND_URL } from "../../../../Config";
 export interface UnjoinedRoom {
   avatar: string; // assuming avatar is a string URL or similar
   time?: string;
@@ -33,7 +33,7 @@ function ListRooms({
     };
 
     axios
-      .post("http://127.0.0.1:3000/chat/joinRoom", dataToSend, {
+      .post(`${BACKEND_URL}/chat/joinRoom`, dataToSend, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -121,7 +121,7 @@ function Explore() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/chat/explore", {
+        const response = await axios.get(`${BACKEND_URL}/chat/explore`, {
           withCredentials: true,
         });
         setRooms(response.data);

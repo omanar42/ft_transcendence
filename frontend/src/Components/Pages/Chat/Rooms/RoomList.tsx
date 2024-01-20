@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { FaLock } from "react-icons/fa";
 import { MdOutlinePublic } from "react-icons/md";
 import { SiPrivateinternetaccess } from "react-icons/si";
+import { BACKEND_URL } from "../../../../Config";
 
 export interface Room {
   avatar: string;
@@ -42,7 +43,7 @@ function RoomSettings({setChannelsList}:any) {
       };
 
       await axios
-        .post("http://127.0.0.1:3000/chat/updateRoom", newRoom, {
+        .post(`${BACKEND_URL}/chat/updateRoom`, newRoom, {
           withCredentials: true,
         })
         .then((res) =>{

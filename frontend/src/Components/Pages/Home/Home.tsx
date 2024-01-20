@@ -6,7 +6,7 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { BACKEND_URL } from "../../../Config";
 function Home() {
   const { setuserInfo, userInfo } = useContext(LoginInfo);
 
@@ -15,7 +15,7 @@ function Home() {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/users/info", {
+        const response = await axios.get(`${BACKEND_URL}/users/info`, {
           withCredentials: true,
         });
         setuserInfo((prevstate) => ({

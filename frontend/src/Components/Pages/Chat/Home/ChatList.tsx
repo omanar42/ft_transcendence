@@ -1,21 +1,8 @@
 import { useContext } from "react";
-import Avatar from "../../../../assets/roomIcon.png";
 import './Chatlist.css';
 import { RoomContext } from "../../../../Contexts/RoomContext";
 
-const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
 
-interface ListAvatars {
-  avatar: string;
-}
-
-function ListAvatars({ avatar }: ListAvatars) {
-  return (
-    <li>
-      <img className="rounded-full" src={avatar} alt="avatar" />
-    </li>
-  );
-}
 
 interface ListConversations {
     avatar: string,

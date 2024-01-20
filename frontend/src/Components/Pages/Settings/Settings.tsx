@@ -3,7 +3,7 @@ import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { motion } from "framer-motion";
-
+import { BACKEND_URL } from "../../../Config";
 import "react-toastify/dist/ReactToastify.css";
 import "./settings.css";
 
@@ -16,7 +16,7 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
     const getQrCode = async () => {
       try {
         const qrCode = await axios.get(
-          "http://127.0.0.1:3000/setting/enable2FA",
+          `${BACKEND_URL}/setting/enable2FA`,
           {
             withCredentials: true,
           }
@@ -33,7 +33,7 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
   const handelConfirm = async () => {
     try {
       const confirm = await axios.post(
-        "http://127.0.0.1:3000/users/verify2fa",
+        `${BACKEND_URL}/users/verify2fa`,
         { token: code },
         { withCredentials: true }
       );
@@ -124,7 +124,7 @@ function Settings() {
         const formData = new FormData();
         formData.append("file", image);
         await axios.post(
-          "http://127.0.0.1:3000/setting/updateAvatar",
+          `${BACKEND_URL}/setting/updateAvatar`,
           formData,
           {
             headers: {
@@ -136,7 +136,7 @@ function Settings() {
       }
 
       await axios.post(
-        "http://127.0.0.1:3000/setting/updateProfile",
+        `${BACKEND_URL}/setting/updateProfile`,
         {
           username: Username,
           fullname: Fullname,
@@ -148,7 +148,7 @@ function Settings() {
           withCredentials: true,
         }
       );
-      const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+      const response = await axios.get(`${BACKEND_URL}/users/info`, {withCredentials: true});
      
       setuserInfo((prevstate: any)=>({
         ...prevstate,
@@ -166,7 +166,7 @@ function Settings() {
     if (isCheked){
       setIsOpen(false);
       setIsCheked(false);
-      const disable2fa = await axios.get("http://127.0.0.1:3000/setting/disable2FA", {withCredentials: true});
+      const disable2fa = await axios.get(`${BACKEND_URL}/setting/disable2FA`, {withCredentials: true});
       if (disable2fa.data.message === "2FA disabled"){
         toast.success("2FA disabled successfully");
       }
