@@ -621,10 +621,7 @@ function LadingPage() {
 
     return () => {
       setGameMode(null);
-      const dataToSend = {
-        roomId: roomId,
-      };
-      gamesocket?.emit("leave", dataToSend);
+      gamesocket?.emit("leave");
     };
   },[location]);
   return (

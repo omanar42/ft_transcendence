@@ -6,20 +6,20 @@ Project Description
 
 ### Todo
 
-- [ ] Game bug  
-- [ ] "Back" and "Forward" buttons  
 - [ ] API keys are available in the git repository and outside of the .env file created during the evaluation, the evaluation stop and the mark is 0.  
-- [ ] online offline in friend list  
-- [ ] remove search  
 
 ### In Progress
 
+- [ ] "Back" and "Forward" buttons  
 - [ ] prod mode in front  
 - [ ] remove .env  
 - [ ] remove swagger  
 
 ### Done ✓
 
+- [x] remove search  
+- [x] online offline in friend list  
+- [x] Game bug  
 - [x] User it's not allowed to there blocked message in public private channels  
 - [x] Joining/leaving  
 - [x] validation forms  

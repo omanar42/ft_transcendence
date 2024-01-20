@@ -54,6 +54,15 @@ export class GameState {
 
     this.ball.update();
 
+    if (this.ball.y + this.ball.radius >= 700) {
+      this.ball.y = 700 - this.ball.radius - 1;
+      this.ball.velocityY *= -1;
+    }
+    else if (this.ball.y - this.ball.radius <= 0) {
+      this.ball.y = this.ball.radius + 1;
+      this.ball.velocityY *= -1;
+    }
+
     const player = this.ball.x < 1300 / 2 ? this.playerOne : this.playerTwo;
 
     if (this.collision(player)) {
@@ -92,15 +101,6 @@ export class GameState {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
-    }
-
-    if (this.ball.y - this.ball.radius <= 0) {
-      this.ball.velocityY = -this.ball.velocityY;
-      this.ball.y = this.ball.radius;
-    }
-    if (this.ball.y + this.ball.radius >= 700) {
-      this.ball.velocityY = -this.ball.velocityY;
-      this.ball.y = 700 - this.ball.radius;
     }
 
     if (this.playerOne.score === 11 || this.playerTwo.score === 11) {
