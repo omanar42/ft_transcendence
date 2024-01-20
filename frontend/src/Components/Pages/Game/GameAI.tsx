@@ -347,7 +347,7 @@ const GameAI = ({ imageUrl }: any) => {
             <div className="flex-1 flex gap-[2rem] items-center text-white ">
               <img
                 src={userInfo.avatar}
-                className="w-[15%] h-[15%] border-2 border-pink-600  rounded-full"
+                className="w-[2rem] h-[2rem] md:w-[4rem] md:h-[4rem] lg:w-[6rem] lg:h-[6rem] border-2 border-pink-600  rounded-full"
               />
               <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-blue-400">
                 {userInfo.username}
@@ -362,7 +362,7 @@ const GameAI = ({ imageUrl }: any) => {
               <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-pink-600">
                 CyberPonk
               </h1>
-              <img src={ai} className="w-[15%] h-[15%]" />
+              <img src={ai} className="w-[2rem] h-[2rem] md:w-[4rem] md:h-[4rem] lg:w-[6rem] lg:h-[6rem]" />
             </div>
           </div>
           <canvas
