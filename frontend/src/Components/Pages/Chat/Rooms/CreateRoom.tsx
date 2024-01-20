@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./CreateRoom.css";
-import Avatar from "../assets/avatar.png";
+import roomIcon from "../../../../assets/roomIcon.png";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
 
@@ -63,7 +63,7 @@ function CreateRoom({ AddChannelToList, CloseModal }:any) {
     if (roomName !== "") {
       if (Roomtype === "Protected" && !roomPassword) return null;
       const Room: Room = {
-        avatar: Avatar, // assuming avatar is a string URL or similar
+        avatar: roomIcon, // assuming avatar is a string URL or similar
         message: "Hello friends",
         time:
           new Date(Date.now()).getHours() +

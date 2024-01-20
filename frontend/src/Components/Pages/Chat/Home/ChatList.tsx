@@ -1,7 +1,6 @@
 import { useContext } from "react";
-import Avatar from "../assets/avatar.png";
+import Avatar from "../../../../assets/roomIcon.png";
 import './Chatlist.css';
-import LoginInfo from "../../../../Contexts/LoginContext";
 import { RoomContext } from "../../../../Contexts/RoomContext";
 
 const avatars = [Avatar, Avatar, Avatar, Avatar, Avatar, Avatar];
@@ -56,7 +55,7 @@ function ChatList({chatUser}:any) {
         </ul>
       </div>
       <ul className="p-4 scroll-container flex w-full flex-col overflow-auto">
-        {chatUser.map((conv:any, i) => (
+        {chatUser.map((conv:any, i:number) => (
           <ListConversations
             avatar={conv.Avatar}
             username={conv.roomName}

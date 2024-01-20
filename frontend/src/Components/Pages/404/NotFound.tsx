@@ -1,4 +1,3 @@
-import React from "react";
 import background from "../../../assets/background.png";
 import robot from "../../../assets/Robot.png"
 function NotFound() {

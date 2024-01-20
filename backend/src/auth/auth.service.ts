@@ -120,11 +120,11 @@ export class AuthService {
     }
 
     let found = await this.usersService.findOneByEmail(user.email);
-    redirectUrl = process.env.CLIENT_URL + '/home';
+    redirectUrl = process.env.FRONTEND_URL + '/home';
 
     if (!found) {
       found = await this.registerUser(user);
-      redirectUrl = process.env.CLIENT_URL + '/welcome';
+      redirectUrl = process.env.FRONTEND_URL + '/welcome';
     }
 
     const tokens = await this.getTokens(found.oauthId, found.email);
@@ -132,14 +132,12 @@ export class AuthService {
 
     res.cookie('access_token', tokens.access_token, {
       httpOnly: true,
-      secure: true,
     });
     res.cookie('refresh_token', tokens.refresh_token, {
       httpOnly: true,
-      secure: true,
     });
 
-    if (found.twoFactor) redirectUrl = process.env.CLIENT_URL + '/two-factor';
+    if (found.twoFactor) redirectUrl = process.env.FRONTEND_URL + '/two-factor';
 
     return res.redirect(redirectUrl);
   }

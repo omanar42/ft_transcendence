@@ -108,10 +108,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.removeFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.removeFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 
@@ -131,10 +128,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.acceptFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.acceptFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 
@@ -154,10 +148,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.rejectFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.rejectFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 
@@ -177,10 +168,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.revokeFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.revokeFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 
@@ -200,10 +188,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.blockFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.blockFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 
@@ -223,10 +208,7 @@ export class UsersController {
     @Res() res: Response,
     @Body('friendUser') friendUser: string,
   ) {
-    const obj = await this.usersService.unblockFriend(
-      req.user.sub,
-      friendUser,
-    );
+    const obj = await this.usersService.unblockFriend(req.user.sub, friendUser);
     return res.status(obj.status).json(obj);
   }
 

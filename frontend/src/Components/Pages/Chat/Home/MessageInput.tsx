@@ -7,7 +7,7 @@ import { IoLogOutSharp } from "react-icons/io5";
 import "../Rooms/CreateRoom.css";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdPersonAdd } from "react-icons/io";
-import Avatar from "../assets/avatar.png";
+import Avatar from "../../../../assets/roomIcon.png";
 
 
 interface messageData {

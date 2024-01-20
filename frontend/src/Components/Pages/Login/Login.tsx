@@ -43,7 +43,7 @@ function Login() {
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
 
-          <a onClick={handLogging} href="http://localhost:3000/auth/42">
+          <a onClick={handLogging} href="http://127.0.0.1:3000/auth/42">
           <Button
             icon={intra}
             text="Sing in with intra"
@@ -51,7 +51,7 @@ function Login() {
             textColor="text-white"
           />
           </a>
-          <a href="http://localhost:3000/auth/google">
+          <a href="http://127.0.0.1:3000/auth/google">
             <Button
               icon={google}
               text="Sing in with Google"

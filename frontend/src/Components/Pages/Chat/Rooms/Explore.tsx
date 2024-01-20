@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
-import avatar from "../../../../assets/avatar.png"
+import roomIcon from "../../../../assets/roomIcon.png";
 import { ToastContainer, toast } from "react-toastify";
 import "./CreateRoom.css";
 import { motion } from "framer-motion";
@@ -156,7 +156,7 @@ function Explore() {
         <ul className=" flex gap-[3rem] flex-wrap justify-center">
           {rooms.map((room, index) => (
             <ListRooms
-              avatar={avatar}
+              avatar={roomIcon}
               roomName={room.roomName}
               roomType={room.roomType}
               roomId={room.roomId}

@@ -67,12 +67,11 @@ export class GameState {
       this.ball.velocityX = direction * this.ball.speed * Math.cos(angleRad);
       this.ball.velocityY = this.ball.speed * Math.sin(angleRad);
 
-      if (this.gameMode === 'Medium')
-        this.ball.speed += 0.3;
-      else if (this.gameMode === 'Hard')
-        this.ball.speed += 0.5;
-      else
-        this.ball.speed += 0.1;
+      if (this.gameMode === 'Medium') this.ball.speed += 0.4;
+      else if (this.gameMode === 'Hard') this.ball.speed += 0.5;
+      else this.ball.speed += 0.3;
+
+      this.ball.speed = Math.min(this.ball.speed, 15);
     }
 
     if (this.ball.x - this.ball.radius <= 0) {
