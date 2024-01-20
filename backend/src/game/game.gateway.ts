@@ -88,6 +88,7 @@ export class GameGateway
           roomId: data_in.roomId,
           gameState: this.gameService.GetRoom(data_in.roomId),
         };
+        if (!data.gameState) throw new Error('Game not found');
         await this.gameService.Ingame(data.gameState);
         this.server.to(data_in.roomId).emit('start', data);
       }
