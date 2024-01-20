@@ -23,6 +23,7 @@ import LoginInfo from "../Contexts/LoginContext";
 import TwoFaVerfication from "../Components/Pages/2Fa/TwoFaVerfication";
 import NotFound from "../Components/Pages/404/NotFound";
 import GameAI from "../Components/Pages/Game/GameAI";
+import AboutUs from "../Components/Pages/AboutUs/AboutUs";
 
 const ProtectedRoutes = () => {
   const { token, isLoading }: any = useContext(LoginInfo);
@@ -65,6 +66,7 @@ export const routermin = createBrowserRouter(
       </Route>
       <Route element={<ProtectedRoutes />}>
         <Route element={<Protect2fa />}>
+        <Route path="/AboutUs" element={<AboutUs />} />
         <Route path="/game" element={<LadingPage />} />
         <Route path="/game/ai" element={<GameAI />} />
 
