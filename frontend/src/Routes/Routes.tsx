@@ -25,11 +25,9 @@ import NotFound from "../Components/Pages/404/NotFound";
 import GameAI from "../Components/Pages/Game/GameAI";
 
 const ProtectedRoutes = () => {
-  const location = useLocation();
   const { token, isLoading }: any = useContext(LoginInfo);
 
   if (isLoading) return <div>Loading...</div>;
-  console.log("is Logged is", token);
   return token ? <Outlet  /> : <Navigate to="/login" replace />;
 };
 

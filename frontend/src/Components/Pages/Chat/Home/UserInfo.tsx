@@ -25,7 +25,6 @@ function UserInfo() {
       level: "easy",
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
-    console.log(gamesocket)
     navigate("/game");
   };
   
@@ -42,7 +41,7 @@ function UserInfo() {
         toast.success("Friend blocked");
       }
     } catch (err) {
-      console.log(err);
+      toast.error(err.response.data.message);
     }
   };
   return (

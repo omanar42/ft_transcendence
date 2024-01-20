@@ -17,7 +17,6 @@ function Chat() {
         });
         setUsersRoom(response.data);
       } catch (error) {
-        console.error(error);
       }
     };
     fetchRooms();

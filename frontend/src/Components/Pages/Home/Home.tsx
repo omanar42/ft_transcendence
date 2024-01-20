@@ -5,6 +5,7 @@ import { useContext } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function Home() {
   const { setuserInfo, userInfo } = useContext(LoginInfo);
@@ -26,21 +27,15 @@ function Home() {
         }));
         localStorage.setItem("userInfo", JSON.stringify(userInfo));
       } catch (error) {
-        console.error(error);
+       toast.error(error?.response.data.message);
       }
     };
     if (savedUserData) {
       setuserInfo(savedUserData);
     } else fetchData();
-    const allCookies = document.cookie;
+               
 
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      return value;
-    }
 
-    const token = getCookie("access_token");
-    console.log("here is the token", token);
   }, []);
 
   return (

@@ -2,7 +2,7 @@ import RoomList from "./RoomList";
 import RoomMembers from "./RoomMembers";
 import MessageInput from "../Home/MessageInput";
 import CreateRoom from "./CreateRoom";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Room } from "./RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
@@ -23,9 +23,7 @@ export default function Rooms() {
           withCredentials: true,
         });
         setChannelsList(response.data);
-        console.log("Response data", response.data);
       } catch (error) {
-        console.error(error);
       }
     };
     fetchRooms();

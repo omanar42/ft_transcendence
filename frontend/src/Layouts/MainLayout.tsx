@@ -1,9 +1,7 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { Logo } from "../Components/Pages/Login";
 import NavigationLink from "../Utils/NavigationLink";
-import { FaBell } from "react-icons/fa6";
 import ProfileAvatar from "../Utils/ProfileAvatar";
-import Avatar from "../assets/avatar.jpeg";
 import { useContext, useEffect, useState } from "react";
 import LoginInfo from "../Contexts/LoginContext";
 import { MdOutlineWarning } from "react-icons/md";

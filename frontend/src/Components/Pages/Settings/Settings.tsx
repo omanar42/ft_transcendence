@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -22,9 +22,7 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
           }
         );
         setQrCode(qrCode.data.qrCodeUrl);
-        console.log(qrCode);
       } catch (err) {
-        console.log(err);
       }
     };
     if (isOPen) {
@@ -45,7 +43,6 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
         Success();
       } else error();
     } catch (err) {
-      console.log(err);
     }
   };
 
@@ -89,7 +86,7 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
 }
 
 function Settings() {
-  const { userInfo }: any = useContext(LoginInfo);
+  const { userInfo, setuserInfo }: any = useContext(LoginInfo);
   const [image, setImage] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [Fullname, setFullname] = useState(userInfo.fullname);
@@ -126,7 +123,7 @@ function Settings() {
       if (image !== "") {
         const formData = new FormData();
         formData.append("file", image);
-        const Avatar = await axios.post(
+        await axios.post(
           "http://127.0.0.1:3000/setting/updateAvatar",
           formData,
           {
@@ -138,7 +135,7 @@ function Settings() {
         );
       }
 
-      const profile = await axios.post(
+      await axios.post(
         "http://127.0.0.1:3000/setting/updateProfile",
         {
           username: Username,
@@ -151,9 +148,18 @@ function Settings() {
           withCredentials: true,
         }
       );
-      window.location.reload();
+      const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+     
+      setuserInfo((prevstate: any)=>({
+        ...prevstate,
+        avatar:response.data.avatar,
+        fullname:response.data.fullname,
+        status:response.data.status,
+        username:response.data.username,
+        twoFactor:response.data.twoFactor
+      }))
+      toast.success("Profile updated successfully");
     } catch (err) {
-      console.log(err);
     }
   };
   const hand2fa = async ()=> {
@@ -220,12 +226,22 @@ function Settings() {
                 <h1 className="text-4xl">Full name</h1>
                 <input
                   className="bg-white bg-opacity-10 h-[4rem] rounded-full pl-4 outline-none"
-                  onChange={(e) => setFullname(e.target.value)}
+                  onChange={(e) =>{ 
+                    const value = e.target.value;
+                    if(value.length <= 20)
+                      setFullname(e.target.value)
+                    else toast.error("Full name must be less than 20 characters")
+                  }}
                   value={Fullname}
                 />
                 <h1 className="text-4xl">User name</h1>
                 <input
-                  onChange={(e) => setUsername(e.target.value)}
+                   onChange={(e) =>{ 
+                    const value = e.target.value;
+                    if(value.length <= 20)
+                      setUsername(e.target.value)
+                    else toast.error("Username must be less than 20 characters")
+                  }}
                   className="bg-white bg-opacity-10 h-[4rem] rounded-full pl-4 outline-none"
                   value={Username}
                 />
@@ -259,7 +275,7 @@ function Settings() {
               </button>
               <button
                 className="border-[1px] border-white rounded-xl border-opacity-20 hover:bg-white hover:text-black hover:duration-[0.2s] pl-2 pr-2"
-                onClick={() => window.location.reload()}
+                onClick={() => toast.success("Canceled")}
               >
                 Cancel
               </button>
