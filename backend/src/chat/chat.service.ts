@@ -77,7 +77,7 @@ export class ChatService {
   async ifFriend(oauthId: string, targetId: string) {
     if (!oauthId || !targetId) return false;
     const friend = await this.usersService.getOneFriend(oauthId, targetId);
-    if (friend) return true;
+    if (friend.status === 'FRIENDS') return true;
     return false;
   }
 
