@@ -270,12 +270,12 @@ const GameAI = ({ imageUrl }: any) => {
         gameState.current.ball.speed * Math.sin(angleRad);
     }
 
-    if (gameState.current.ball.x - gameState.current.ball.radius < 0) {
+    if (gameState.current.ball.x - gameState.current.ball.radius <= 0) {
       gameState.current.ai.score++;
       setaiScore(gameState.current.ai.score);
       resetBall(canvas);
     } else if (
-      gameState.current.ball.x + gameState.current.ball.radius >
+      gameState.current.ball.x + gameState.current.ball.radius >=
       canvas.width
     ) {
       gameState.current.user.score++;
@@ -283,6 +283,19 @@ const GameAI = ({ imageUrl }: any) => {
       resetBall(canvas);
     }
 
+    // if (gameState.current.ball.y <= 0) {
+    //   gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
+    //   gameState.current.ball.y = 0;
+    // } else if (gameState.current.ball.y >= canvas.height) {
+    //   gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
+    //   gameState.current.ball.y = canvas.height;
+    // }
+
+    console.log('x fo9 ' + (gameState.current.ball.x - gameState.current.ball.radius));
+    console.log('x ta7t ' + (gameState.current.ball.x + gameState.current.ball.radius));
+    console.log('y lisar ' + (gameState.current.ball.y - gameState.current.ball.radius));
+    console.log('y liman ' + (gameState.current.ball.y + gameState.current.ball.radius));
+      
     if (
       gameState.current.ai.score === 11 ||
       gameState.current.user.score === 11

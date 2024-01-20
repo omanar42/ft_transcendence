@@ -41,9 +41,8 @@ function ListFriends({ avatar, username, handlUpdate, id, actions }: any) {
   const navigate = useNavigate();
   return (
     <li 
-    onClick={()=>navigate(`/profile/${username}`)}
     className="text-white flex cursor-pointer  hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
-      <img className="h-[2rem] w-full flex-1" src={avatar} />
+      <img onClick={()=>navigate(`/profile/${username}`)} className="h-[2rem] hover:opacity-65 w-full flex-1" src={avatar} />
       <div className="flex h-[6rem] justify-around items-center  gap-[1rem]">
         <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
           {username}
