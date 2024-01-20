@@ -38,6 +38,8 @@ services:
     restart: always
     depends_on:
       - server
+    env_file:
+      - .env
     volumes:
       - ./frontend/src:/usr/src/app/src:ro
     networks:

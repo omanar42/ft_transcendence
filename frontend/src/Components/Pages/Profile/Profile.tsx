@@ -8,7 +8,7 @@ import { GrCaretNext } from "react-icons/gr";
 import { motion } from "framer-motion";
 import { IoMdPersonAdd } from "react-icons/io";
 import {  toast } from "react-toastify";
-
+import { BACKEND_URL } from "../../../Config";
 import { PieChart, Pie,  Cell } from "recharts";
 
 const data = [
@@ -59,7 +59,7 @@ const WinLose = ({ GmStatus }:any) => {
           fill="#16a34a"
           dataKey="value"
         >
-          {data.map((index:any) => (
+          {data.map((entry,index:any) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
@@ -160,7 +160,7 @@ const Scoure = ({ Profile, acheivments, level, GmStatus, status, actions, setAct
   const AddFriend = async () => {
     try {
      await axios.post(
-        "http://127.0.0.1:3000/users/add",
+        `${BACKEND_URL}/users/add`,
         { friendUser: Profile.username },
         { withCredentials: true }
       );
@@ -303,7 +303,7 @@ function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:3000/profile/${userName.username}`,
+          `${BACKEND_URL}/profile/${userName.username}`,
           { withCredentials: true }
         );
         setProfileInfo((previous) => ({
@@ -392,11 +392,12 @@ function Profile() {
             )}
             {FriendsIsopen && (
               <ul className="flex flex-wrap overflow-hidden">
-                {Friends.map((user) => (
+                {Friends.map((user, index) => (
                   <FriendsList
                     username={user.username}
                     avatar={user.avatar}
                     status={user.status}
+                    key={index}
                   />
                 ))}
               </ul>

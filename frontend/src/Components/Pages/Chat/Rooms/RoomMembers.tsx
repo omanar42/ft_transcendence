@@ -10,7 +10,7 @@ import { MdAdminPanelSettings } from "react-icons/md";
 import { BiSolidVolumeMute } from "react-icons/bi";
 import { VscUnmute } from "react-icons/vsc";
 import { useNavigate } from "react-router-dom";
-
+import { BACKEND_URL } from "../../../../Config";
 
 interface RoomMembers {
   Avatar: string;
@@ -36,7 +36,7 @@ function RenderMembers({
   const unBanedUser = async () => {
     try {
      const response =  await axios.post(
-        "http://127.0.0.1:3000/chat/unban_user",
+        `${BACKEND_URL}/chat/unban_user`,
         { roomid: currentRoom, target_username: username },
         { withCredentials: true }
       );
@@ -52,7 +52,7 @@ function RenderMembers({
         roomid: currentRoom,
         target_username: username,
       };
-     const response =  await axios.post("http://127.0.0.1:3000/chat/ban_user", user, {
+     const response =  await axios.post(`${BACKEND_URL}/chat/ban_user`, user, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -70,7 +70,7 @@ function RenderMembers({
         target_username: username,
       };
       const response = await axios.post(
-        "http://127.0.0.1:3000/chat/kick_user",
+        `${BACKEND_URL}/chat/kick_user`,
         user,
         {
           headers: {
@@ -92,7 +92,7 @@ function RenderMembers({
         username: username,
       };
       const response = await axios.post(
-        "http://127.0.0.1:3000/chat/setadmin", user, { withCredentials: true});
+        `${BACKEND_URL}/chat/setadmin`, user, { withCredentials: true});
         handrommemebers(response.data);
   }catch(error){
     toast.error(error?.response.data.message);
@@ -106,7 +106,7 @@ const MuteUser = async () => {
       target_username: username,
     };
     const response = await axios.post(
-      "http://127.0.0.1:3000/chat/mute_user", user, { withCredentials: true});
+      `${BACKEND_URL}/chat/mute_user`, user, { withCredentials: true});
       handrommemebers(response.data);
 }catch(error){
   toast.error(error?.response.data.message);
@@ -120,7 +120,7 @@ const unMuteUser = async () => {
       target_username: username,
     };
     const response = await axios.post(
-      "http://127.0.0.1:3000/chat/unmute_user", user, { withCredentials: true});
+      `${BACKEND_URL}/chat/unmute_user`, user, { withCredentials: true});
       handrommemebers(response.data);
 }catch(error){
   toast.error(error?.response.data.message);
@@ -183,7 +183,7 @@ function RoomMembers() {
     const fetchRoommemebers = async () => {
       try {
         const response = await axios.get(
-          "http://127.0.0.1:3000/chat/roomUsers",
+          `${BACKEND_URL}/chat/roomUsers`,
           { withCredentials: true, params: { roomId: currentRoom } }
         );
         setRoomMembers(response.data);

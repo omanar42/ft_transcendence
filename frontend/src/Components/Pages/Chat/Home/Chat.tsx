@@ -6,13 +6,14 @@ import { Room } from "../Rooms/RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
 import { motion } from "framer-motion";
+import { BACKEND_URL } from "../../../../Config";
 
 function Chat() {
   const [usersRoom, setUsersRoom] = useState<Room[]>([]);
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/chat/dms", {
+        const response = await axios.get(`${BACKEND_URL}/chat/dms`, {
           withCredentials: true,
         });
         setUsersRoom(response.data);

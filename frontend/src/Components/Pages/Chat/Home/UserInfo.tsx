@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import { FaGamepad } from "react-icons/fa6";
 import LoginInfo from "../../../../Contexts/LoginContext";
-
+import { BACKEND_URL } from "../../../../Config";
 
 function UserInfo() {
   const { avatar, roomName, currentRoom }: any = useContext(RoomContext);
@@ -30,7 +30,7 @@ function UserInfo() {
   
   const blockUser = async (userName: string) => {
     try {
-      const url = `http://127.0.0.1:3000/users/block`;
+      const url = `${BACKEND_URL}/users/block`;
       const res = await axios.post(
         url,
         { friendUser: userName },
