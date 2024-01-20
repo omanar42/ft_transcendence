@@ -4,6 +4,7 @@ import axios from "axios";
 import LoginInfo from "../../../Contexts/LoginContext";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../../../Config";
+import { ToastContainer, toast } from "react-toastify";
 
 function TwoFaVerfication() {
     const [code, setCode] = useState("");
@@ -23,10 +24,24 @@ function TwoFaVerfication() {
             navigate('/home', { replace: true });
           
         } catch (err) {
+          toast.error("Wrong code");
         }
       };
   return (
     <div className="h-screen flex justify-center items-center pl-10 pr-10">
+           <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        className="text-4xl"
+      />
       <div className="grid grid-cols-3 max-w-140">
         <div className="col-span-2">
           <img className="w-full h-full" src={login} />
