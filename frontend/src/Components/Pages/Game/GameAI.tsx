@@ -347,22 +347,22 @@ const GameAI = ({ imageUrl }: any) => {
             <div className="flex-1 flex gap-[2rem] items-center text-white ">
               <img
                 src={userInfo.avatar}
-                className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                className="w-[15%] h-[15%] border-2 border-pink-600  rounded-full"
               />
-              <h1 className="text-4xl font-extrabold text-blue-400">
+              <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-blue-400">
                 {userInfo.username}
               </h1>
             </div>
-            <div className="flex-1 flex items-center  text-white font-bold justify-between">
-              <span className="text-6xl text-blue-400">{userScore}</span>
-              <h1 className="text-8xl text-violet-400">VS</h1>
-              <span className="text-6xl text-pink-600">{aiScore}</span>
+            <div className="w-[6rem] md:w-[8rem] flex-1 flex items-center text-white font-bold justify-between">
+              <span className="w-[1rem] md:text-[2rem] text-blue-400">{userScore}</span>
+              <h1 className="w-[1rem] md:text-[2rem] text-violet-400">VS</h1>
+              <span className="w-[1rem] md:text-[2rem] text-pink-600">{aiScore}</span>
             </div>
             <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-              <h1 className="text-4xl font-extrabold text-pink-600">
+              <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-pink-600">
                 CyberPonk
               </h1>
-              <img src={ai} className="w-[6rem] h-[6rem]" />
+              <img src={ai} className="w-[15%] h-[15%]" />
             </div>
           </div>
           <canvas

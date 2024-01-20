@@ -384,7 +384,7 @@ const Game = ({ imageUrl }: any) => {
         src={win ? victory : defeat} />
         <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+            className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => setGameMode(null)}
             >
             Back to Menu
@@ -398,9 +398,9 @@ const Game = ({ imageUrl }: any) => {
               <div className="flex-1 flex gap-[2rem] items-center text-white ">
                 <img
                   src={avatars.userAvatar}
-                  className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                  className="w-[10%] h-[10%] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-4xl font-extrabold text-blue-400">
+                <h1 className="text-[10%] font-extrabold text-blue-400">
                   {Players.user}
                 </h1>
               </div>
@@ -643,13 +643,13 @@ function LadingPage() {
               </h1>
               <div className="flex justify-between items-center gap-10 mt-10">
                 <button
-                  className="bg-blue-400 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
                   onClick={() => handleAccept()}
                 >
                   Accept
                 </button>
                 <button
-                  className="bg-blue-400 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
+                  className="bg-pink-600 pl-4 pr-4 p-2 duration-75 hover:scale-[1.2] z-50 rounded-xl"
                   onClick={() => handleReject()}
                 >
                   Reject
