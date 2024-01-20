@@ -28,7 +28,10 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new HttpExceptionFilter(), new PrismaFilter(httpAdapter));
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new PrismaFilter(httpAdapter),
+  );
 
   app.use(cookieParser());
 
