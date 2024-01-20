@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 function TwoFaVerfication() {
     const [code, setCode] = useState("");
     const navigate = useNavigate();
-    const {setVerifed, verifed} = useContext(LoginInfo);
+    const {setVerifed,}:any = useContext(LoginInfo);
 
     const handelSubmit = async () => {
         try {
@@ -22,7 +22,6 @@ function TwoFaVerfication() {
             navigate('/home', { replace: true });
           }
         } catch (err) {
-          console.log(err);
         }
       };
   return (
@@ -31,7 +30,7 @@ function TwoFaVerfication() {
         <div className="col-span-2">
           <img className="w-full h-full" src={login} />
         </div>
-        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
+        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-200 justify-center relative items-center col-span-1">
           <div className="text-white  flex flex-col gap-10 justify-center items-center  p-10">
             <h1 className="text-white  text-3xl font-bold">
               Two-Factor Verficiation

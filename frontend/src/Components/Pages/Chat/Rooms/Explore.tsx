@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import   { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import roomIcon from "../../../../assets/roomIcon.png";
@@ -44,7 +44,7 @@ function ListRooms({
         setRooms(response.data);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        toast.error(error.response.data.message);
       });
     setPassword("");
     setIsOpen(false);
@@ -126,7 +126,7 @@ function Explore() {
         });
         setRooms(response.data);
       } catch (error) {
-        console.error(error);
+        toast.error(error.response.data.message);
       }
     };
     fetchRooms();

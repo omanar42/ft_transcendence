@@ -3,6 +3,7 @@ import "./CreateRoom.css";
 import roomIcon from "../../../../assets/roomIcon.png";
 import { Room } from "./RoomList";
 import LoginInfo from "../../../../Contexts/LoginContext";
+import { ToastContainer, toast } from "react-toastify";
 
 
 
@@ -89,6 +90,19 @@ function CreateRoom({ AddChannelToList, CloseModal }:any) {
 
   return (
     <div className="modal flex justify-center items-center">
+            <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        className="text-4xl"
+      />
               <button
           onClick={CloseModal}
           className=" absolute top-[13rem] left-[36rem] text-[7rem] text-pink-100"
@@ -107,8 +121,11 @@ function CreateRoom({ AddChannelToList, CloseModal }:any) {
           placeholder="Name your Room..."
           type="text"
           custom="outline-none font-bold"
-          onChange={(event) => {
-            setroomName(event.target.value);
+          onChange={(e) =>{ 
+            const value = e.target.value;
+            if(value.length <= 20)
+              setroomName(e.target.value)
+            else toast.error("Room Name must be less than 20 characters")
           }}
           value={roomName}
         >

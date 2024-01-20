@@ -1,6 +1,5 @@
 import axios from "axios";
 import { createContext, useContext, useState } from "react";
-import { Navigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
 
 const LoginInfo = createContext({});
@@ -26,14 +25,12 @@ const Logout = () => {
   axios
     .get("http://127.0.0.1:3000/auth/logout", { withCredentials: true })
     .then((res) => {
-      console.log(res.data);
       if (res.data.message === "logout success") {
         window.location.href = "/login";
         localStorage.removeItem("verifed");
       }
     })
-    .catch((err) => {
-      console.log(err);
+    .catch(() => {
     });
 };
 export const useLoginInfo = () => useContext(LoginInfo);
