@@ -17,11 +17,11 @@ function TwoFaVerfication() {
                 { token: code },
                 { withCredentials: true }
                 );
-          if (confirm.data === "2FA verified successfully") {
+         
             setVerifed(true);
             localStorage.setItem('verifed', JSON.stringify(true));
             navigate('/home', { replace: true });
-          }
+          
         } catch (err) {
         }
       };
