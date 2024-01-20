@@ -282,19 +282,6 @@ const GameAI = ({ imageUrl }: any) => {
       setUserScore(gameState.current.user.score);
       resetBall(canvas);
     }
-
-    // if (gameState.current.ball.y <= 0) {
-    //   gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
-    //   gameState.current.ball.y = 0;
-    // } else if (gameState.current.ball.y >= canvas.height) {
-    //   gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
-    //   gameState.current.ball.y = canvas.height;
-    // }
-
-    console.log('x fo9 ' + (gameState.current.ball.x - gameState.current.ball.radius));
-    console.log('x ta7t ' + (gameState.current.ball.x + gameState.current.ball.radius));
-    console.log('y lisar ' + (gameState.current.ball.y - gameState.current.ball.radius));
-    console.log('y liman ' + (gameState.current.ball.y + gameState.current.ball.radius));
       
     if (
       gameState.current.ai.score === 11 ||
