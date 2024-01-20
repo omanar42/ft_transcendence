@@ -43,7 +43,7 @@ export class GameGateway
   async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
     try {
-      this.gameService.handledisconnect(client, this.server);
+      this.gameService.handledisconnect(client, this.server, true);
     } catch (error) {
       this.logger.log(error);
     }
@@ -124,6 +124,15 @@ export class GameGateway
           .to(`room:${randomPlayers[0]}${randomPlayers[1]}`)
           .emit('start', data);
       }
+    } catch (error) {
+      this.logger.log(error);
+    }
+  }
+
+  @SubscribeMessage('leave')
+  async handleleave(@ConnectedSocket() client: Socket) {
+    try {
+      this.gameService.handledisconnect(client, this.server, false);
     } catch (error) {
       this.logger.log(error);
     }
