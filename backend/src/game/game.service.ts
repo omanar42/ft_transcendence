@@ -29,7 +29,7 @@ export class GameService {
     if (this.gameMapService.get(oauthId))
       throw new Error('You are already in game');
     if (this.gameMapService.get(friend_user.oauthId))
-      throw new Error('Can not invite this user');
+      throw new Error('This user is already in game');
     if (friend_user.status === 'INGAME' || user.status === 'INGAME')
       throw new Error('This user is already in game');
     if (data_in.friend === user.username)
