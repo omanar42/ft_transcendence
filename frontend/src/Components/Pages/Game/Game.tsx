@@ -398,24 +398,24 @@ const Game = ({ imageUrl }: any) => {
               <div className="flex-1 flex gap-[2rem] items-center text-white ">
                 <img
                   src={avatars.userAvatar}
-                  className="w-[10%] h-[10%] border-2 border-pink-600  rounded-full"
+                  className="w-[2rem] h-[2rem] md:w-[4rem] md:h-[4rem] lg:w-[6rem] lg:h-[6rem] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-[10%] font-extrabold text-blue-400">
+                <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-blue-400">
                   {Players.user}
                 </h1>
               </div>
-              <div className="flex-1 flex items-center  text-white font-bold justify-between">
-                <span className="text-6xl text-blue-400">{userScore}</span>
-                <h1 className="text-8xl text-violet-400">VS</h1>
-                <span className="text-6xl text-pink-600">{opponentScore}</span>
+              <div className="w-[6rem] md:w-[8rem] flex-1 flex items-center text-white font-bold justify-between">
+                <span className="w-[1rem] md:text-[2rem] text-blue-400">{userScore}</span>
+                <h1 className="w-[1rem] md:text-[2rem] text-violet-400">VS</h1>
+                <span className="w-[1rem] md:text-[2rem] text-pink-600">{opponentScore}</span>
               </div>
               <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-                <h1 className="text-4xl font-extrabold text-pink-600">
+                <h1 className="text-[0.7rem] md:text-[1.5rem] lg:text-[2rem] font-extrabold text-pink-600">
                   {Players.opponent}
                 </h1>
                 <img
                   src={avatars.opponentAvatar}
-                  className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                  className="w-[2rem] h-[2rem] md:w-[4rem] md:h-[4rem] lg:w-[6rem] lg:h-[6rem] border-2 border-pink-600  rounded-full"
                 />
               </div>
             </div>
