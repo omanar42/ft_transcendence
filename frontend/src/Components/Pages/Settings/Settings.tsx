@@ -37,12 +37,13 @@ function TwoFa({ isOPen, setIsOpen, setIsCheked }: any) {
         { token: code },
         { withCredentials: true }
       );
-      if (confirm.data === "2FA verified successfully") {
+
         setIsCheked(true);
         setIsOpen(false);
         Success();
-      } else error();
+      
     } catch (err) {
+      error();
     }
   };
 
