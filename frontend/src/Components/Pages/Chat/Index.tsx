@@ -1,4 +1,3 @@
-import Chat from "./Home/Chat";
 import Header from "./Header";
 import Rooms from "./Rooms/Rooms";
 

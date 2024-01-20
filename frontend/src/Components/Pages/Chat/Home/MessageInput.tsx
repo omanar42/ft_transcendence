@@ -40,10 +40,14 @@ function MessageInput({setChannelsList}:any) {
   const sendMessage = () => {
     if (currentMessage !== "") {
       const messageData: messageData = {
-        message: currentMessage,
+        message: currentMessage.trim(),
         roomId: currentRoom,
         userName: userInfo.username,
       };
+      if(currentMessage.trim().length === 0) {
+        setcurrentMessage("");
+        return;
+      }
       setMessageList((list:any) => [...list, messageData]);
       setcurrentMessage("");
       socket.emit("message", messageData);
@@ -70,7 +74,7 @@ function MessageInput({setChannelsList}:any) {
     setChannelsList(response.data);
       
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response.data.message);
     }
   };
   useEffect(() => {
@@ -112,6 +116,14 @@ function MessageInput({setChannelsList}:any) {
     setCurrentRoom(0);
     // toast.success("User added");
   };
+
+  const handelMessages = (event) =>{
+    const value = event.target.value;
+
+    if (value.length <=100)
+      setcurrentMessage(value);
+    else toast.error("Message should be less than 100 characters");
+  }
   return (
     <div className="border-2 border-white rounded-2xl border-opacity-20 col-span-3 flex flex-col justify-between overflow-hidden">
       <ToastContainer
@@ -194,29 +206,29 @@ function MessageInput({setChannelsList}:any) {
               </div>
             )}
           </div>
-          <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll">
+          <div className=" flex-1 pl-[3rem] pr-[3rem] pt-[2rem] flex flex-col items-start overflow-y-scroll overflow-x-hidden">
             {messageList.map((message:any, i:number) => {
               return (
                 <div
-                  className={`text-white text-2xl flex flex-col gap-[0.5rem] ${
+                  className={`text-white text-2xl flex   flex-col gap-[0.5rem] ${
                     userInfo.username === message.userName ? "" : "self-end"
                   } `}
                   key={i}
                 >
                   <div
-                    className={`p-[1rem] rounded-lg f ${
+                    className={`p-[1rem]  max-w-lg whitespace-normal rounded-lg f ${
                       userInfo.username === message.userName
                         ? "bg-blue-600"
                         : "bg-pink-600"
                     }`}
                   >
-                    <p>{message.message}</p>
+                    <p className="break-words">{message.message}</p>
                   </div>
                   <p
                     className={`text-[1rem]  ${
                       userInfo.username === message.userName
-                        ? "self-end"
-                        : "self-start"
+                        ? "self-start"
+                        : "self-end"
                     } font-bold`}
                   >
                     {message.userName}
@@ -235,7 +247,7 @@ function MessageInput({setChannelsList}:any) {
                 className="h-14 flex-1 outline-none rounded-3xl pl-10 text-white bg-black bg-opacity-50 text-2xl"
                 type="text"
                 placeholder="Write message"
-                onChange={(event) => setcurrentMessage(event.target.value)}
+                onChange={handelMessages}
                 value={currentMessage}
                 onKeyPress={(event) => {
                   event.key === "Enter" && sendMessage();

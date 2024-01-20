@@ -5,7 +5,7 @@ interface ProfileAvatar{
     onClick:string
 }
 
-function ProfileAvatar({className, src, onClick}){
+function ProfileAvatar({className, src, onClick}:any){
 
     return(
       <img

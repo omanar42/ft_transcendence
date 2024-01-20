@@ -6,6 +6,7 @@ import { ImBlocked } from "react-icons/im";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import { motion } from "framer-motion"
+import { useNavigate } from "react-router-dom";
 
 
 export const friendAction = async (
@@ -36,9 +37,12 @@ export const friendAction = async (
   }
 };
 
-function ListFriends({ avatar, username, status, handlUpdate, id, actions }: any) {
+function ListFriends({ avatar, username, handlUpdate, id, actions }: any) {
+  const navigate = useNavigate();
   return (
-    <li className="text-white flex cursor-pointer hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
+    <li 
+    onClick={()=>navigate(`/profile/${username}`)}
+    className="text-white flex cursor-pointer  hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
       <img className="h-[2rem] w-full flex-1" src={avatar} />
       <div className="flex h-[6rem] justify-around items-center  gap-[1rem]">
         <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
@@ -88,7 +92,7 @@ function Friends() {
   const [Friends, setFriends] = useState([]);
   const [isOpened, setIsOpened] = useState(false);
   const [addFriend, setAddFriend] = useState("");
-  const [actions, setActions] = useState("");
+  const [ setActions] = useState("");
 
   useEffect(() => {
     getFriendsAction("friends");
@@ -106,18 +110,15 @@ function Friends() {
     try {
       const url = `http://127.0.0.1:3000/users/${actions[action]}`;
       const res = await axios.get(url, { withCredentials: true });
-      console.log(res.data);
       setFriends(res.data);
       setActions(res.data.actions);
-      console.log(res.data[0].actions);
     } catch (e) {
-      console.error(e);
     }
   };
 
   const AddFriend = async () => {
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://127.0.0.1:3000/users/add",
         { friendUser: addFriend },
         { withCredentials: true }
@@ -209,7 +210,7 @@ function Friends() {
           </div>
         </header>
         <ul className="mt-[5rem] flex flex-wrap gap-[3rem]">
-          {Friends.map((Friend) => (
+          {Friends.map((Friend, index) => (
             <ListFriends
               avatar={Friend.frAvatar}
               username={Friend.frUser}
@@ -217,6 +218,7 @@ function Friends() {
               id={Friend.id}
               handlUpdate={handlUpdate}
               actions={Friend.actions}
+              key={index}
             />
           ))}
         </ul>

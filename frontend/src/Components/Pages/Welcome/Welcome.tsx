@@ -1,5 +1,4 @@
 import { Logo, login } from "../Login";
-import { FaCamera } from "react-icons/fa";
 import "./Welcome.css";
 import { useContext, useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -52,7 +51,12 @@ function UploeadForm({Username, setUsername}: any) {
         className=" outline-none rounded-lg h-14 bg-dark-300 pl-6 text-xl font-bold"
         type="text"
         placeholder="Enter your username"
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) =>{ 
+          const value = e.target.value;
+          if(value.length <= 20)
+            setUsername(e.target.value)
+          else toast.error("Username must be less than 20 characters")
+        }}
         value={Username}
       />
     </div>
@@ -74,7 +78,7 @@ function Welcome() {
       if (image !== "" && image !== null) {
         const formData = new FormData();
         formData.append("file", image);
-        const Avatar = await axios.post(
+        await axios.post(
           "http://127.0.0.1:3000/setting/updateAvatar",
           formData,
           {
@@ -86,7 +90,7 @@ function Welcome() {
         );
       }
       if (Username !== "" && Username !== userInfo.username) {
-      const profile = await axios.post(
+     await axios.post(
         "http://127.0.0.1:3000/setting/updateUsername",
         {
           username: Username,
@@ -127,7 +131,7 @@ function Welcome() {
         <div className="col-span-2">
           <img className="w-full h-full" src={login} />
         </div>
-        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 to-dark-200 justify-center relative items-center col-span-1">
+        <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
           <div className="text-white  wlc-form flex flex-col gap-10 justify-center items-center border-2  p-10">
             <h1 className="text-white  text-3xl font-bold">
