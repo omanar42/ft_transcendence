@@ -6,20 +6,21 @@ Project Description
 
 ### Todo
 
-- [ ] remove swagger  
-- [ ] remove .env  
-- [ ] victory defeat  
-- [ ] docker in prod mode  
 
 ### In Progress
 
-- [ ] add types and clean unused variabes  
-- [ ] Clean all console logs and comments  
-- [ ] internal servers in chat  
-- [ ] throws to response  
+- [ ] victory defeat  
+- [ ] remove .env  
+- [ ] remove swagger  
+- [ ] validation forms  
 
 ### Done ✓
 
+- [x] docker in prod mode  
+- [x] throws to response  
+- [x] internal servers in chat  
+- [x] Clean all console logs and comments  
+- [x] add types and clean unused variabes  
 - [x] back home in game  
 - [x] color in game navbar  
 - [x] unmute and ban  

@@ -1,18 +1,18 @@
 import { useEffect, useRef, useCallback, useContext, useState } from "react";
 import LoginInfo from "../../../Contexts/LoginContext";
 import "./Game.css";
-import Friend from "./Assets/Friend.jpg";
-import Random from "./Assets/random.jpg";
-import AI from './Assets/Ai.jpeg';
+import Friend from "./Assets/Friend.png";
+import Random from "./Assets/Random.png";
+import AI from "./Assets/Ai.png";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactCardFlip from "react-card-flip";
 import Background_1 from "/Modes/black.jpg";
 import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
-import gameover from "/gameover.png";
+import victory from "./Assets/victory.png";
+import defeat from "./Assets/defeat.png";
 import { useNavigate } from "react-router-dom";
 import GameAI from "./GameAI";
-
 
 interface Player {
   id: number;
@@ -52,7 +52,7 @@ const Game = ({ imageUrl }: any) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const isUpPressed = useRef(false);
   const isDownPressed = useRef(false);
-  const paddleSpeed = 8;
+  const paddleSpeed = 11;
   const [status, setStatus] = useState<string>("waiting");
   const [roomId, setRoomId] = useState("");
   const gameState = useRef<GameState>({
@@ -138,7 +138,6 @@ const Game = ({ imageUrl }: any) => {
   };
 
   const handleGameState = (gameStateUpdate: any) => {
-    console.log(gameStateUpdate);
     gameState.current.ball.x = gameStateUpdate.ball.x;
     gameState.current.ball.y = gameStateUpdate.ball.y;
     if (userInfo.username === gameStateUpdate.playerOne.username) {
@@ -346,13 +345,19 @@ const Game = ({ imageUrl }: any) => {
     };
 
     if (ctx && canvas && status !== "start") {
-      drawText(ctx, "Waiting for opponent...", 1300 / 2 - 450, 700 / 2 + 20, "#6574cd");
+      drawText(
+        ctx,
+        "Waiting for opponent...",
+        1300 / 2 - 450,
+        700 / 2 + 20,
+        "#6574cd"
+      );
     }
 
     if (ctx && canvas && status === "start") {
       window.addEventListener("keydown", handleKeyDown);
       window.addEventListener("keyup", handleKeyUp);
-  
+
       const render = () => {
         update();
         draw(ctx);
@@ -374,15 +379,18 @@ const Game = ({ imageUrl }: any) => {
   return (
     <>
       {status === "gameOver" ? (
-        <div className="w-[50%] relative h-[70%] flex flex-col items-center bg-200">
-          <img className="w- h-full" src={gameover} />
+      <div className="flex flex-col items-center gap-[2rem]">
+        <img className="rounded-[5rem] hover:opacity-75 hover:duration-[0.4s] w-[80rem]"
+        src={win ? victory : defeat} />
+        <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="w-[20%] absolute top-[37rem] rounded-3xl text-6xl hover:opacity-60 hover:duration-[0.2s] text-white font-bold h-[10%] z-20 bg-pink-600 "
+            className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => setGameMode(null)}
-          >
-            Menu
+            >
+            Back to Menu
           </button>
         </div>
+      </div>
       ) : (
         <div className="w-[75%] flex flex-col gap-1 justify-center">
           {status === "start" && (
@@ -390,9 +398,11 @@ const Game = ({ imageUrl }: any) => {
               <div className="flex-1 flex gap-[2rem] items-center text-white ">
                 <img
                   src={avatars.userAvatar}
-                  className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
+                  className="w-[10%] h-[10%] border-2 border-pink-600  rounded-full"
                 />
-                <h1 className="text-4xl font-extrabold text-blue-400">{Players.user}</h1>
+                <h1 className="text-[10%] font-extrabold text-blue-400">
+                  {Players.user}
+                </h1>
               </div>
               <div className="flex-1 flex items-center  text-white font-bold justify-between">
                 <span className="text-6xl text-blue-400">{userScore}</span>
@@ -400,7 +410,9 @@ const Game = ({ imageUrl }: any) => {
                 <span className="text-6xl text-pink-600">{opponentScore}</span>
               </div>
               <div className="flex-1 flex gap-[2rem] items-center justify-end text-white ">
-                <h1 className="text-4xl font-extrabold text-pink-600">{Players.opponent}</h1>
+                <h1 className="text-4xl font-extrabold text-pink-600">
+                  {Players.opponent}
+                </h1>
                 <img
                   src={avatars.opponentAvatar}
                   className="w-[6rem] h-[6rem] border-2 border-pink-600  rounded-full"
@@ -463,7 +475,6 @@ const StartGame = ({ setImageUrl }: any) => {
     setGameMode("AI");
   };
 
-
   return (
     <div className="flex justify-around w-[150rem] ml-auto mr-auto">
       <div className="flex flex-col items-center gap-[2rem]">
@@ -479,7 +490,7 @@ const StartGame = ({ setImageUrl }: any) => {
             {/* <div className="modal rounded-[4rem]"></div> */}
             <button
               onClick={() => setIsFlipped(!isFlipped)}
-              className="absolute text-8xl text-pink-600 top-[1rem] left-[2rem]"
+              className="absolute text-8xl text-blue-400 top-[1rem] left-[2rem]"
             >
               &times;
             </button>
@@ -532,14 +543,14 @@ const StartGame = ({ setImageUrl }: any) => {
         </ReactCardFlip>
         <div className="flex mt-[3rem] justify-center w-full text-3xl font-bold">
           <button
-            className="bg-pink-600 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
+            className="bg-blue-400 text-white pb-3 pt-1 pl-2 pr-2 rounded-xl hover:bg-white hover:text-black hover:duration-[0.2s]"
             onClick={() => navigate("/")}
           >
             Back Home
           </button>
         </div>
       </div>
-       <div className="flex flex-col items-center gap-[2rem]">
+      <div className="flex flex-col items-center gap-[2rem]">
         <h1 className="text-5xl text-white">Play With AI</h1>
         <ReactCardFlip flipDirection="horizontal" isFlipped={isFlipped_2}>
           <img
@@ -585,11 +596,11 @@ function LadingPage() {
   const handleReject = () => {
     const dataToSend = {
       roomId: roomId,
-      status: 'reject'
+      status: "reject",
     };
     gamesocket?.emit("PlayWithFriend", dataToSend);
     setIsInvitation(false);
-  }
+  };
 
   useEffect(() => {
     if (gamesocket) {

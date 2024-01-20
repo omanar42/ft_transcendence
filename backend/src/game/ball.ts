@@ -10,8 +10,8 @@ export class Ball {
     this.x = 1300 / 2;
     this.y = 700 / 2;
     this.radius = 16;
-    this.speed = 4;
-    this.velocityX = 4;
+    this.speed = 6;
+    this.velocityX = 6;
     this.velocityY = 2;
   }
 

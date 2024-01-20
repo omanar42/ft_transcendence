@@ -73,6 +73,18 @@ export class ChatService {
 
     return await this.getRooms(oauthId);
   }
+
+  async ifFriend(oauthId: string, targetId: string) {
+    if (!oauthId || !targetId)
+      return false;
+    const friend = await this.usersService.getOneFriend(
+      oauthId,
+      targetId,
+    );
+    if (friend) return true;
+    return false;
+  }
+
   async getRooms(oauthId: string) {
     const user = await this.GetUserByOauthId(oauthId);
     if (!user) {
