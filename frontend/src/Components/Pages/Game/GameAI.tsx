@@ -237,12 +237,12 @@ const GameAI = ({ imageUrl }: any) => {
     gameState.current.ball.x += gameState.current.ball.velocityX;
     gameState.current.ball.y += gameState.current.ball.velocityY;
 
-    if (
-      gameState.current.ball.y + gameState.current.ball.radius >=
-        canvas.height ||
-      gameState.current.ball.y - gameState.current.ball.radius <= 0
-    ) {
+    if (gameState.current.ball.y + gameState.current.ball.radius >= canvas.height) {
       gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
+      gameState.current.ball.y = canvas.height - gameState.current.ball.radius;
+    } else if (gameState.current.ball.y - gameState.current.ball.radius <= 0) {
+      gameState.current.ball.velocityY = -gameState.current.ball.velocityY;
+      gameState.current.ball.y = gameState.current.ball.radius;
     }
 
     let aiLevel = 0.05;

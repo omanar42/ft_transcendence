@@ -94,11 +94,13 @@ export class GameState {
       this.playerTwo.reset();
     }
 
-    if (this.ball.y <= 0) {
-      this.ball.velocityY *= -1;
+    if (this.ball.y - this.ball.radius <= 0) {
+      this.ball.velocityY = -this.ball.velocityY;
+      this.ball.y = this.ball.radius;
     }
-    if (this.ball.y >= 700) {
-      this.ball.velocityY *= -1;
+    if (this.ball.y + this.ball.radius >= 700) {
+      this.ball.velocityY = -this.ball.velocityY;
+      this.ball.y = 700 - this.ball.radius;
     }
 
     if (this.playerOne.score === 11 || this.playerTwo.score === 11) {
