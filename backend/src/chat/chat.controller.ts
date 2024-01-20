@@ -277,9 +277,10 @@ export class ChatController {
     }
   }
   @Get('dms')
-  async GetDms(@Req() req) {
+  async GetDms(@Req() req, @Res() res: Response) {
     try {
-      return await this.chatService.getDms(req.user.sub.toString());
+      const response = await this.chatService.getDms(req.user.sub.toString());
+      return res.json(response);
     } catch (error) {
       console.log(error);
     }
