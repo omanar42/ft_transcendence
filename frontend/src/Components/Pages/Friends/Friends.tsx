@@ -36,15 +36,19 @@ export const friendAction = async (
   }
 };
 
-function ListFriends({ avatar, username, handlUpdate, id, actions }: any) {
+function ListFriends({ avatar, username, handlUpdate, id, actions, status }: any) {
   const navigate = useNavigate();
+
   return (
-    <li className="text-white flex cursor-pointer  hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
-      <img
-        onClick={() => navigate(`/profile/${username}`)}
-        className="h-[2rem] hover:opacity-65 w-full flex-1"
-        src={avatar}
-      />
+    <li 
+    
+    className="text-white relative flex cursor-pointer  hover:scale-[1.2] hover:duration-[0.2s] flex-col justify-between w-[20rem] h-[25rem] border-4 border-white border-opacity-20 rounded-xl">
+     
+      <img 
+      onClick={()=>navigate(`/profile/${username}`)}
+      className="h-[2rem] w-full hover:opacity-70 flex-1" src={avatar} />
+        <div className={`absolute bottom-0 right-0 w-[1rem] h-[1rem] rounded-full   ${status === "ONLINE" ? "bg-green-500" : status === "OFFLINE" ? "bg-red-500" : "bg-yellow-500" }`}></div>
+
       <div className="flex h-[6rem] justify-around items-center  gap-[1rem]">
         <h1 className="text-3xl overflow-hidden whitespace-nowrap text-ellipsis  ml-1 w-[11rem] h-[4rem] p-2 text-center rounded-xl border-opacity-25 font-bold">
           {username}
@@ -216,7 +220,7 @@ function Friends() {
             <ListFriends
               avatar={Friend.frAvatar}
               username={Friend.frUser}
-              status={Friend.status}
+              status={Friend.frStatus}
               id={Friend.id}
               handlUpdate={handlUpdate}
               actions={Friend.actions}
