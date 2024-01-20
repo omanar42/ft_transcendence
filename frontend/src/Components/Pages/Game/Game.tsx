@@ -11,7 +11,7 @@ import Background_2 from "/Modes/kimetsu.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import victory from "./Assets/victory.png";
 import defeat from "./Assets/defeat.png";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GameAI from "./GameAI";
 
 interface Player {
@@ -583,6 +583,7 @@ function LadingPage() {
   const [roomId, setRoomId] = useState("");
   const [isInvitation, setIsInvitation] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleAccept = () => {
     const dataToSend = {
@@ -616,6 +617,13 @@ function LadingPage() {
       };
     }
   }, [gamesocket]);
+  useEffect(() => {
+
+    return () => {
+    gamesocket?.emit("Back");
+
+    };
+  },[location]);
   return (
     <AnimatePresence>
       <motion.div
