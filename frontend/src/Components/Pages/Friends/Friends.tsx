@@ -7,7 +7,7 @@ import { IoPersonAddSharp } from "react-icons/io5";
 import { ToastContainer, toast } from "react-toastify";
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom";
-
+import { BACKEND_URL } from "../../../Config";
 
 export const friendAction = async (
   frUser: any,
@@ -24,12 +24,13 @@ export const friendAction = async (
   };
 
   try {
-    const url = `http://127.0.0.1:3000/users/${actions[action]}`;
+    const url = `${BACKEND_URL}/users/${actions[action]}`;
     const res = await axios.post(
       url,
       { friendUser: frUser },
       { withCredentials: true }
     );
+    console.log('+++++++++++++++',BACKEND_URL);
     toast.success(res.data.message);
     handlUpdate(id);
   } catch (e) {
@@ -114,7 +115,7 @@ function Friends() {
       invitations: "invitations",
     };
     try {
-      const url = `http://127.0.0.1:3000/users/${actions[action]}`;
+      const url = `${BACKEND_URL}/users/${actions[action]}`;
       const res = await axios.get(url, { withCredentials: true });
       setFriends(res.data);
       setActions(res.data.actions);
@@ -125,7 +126,7 @@ function Friends() {
   const AddFriend = async () => {
     try {
       await axios.post(
-        "http://127.0.0.1:3000/users/add",
+        `${BACKEND_URL}/users/add`,
         { friendUser: addFriend },
         { withCredentials: true }
       );

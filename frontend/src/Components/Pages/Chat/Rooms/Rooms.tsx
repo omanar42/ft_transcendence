@@ -7,6 +7,8 @@ import { Room } from "./RoomList";
 import axios from "axios";
 import { RoomContextProvider } from "../../../../Contexts/RoomContext";
 import { motion } from "framer-motion";
+import { BACKEND_URL } from "../../../../Config";
+
 export default function Rooms() {
   const [toggelModal, setToggelModal] = useState(false);
   const [channelsList, setChannelsList] = useState<Room[]>([]);
@@ -19,7 +21,7 @@ export default function Rooms() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:3000/chat/rooms", {
+        const response = await axios.get(`${BACKEND_URL}/chat/rooms`, {
           withCredentials: true,
         });
         setChannelsList(response.data);

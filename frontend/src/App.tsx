@@ -7,6 +7,7 @@ import LoginInfo from "./Contexts/LoginContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
 import io from 'socket.io-client';
+import { BACKEND_URL } from "./Config";
 
 function App() {
   const {setuserInfo, setConnected, setVerifed, setIsLoading, setToken, setSocket, setGameSocket}:any = useContext(LoginInfo);
@@ -17,7 +18,7 @@ function App() {
   
   const fetchData = async ()=>{
     try{
-      const response = await axios.get("http://127.0.0.1:3000/users/info", {withCredentials: true});
+      const response = await axios.get(`${BACKEND_URL}/users/info`, {withCredentials: true});
      
       setuserInfo((prevstate: any)=>({
         ...prevstate,
@@ -27,7 +28,7 @@ function App() {
         username:response.data.username,
         twoFactor:response.data.twoFactor
       }))
-      const newtoken = await axios.get("http://127.0.0.1:3000/auth/token", {withCredentials: true});
+      const newtoken = await axios.get(`${BACKEND_URL}/auth/token`, {withCredentials: true});
       setToken(newtoken.data);
       setIsLoading(false);
       if (newtoken.data){

@@ -8,6 +8,7 @@ import "../Rooms/CreateRoom.css";
 import { ToastContainer, toast } from "react-toastify";
 import { IoMdPersonAdd } from "react-icons/io";
 import Avatar from "../../../../assets/roomIcon.png";
+import { BACKEND_URL } from "../../../../Config";
 
 
 interface messageData {
@@ -65,7 +66,7 @@ function MessageInput({setChannelsList}:any) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:3000/chat/leaveroom",
+        `${BACKEND_URL}/chat/leaveroom`,
         { roomId: currentRoom, newOwner: newOwner },
         { withCredentials: true }
       );
@@ -86,7 +87,7 @@ function MessageInput({setChannelsList}:any) {
 
   useEffect(() => {
     const fetchMessages = async () => {
-      const messages = await axios.get(`http://127.0.0.1:3000/chat/Messages`, {
+      const messages = await axios.get(`${BACKEND_URL}/chat/Messages`, {
         params: {
           roomId: currentRoom,
         },
@@ -109,7 +110,7 @@ function MessageInput({setChannelsList}:any) {
       toast.error("Username should not be empty");
       return;
     }
-    await axios.post("http://127.0.0.1:3000/chat/add_user", {roomId: currentRoom, username:inviteFriend},
+    await axios.post(`${BACKEND_URL}/chat/add_user`, {roomId: currentRoom, username:inviteFriend},
      {withCredentials: true}).then((res)=>setChannelsList(res.data)).catch((error) => { toast.warning(error.response.data.message); return;});
     setAddIsOpen(false);
     setFriend("");

@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import LoginInfo from "../../../Contexts/LoginContext";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../../../Config";
 
 function ImageUploader({ setImage, setImageUrl, imageUrl, imageRef }: any) {
   const handelImageClick = () => {
@@ -79,7 +80,7 @@ function Welcome() {
         const formData = new FormData();
         formData.append("file", image);
         await axios.post(
-          "http://127.0.0.1:3000/setting/updateAvatar",
+          `${BACKEND_URL}/setting/updateAvatar`,
           formData,
           {
             headers: {
@@ -91,7 +92,7 @@ function Welcome() {
       }
       if (Username !== "" && Username !== userInfo.username) {
      await axios.post(
-        "http://127.0.0.1:3000/setting/updateUsername",
+        `${BACKEND_URL}/setting/updateUsername`,
         {
           username: Username,
         },
