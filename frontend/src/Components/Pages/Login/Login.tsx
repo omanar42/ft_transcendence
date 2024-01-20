@@ -5,6 +5,8 @@ import Logo from "../../../assets/logo.png";
 import axios from "axios";
 import {motion} from "framer-motion";
 import { toast } from "react-toastify";
+import { BACKEND_URL } from "../../../Config";
+
 interface ButtonType {
   icon: string;
   text: string;
@@ -27,7 +29,7 @@ function Login() {
   
   const handLogging = async () =>{
     try{
-      await axios.get("http://127.0.0.1:3000/auth/token");
+      await axios.get(`${BACKEND_URL}/auth/token`);
     }catch(error){
       toast.error(error.response.data.message);
     }
@@ -41,7 +43,7 @@ function Login() {
         <div className="flex flex-col gap-20 bg bg-gradient-to-r from-dark to-dark-100 justify-center relative items-center col-span-1">
           <img className="absolute top-40" src={Logo} alt="logo" />
 
-          <a onClick={handLogging} href="http://127.0.0.1:3000/auth/42">
+          <a onClick={handLogging} href={`${BACKEND_URL}/auth/42`}>
           <Button
             icon={intra}
             text="Sing in with intra"
@@ -49,7 +51,7 @@ function Login() {
             textColor="text-white"
           />
           </a>
-          <a href="http://127.0.0.1:3000/auth/google">
+          <a href={`${BACKEND_URL}/auth/google`}>
             <Button
               icon={google}
               text="Sing in with Google"

@@ -3,6 +3,7 @@ import { login } from "../Login";
 import axios from "axios";
 import LoginInfo from "../../../Contexts/LoginContext";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../../../Config";
 
 function TwoFaVerfication() {
     const [code, setCode] = useState("");
@@ -12,7 +13,7 @@ function TwoFaVerfication() {
     const handelSubmit = async () => {
         try {
             const confirm = await axios.post(
-                "http://127.0.0.1:3000/users/verify2fa",
+                `${BACKEND_URL}/users/verify2fa`,
                 { token: code },
                 { withCredentials: true }
                 );

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useContext, useState } from "react";
 import { Socket } from "socket.io-client";
+import { BACKEND_URL } from "../Config";
 
 const LoginInfo = createContext({});
 
@@ -23,7 +24,7 @@ export interface userInfo{
   
 const Logout = () => {
   axios
-    .get("http://127.0.0.1:3000/auth/logout", { withCredentials: true })
+    .get(`${BACKEND_URL}/auth/logout`, { withCredentials: true })
     .then((res) => {
       if (res.data.message === "logout success") {
         window.location.href = "/login";
