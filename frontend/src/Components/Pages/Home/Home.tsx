@@ -61,7 +61,7 @@ function Home() {
               <Link to="/game">Play Now</Link>
             </button>
             <button className="rounded-full border-[2px] text-3xl h-[6rem] w-[15rem] hover:bg-white hover:text-dark duration-[0.2s]">
-              Learn more
+              <Link to="/AboutUs">About Us</Link>
             </button>
           </div>
         </div>
