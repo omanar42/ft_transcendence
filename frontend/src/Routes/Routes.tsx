@@ -48,9 +48,11 @@ const Protect2fa = () => {
 };
 
 const Reverse2fa = () => {
-  const { verifed }: any = useContext(LoginInfo);
+  const { verifed, userInfo }: any = useContext(LoginInfo);
 
-  return !verifed ? <Outlet /> : <Navigate to="/home" replace />;
+    if (userInfo.twoFactor && !verifed)
+        return  <Outlet /> ;
+    return <Navigate to="/home" replace />;
 };
 
 
