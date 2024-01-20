@@ -79,7 +79,7 @@ export class SettingController {
     if (!file) {
       return res.status(400).json({ message: 'File required' });
     } else {
-      const filePath: string = `${process.env.SERVER_URL}/users/avatar/${file.filename}`;
+      const filePath: string = `${process.env.BACKEND_URL}/users/avatar/${file.filename}`;
       await this.settingService.updateAvatar(req.user.sub, filePath);
       return res.json({ message: 'Avatar updated' });
     }
