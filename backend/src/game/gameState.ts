@@ -74,7 +74,7 @@ export class GameState {
       this.ball.speed = Math.min(this.ball.speed, 15);
     }
 
-    if (this.ball.x - this.ball.radius <= 0) {
+    if (this.ball.x - this.ball.radius  <= 0) {
       this.waiting = true;
       setTimeout(() => {
         this.waiting = false;
@@ -92,6 +92,13 @@ export class GameState {
       this.ball.resetBall();
       this.playerOne.reset();
       this.playerTwo.reset();
+    }
+
+    if (this.ball.y <= 0) {
+      this.ball.velocityY *= -1;
+    }
+    if (this.ball.y >= 700) {
+      this.ball.velocityY *= -1;
     }
 
     if (this.playerOne.score === 11 || this.playerTwo.score === 11) {
