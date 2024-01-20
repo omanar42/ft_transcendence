@@ -73,6 +73,14 @@ export class ChatService {
 
     return await this.getRooms(oauthId);
   }
+
+  async ifFriend(oauthId: string, targetId: string) {
+    if (!oauthId || !targetId) return false;
+    const friend = await this.usersService.getOneFriend(oauthId, targetId);
+    if (friend.status === 'FRIENDS') return true;
+    return false;
+  }
+
   async getRooms(oauthId: string) {
     const user = await this.GetUserByOauthId(oauthId);
     if (!user) {
@@ -863,6 +871,13 @@ export class ChatService {
     for (const roomuser of rooms_user) {
       const room = await this.GetRoomById(roomuser.roomId);
       if (room.type === RoomType['DIRECT_MESSAGE']) {
+        const is_friend = await this.ifFriend(
+          room.roomuser[0].userId,
+          room.roomuser[1].userId,
+        );
+        if (is_friend === false) {
+          continue;
+        }
         const users_not_blocked = await this.filter_blocked_users(
           { oauthId },
           room.roomuser,
